@@ -4,6 +4,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SKY_Backend", "SKY_Backend\SKY_Backend.csproj", "{86709439-A014-4D62-9A61-359DC06F5227}"
+	ProjectSection(ProjectDependencies) = postProject
+		{769C08EB-908D-459A-861F-5A7C7BAA698C} = {769C08EB-908D-459A-861F-5A7C7BAA698C}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "DAL\DAL.csproj", "{0B7F8025-CA3A-49E2-8B07-8937B44F37E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{769C08EB-908D-459A-861F-5A7C7BAA698C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0B7F8025-CA3A-49E2-8B07-8937B44F37E4} = {0B7F8025-CA3A-49E2-8B07-8937B44F37E4}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +25,14 @@ Global
 		{86709439-A014-4D62-9A61-359DC06F5227}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86709439-A014-4D62-9A61-359DC06F5227}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86709439-A014-4D62-9A61-359DC06F5227}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B7F8025-CA3A-49E2-8B07-8937B44F37E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B7F8025-CA3A-49E2-8B07-8937B44F37E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B7F8025-CA3A-49E2-8B07-8937B44F37E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B7F8025-CA3A-49E2-8B07-8937B44F37E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{769C08EB-908D-459A-861F-5A7C7BAA698C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{769C08EB-908D-459A-861F-5A7C7BAA698C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{769C08EB-908D-459A-861F-5A7C7BAA698C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{769C08EB-908D-459A-861F-5A7C7BAA698C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
