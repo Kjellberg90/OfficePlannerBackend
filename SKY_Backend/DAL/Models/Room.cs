@@ -11,5 +11,6 @@ namespace DAL.Models
         public int ID { get; set; }
         public string Name { get; set; }
         public int Seats { get; set; }
+        public int BookedBy { get; set; }
     }
 }
