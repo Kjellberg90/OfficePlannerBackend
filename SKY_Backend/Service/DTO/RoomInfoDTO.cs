@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.Models
+namespace Service.DTO
 {
-    public class Group
+    public class RoomInfoDTO
     {
-        public int Id { get; set; }
         public string Name { get; set; }
-        public int TeamMembers { get; set; }
-        public int? BookedRoomNumber { get; set; }
+        public int Seats { get; set; }
+        public int AvailableSeats { get; set; }
     }
 }

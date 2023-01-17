@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Service.DTO;
 
 namespace Service
 {
@@ -22,6 +23,34 @@ namespace Service
         {
             var newList = MockData.Instance._groups;
             return newList;
+        }
+
+        public GroupInfoDTO GetGroupInfo(int id)
+        {
+            IRoomService roomService = new RoomService();
+
+            var group = GetGroup(id);
+
+            if (group == null)
+            {
+                throw new Exception("GroupNotFoundException", new FileNotFoundException());
+            }
+
+            var groupInfo = new GroupInfoDTO()
+            {
+                Name = group.Name,
+                Members = group.TeamMembers
+            };
+
+            if(group.BookedRoomNumber == null )
+            {
+                return groupInfo;
+            }
+
+            groupInfo.BookedRoom = roomService.GetRoom(group.BookedRoomNumber);
+
+            return groupInfo;
+
         }
     }
 }

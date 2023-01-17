@@ -43,5 +43,25 @@ namespace SKY_Backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("get-rooms-info")]
+        public IActionResult GetRoomsInfo()
+        {
+            IRoomService roomService = new RoomService();
+
+            try
+            {
+                var result = roomService.GetRoomsInfo();
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

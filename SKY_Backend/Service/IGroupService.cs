@@ -1,4 +1,5 @@
 ﻿using DAL.Models;
+using Service.DTO;
 
 namespace Service
 {
@@ -7,5 +8,7 @@ namespace Service
         public Group GetGroup(int id);
 
         public IEnumerable<Group> GetGroups();
+
+        public GroupInfoDTO GetGroupInfo(int id);
     }
 }

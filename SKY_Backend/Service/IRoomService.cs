@@ -1,4 +1,5 @@
 ﻿using DAL.Models;
+using Service.DTO;
 
 namespace Service
 {
@@ -6,7 +7,8 @@ namespace Service
     {
         public IEnumerable<Room> GetRooms();
 
-        public Room GetRoom(int roomId);
+        public Room GetRoom(int? roomId);
+        public IEnumerable<RoomInfoDTO> GetRoomsInfo();
 
     }
 }
