@@ -8,14 +8,19 @@ namespace SKY_Backend.Controllers
     [ApiController]
     public class GroupController : ControllerBase
     {
+        private readonly IGroupService _groupService;
+
+        public GroupController(IGroupService groupService)
+        {
+            _groupService = groupService;
+        }
+
         [HttpGet("get-groups")]
         public IActionResult GetGroups()
         {
-            IGroupService groupService = new GroupService();
-
             try
             {
-                var result = groupService.GetGroups();
+                var result = _groupService.GetGroups();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -27,11 +32,9 @@ namespace SKY_Backend.Controllers
         [HttpGet("get-group")]
         public IActionResult GetGroup(int id)
         {
-            IGroupService groupService = new GroupService();
-
             try
             {
-                var result = groupService.GetGroup(id);
+                var result = _groupService.GetGroup(id);
 
                 if(result == null)
                 {
@@ -49,11 +52,9 @@ namespace SKY_Backend.Controllers
         [HttpGet("get-group-info")]
         public IActionResult GetGroupInfo(int groupId)
         {
-            IGroupService groupService = new GroupService();
-
             try
             {
-                var result = groupService.GetGroupInfo(groupId);
+                var result = _groupService.GetGroupInfo(groupId);
 
                 if (result == null)
                 {

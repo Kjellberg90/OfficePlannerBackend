@@ -1,3 +1,5 @@
+using Service;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -15,6 +17,11 @@ builder.Services.AddCors(options =>
         .AllowAnyHeader();
     });
 });
+
+// Dependencies 
+
+builder.Services.AddTransient<IGroupService, GroupService>();
+builder.Services.AddTransient<IRoomService, RoomService>();
 
 var app = builder.Build();
 
