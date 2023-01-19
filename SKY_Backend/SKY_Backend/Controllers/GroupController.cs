@@ -15,40 +15,6 @@ namespace SKY_Backend.Controllers
             _groupService = groupService;
         }
 
-        [HttpGet("get-groups")]
-        public IActionResult GetGroups()
-        {
-            try
-            {
-                var result = _groupService.GetGroups();
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("get-group")]
-        public IActionResult GetGroup(int id)
-        {
-            try
-            {
-                var result = _groupService.GetGroup(id);
-
-                if(result == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
         [HttpGet("get-group-info")]
         public IActionResult GetGroupInfo(int groupId)
         {
@@ -63,7 +29,21 @@ namespace SKY_Backend.Controllers
 
                 return Ok(result);
             }
-            catch(Exception ex)
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("post-group")]
+        public IActionResult PostGroupToFile(string data)
+        {
+            try
+            {
+                _groupService.PrintGroupToFile(data);
+                return Ok();
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

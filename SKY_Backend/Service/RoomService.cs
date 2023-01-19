@@ -4,6 +4,7 @@ using Service.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,29 +12,20 @@ namespace Service
 {
     public class RoomService : IRoomService
     {
-        public Room GetRoom(int? roomId)
-        {
-            var room = MockData.Instance._rooms
-                .Where(room => room.ID == roomId)
-                .FirstOrDefault();
+        private readonly IDataAccess _dataAccess;
 
-            return room;
-        }
-
-        public IEnumerable<Room> GetRooms()
+        public RoomService(IDataAccess dataAccess)
         {
-            var newList = MockData.Instance._rooms;
-            return newList;
+            _dataAccess = dataAccess;
         }
 
         public IEnumerable<RoomInfoDTO> GetRoomsInfo()
         {
-            IGroupService groupService = new GroupService();
-            var allRooms = MockData.Instance._rooms;
+            var roomsList = _dataAccess.ReadRoomsData();
             
             var roomInfoList = new List<RoomInfoDTO>();
 
-            foreach (var room in allRooms)
+            foreach (var room in roomsList)
             {
                 var group = MockData.Instance._groups
                     .Where(group => group.Id == room.BookedBy)
@@ -52,6 +44,59 @@ namespace Service
             return roomInfoList;
         }
 
-        // Vi har BookedBy för att hämta antal platser som är upptagna
+        public Room GetRoom(int? roomId)
+        {
+            var roomsList = _dataAccess.ReadRoomsData();
+
+            var room = roomsList
+                .Where(room => room.ID == roomId)
+                .FirstOrDefault();
+
+            return room;
+        }
+
+        public IEnumerable<Room> GetRooms()
+        {
+            var roomsList = _dataAccess.ReadRoomsData();
+            return roomsList;
+        }
+
+        public void PostRoomToFile(PostRoomDTO room)
+        {
+            int newId;
+
+            var lastRoom = GetRooms()
+                .OrderBy(room => room.ID)
+                .LastOrDefault();
+            
+            if (lastRoom == null)
+            {
+                newId = 1;
+            } else
+            {
+                newId = lastRoom.ID + 1;
+            }
+
+
+            var newRoom = new Room()
+            {
+                ID = newId,
+                Name = room.Name,
+                Seats = room.Seats,
+                BookedBy = room.BookedBy
+            };
+
+            _dataAccess.PrintRoomToFile(newRoom);
+        }
+
+        public void DeleteRoom(int roomId)
+        {
+            _dataAccess.DeleteRoomFromFile(roomId);
+        }
+
+        public void UpdateRoom(Room room)
+        {
+            _dataAccess.UpdateRoomOnFile(room);
+        }
     }
 }

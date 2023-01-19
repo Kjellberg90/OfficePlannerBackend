@@ -1,3 +1,4 @@
+using DAL;
 using Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddTransient<IGroupService, GroupService>();
 builder.Services.AddTransient<IRoomService, RoomService>();
+builder.Services.AddTransient<IDataAccess, DataAccess>();
 
 var app = builder.Build();
 

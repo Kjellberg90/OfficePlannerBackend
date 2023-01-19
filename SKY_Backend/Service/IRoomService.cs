@@ -5,10 +5,11 @@ namespace Service
 {
     public interface IRoomService
     {
-        public IEnumerable<Room> GetRooms();
-
         public Room GetRoom(int? roomId);
+        public IEnumerable<Room> GetRooms();
         public IEnumerable<RoomInfoDTO> GetRoomsInfo();
-
+        public void PostRoomToFile(PostRoomDTO room);
+        public void DeleteRoom(int roomId);
+        public void UpdateRoom(Room room);
     }
 }

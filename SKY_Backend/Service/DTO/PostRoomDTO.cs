@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.Models
+namespace Service.DTO
 {
-    public class Room
+    public class PostRoomDTO
     {
-        public int ID { get; set; }
         public string Name { get; set; }
         public int Seats { get; set; }
         public int? BookedBy { get; set; }
