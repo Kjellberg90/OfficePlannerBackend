@@ -8,14 +8,19 @@ namespace SKY_Backend.Controllers
     [ApiController]
     public class RoomsController : ControllerBase
     {
+        private readonly IRoomService _roomService;
+
+        public RoomsController(IRoomService roomService)
+        {
+            _roomService = roomService;
+        }
+
         [HttpGet("get-rooms")]
         public IActionResult GetRooms()
         {
-            IRoomService roomService = new RoomService();
-
             try
             {
-                var result = roomService.GetRooms();
+                var result = _roomService.GetRooms();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -27,11 +32,9 @@ namespace SKY_Backend.Controllers
         [HttpGet("get-room")]
         public IActionResult GetRoom(int roomId)
         {
-            IRoomService roomService = new RoomService();
-            
             try
             {
-                var result = roomService.GetRoom(roomId);
+                var result = _roomService.GetRoom(roomId);
                 if (result == null)
                 {
                     return NotFound();
@@ -47,11 +50,9 @@ namespace SKY_Backend.Controllers
         [HttpGet("get-rooms-info")]
         public IActionResult GetRoomsInfo()
         {
-            IRoomService roomService = new RoomService();
-
             try
             {
-                var result = roomService.GetRoomsInfo();
+                var result = _roomService.GetRoomsInfo();
                 if (result == null)
                 {
                     return NotFound();
