@@ -57,8 +57,7 @@ namespace Service
 
         public IEnumerable<Room> GetRooms()
         {
-            var roomsList = _dataAccess.ReadRoomsData();
-            return roomsList;
+            return _dataAccess.ReadRoomsData();            
         }
 
         public void PostRoomToFile(PostRoomDTO room)
@@ -68,11 +67,12 @@ namespace Service
             var lastRoom = GetRooms()
                 .OrderBy(room => room.ID)
                 .LastOrDefault();
-            
+
             if (lastRoom == null)
             {
                 newId = 1;
-            } else
+            }
+            else
             {
                 newId = lastRoom.ID + 1;
             }

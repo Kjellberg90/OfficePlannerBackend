@@ -29,6 +29,11 @@ namespace Service
             return group;
         }
 
+        public IEnumerable<Group> GetGroups()
+        {
+            return _dataAccess.ReadGroupsData();
+        }
+
         public GroupInfoDTO GetGroupInfo(int id)
         {
             var group = GetGroup(id);
@@ -55,9 +60,37 @@ namespace Service
 
         }
 
-        public void PrintGroupToFile(string data)
+        public void PostGroup(PostGroupDTO data)
         {
-            _dataAccess.PrintGroupToFile(data);
+            int newId;
+
+
+            var lastGroup = GetGroups()
+                .OrderBy(group => group.Id)
+                .LastOrDefault();
+
+            newId = lastGroup == null ? 1 : lastGroup.Id + 1;
+            data.BookedRoomId = data.BookedRoomId > 0 ? data.BookedRoomId : null;
+
+            var newGroup = new Group()
+            {
+                Id = newId,
+                Name = data.Name,
+                TeamMembers = data.TeamMembers,
+                BookedRoomNumber = data.BookedRoomId
+            };
+
+            _dataAccess.PrintGroupToFile(newGroup);
+        }
+
+        public void DeleteGroup(int id)
+        {
+            _dataAccess.DeleteGroupFromFile(id);
+        }
+
+        public void UpdateGroup(Group group)
+        {
+            _dataAccess.UpdateGroupOnFile(group);
         }
     }
 }

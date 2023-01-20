@@ -15,6 +15,8 @@ namespace DAL
         public void UpdateRoomOnFile(Room newRoomData);
 
         public List<Group> ReadGroupsData();
-        public void PrintGroupToFile(string data);
+        public void PrintGroupToFile(Group newGroup);
+        public void DeleteGroupFromFile(int groupId);
+        public void UpdateGroupOnFile(Group newGroupInfo);
     }
 }

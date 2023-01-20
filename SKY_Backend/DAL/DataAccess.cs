@@ -12,13 +12,6 @@ namespace DAL
 {
     public class DataAccess : IDataAccess
     {
-        public void PrintGroupToFile(string data)
-        {
-            MockData mockData = new MockData();
-
-            var groupsJson = JsonSerializer.Serialize(mockData._groups);
-            File.WriteAllText("JsonData/GroupsJson.txt", groupsJson);            
-        }
 
         public List<Room> ReadRoomsData()
         {
@@ -26,13 +19,11 @@ namespace DAL
 
             string json;
 
-            using (StreamReader sr = new StreamReader("JsonData/RoomJson.txt"))
+            using (StreamReader sr = new StreamReader("JsonData/Rooms.json"))
             {
                 while ((json = sr.ReadLine()) != null)
                 {
                     roomsList = JsonSerializer.Deserialize<List<Room>>(json);
-
-                    Console.WriteLine(json);
 
                     return roomsList;
                 }
@@ -40,35 +31,14 @@ namespace DAL
             }
         }
 
-        public List<Group> ReadGroupsData()
-        {
-            var groupsList = new List<Group>();
-
-            string json;
-
-            using (StreamReader sr = new StreamReader("JsonData/GroupsJson.txt"))
-            {
-                while ((json = sr.ReadLine()) != null)
-                {
-                    groupsList = JsonSerializer.Deserialize<List<Group>>(json);
-
-                    return groupsList;
-                }
-                return groupsList;
-            }
-        }
-
         public void PrintRoomToFile(Room newRoom)
         {
+            var mockData = MockData.Instance._rooms;
             var roomsList = ReadRoomsData();
 
             roomsList.Add(newRoom);
 
-            using (StreamWriter sw = new StreamWriter("JsonData/RoomJson.txt"))
-            {
-                var roomJson = JsonSerializer.Serialize(roomsList);
-                sw.WriteLine(roomJson);
-            }
+            PrintToFile(mockData);
         }
 
         public void DeleteRoomFromFile(int roomId)
@@ -77,17 +47,13 @@ namespace DAL
             roomsList
                 .RemoveAll(room => room.ID == roomId);
 
-            using (StreamWriter sw = new StreamWriter("JsonData/RoomJson.txt"))
-            {
-                var roomJson = JsonSerializer.Serialize(roomsList);
-                sw.WriteLine(roomJson);
-            }
+            PrintToFile(roomsList);
         }
 
         public void UpdateRoomOnFile(Room newRoomData)
         {
             var roomsList = ReadRoomsData();
-            
+
             var room = roomsList
                 .Where(room => room.ID == newRoomData.ID)
                 .FirstOrDefault();
@@ -101,10 +67,75 @@ namespace DAL
             roomsList.FirstOrDefault(room => room.ID == newRoomData.ID).Name = newRoomData.Name;
             roomsList.FirstOrDefault(room => room.ID == newRoomData.ID).BookedBy = newRoomData.BookedBy;
 
-            using (StreamWriter sw = new StreamWriter("JsonData/RoomJson.txt"))
+            PrintToFile(roomsList);
+        }
+
+        public List<Group> ReadGroupsData()
+        {
+            var groupsList = new List<Group>();
+
+            string json;
+
+            using (StreamReader sr = new StreamReader("JsonData/Groups.json"))
             {
-                var roomJson = JsonSerializer.Serialize(roomsList);
-                sw.WriteLine(roomJson);
+                while ((json = sr.ReadLine()) != null)
+                {
+                    groupsList = JsonSerializer.Deserialize<List<Group>>(json);
+
+                    return groupsList;
+                }
+                return groupsList;
+            }
+        }
+
+        public void PrintGroupToFile(Group newGroup)
+        {
+            var groupsList = ReadGroupsData();
+
+            groupsList.Add(newGroup);
+
+            PrintToFile(groupsList);
+        }
+
+        public void DeleteGroupFromFile(int groupId)
+        {
+            var groupsList = ReadGroupsData();
+
+            groupsList.RemoveAll(group => group.Id == groupId);
+
+            PrintToFile(groupsList);
+        }
+
+        public void UpdateGroupOnFile(Group newGroupData)
+        {
+            var groupsList = ReadGroupsData();
+
+            var group = groupsList
+                .Where(group => group.Id == newGroupData.Id)
+                .FirstOrDefault();
+
+            if (group == null)
+            {
+                throw new Exception("Room not found");
+            }
+
+            groupsList.FirstOrDefault(room => room.Id == newGroupData.Id).Name = newGroupData.Name;
+            groupsList.FirstOrDefault(room => room.Id == newGroupData.Id).TeamMembers = newGroupData.TeamMembers;
+            groupsList.FirstOrDefault(room => room.Id == newGroupData.Id).BookedRoomNumber = newGroupData.BookedRoomNumber;
+
+            PrintToFile(groupsList);
+        }
+
+        private void PrintToFile(IEnumerable<object> objects)
+        {
+            string type = objects.FirstOrDefault().GetType().Name.ToString();
+
+            string printDest = $"JsonData/{type}s.json";
+
+            using (StreamWriter sw = new StreamWriter(printDest))
+            {
+                var json = JsonSerializer.Serialize(objects);
+                sw.WriteLine(json);
             }
         }
     }
