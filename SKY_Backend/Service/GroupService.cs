@@ -12,17 +12,17 @@ namespace Service
     public class GroupService : IGroupService
     {
         private readonly IRoomService _roomService;
-        private readonly IDataAccess _dataAccess;
+        private readonly IGroupAccess _groupAccess;
 
-        public GroupService(IRoomService roomService, IDataAccess dataAccess)
+        public GroupService(IRoomService roomService, IGroupAccess groupAccess)
         {
             _roomService = roomService;
-            this._dataAccess = dataAccess;  
+            this._groupAccess = groupAccess;  
         }
 
         public Group GetGroup(int id)
         {
-            var group = _dataAccess.ReadGroupsData()
+            var group = _groupAccess.ReadGroupsData()
                 .Where(group => group.Id == id)
                 .FirstOrDefault();
 
@@ -31,7 +31,7 @@ namespace Service
 
         public IEnumerable<Group> GetGroups()
         {
-            return _dataAccess.ReadGroupsData();
+            return _groupAccess.ReadGroupsData();
         }
 
         public GroupInfoDTO GetGroupInfo(int id)
@@ -80,17 +80,17 @@ namespace Service
                 BookedRoomNumber = data.BookedRoomId
             };
 
-            _dataAccess.PrintGroupToFile(newGroup);
+            _groupAccess.PrintGroupToFile(newGroup);
         }
 
         public void DeleteGroup(int id)
         {
-            _dataAccess.DeleteGroupFromFile(id);
+            _groupAccess.DeleteGroupFromFile(id);
         }
 
         public void UpdateGroup(Group group)
         {
-            _dataAccess.UpdateGroupOnFile(group);
+            _groupAccess.UpdateGroupOnFile(group);
         }
     }
 }
