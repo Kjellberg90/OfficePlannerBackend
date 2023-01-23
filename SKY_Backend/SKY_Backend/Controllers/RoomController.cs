@@ -8,59 +8,39 @@ namespace SKY_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GroupController : ControllerBase
+    public class RoomController : ControllerBase
     {
-        private readonly IGroupService _groupService;
+        private readonly IRoomService _roomService;
 
-        public GroupController(IGroupService groupService)
+        public RoomController(IRoomService roomService)
         {
-            _groupService = groupService;
+            _roomService = roomService;
         }
 
-        [HttpGet("group")]
-        public IActionResult GetGroup(int groupId)
+        [HttpGet("get-rooms-info")]
+        public IActionResult GetRoomsInfo()
         {
             try
             {
-                var result = _groupService.GetGroup(groupId);
-
-                if (result == null)
-                {
-                    return NotFound();
-                } 
-
-                return Ok(result);
-            }catch(Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("groups")]
-        public IActionResult GetGroups()
-        {
-            try
-            {
-                var result = _groupService.GetGroups();
-
+                var result = _roomService.GetRoomsInfo();
                 if (result == null)
                 {
                     return NotFound();
                 }
-
                 return Ok(result);
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
 
-        [HttpGet("group-info")]
-        public IActionResult GetGroupInfo(int groupId)
+        [HttpGet("get-room")]
+        public IActionResult GetRoom(int roomId)
         {
             try
             {
-                var result = _groupService.GetGroupInfo(groupId);
+                var result = _roomService.GetRoom(roomId);
 
                 if (result == null)
                 {
@@ -75,12 +55,32 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        [HttpPost("group")]
-        public IActionResult PostGroupToFile(PostGroupDTO data)
+        [HttpGet("get-rooms")]
+        public IActionResult GetRooms()
         {
             try
             {
-                _groupService.PostGroup(data);
+                var result = _roomService.GetRooms();
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("post-room")]
+        public IActionResult PostRoom(PostRoomDTO room)
+        {
+            try
+            {
+                _roomService.PostRoomToFile(room);
                 return Ok();
             }
             catch (Exception ex)
@@ -89,27 +89,28 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        [HttpDelete("group")]
-        public IActionResult DeleteGroup(int groupId)
+        [HttpDelete("delete-room")]
+        public IActionResult DeleteRoom(int roomId)
         {
             try
             {
-                _groupService.DeleteGroup(groupId);
+                _roomService.DeleteRoom(roomId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("update-room")]
+        public IActionResult UpdateRoom(Room room)
+        {
+            try
+            {
+                _roomService.UpdateRoom(room);
                 return Ok();
             } catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPut("update-group")]
-        public IActionResult UpdateGroup(Group group)
-        {
-            try
-            {
-                _groupService.UpdateGroup(group);
-                return Ok();
-            } catch(Exception ex)
             {
                 return BadRequest(ex.Message);
             }
