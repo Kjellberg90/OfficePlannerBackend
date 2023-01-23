@@ -12,16 +12,16 @@ namespace Service
 {
     public class RoomService : IRoomService
     {
-        private readonly IRoomAccess _dataAccess;
+        private readonly IRoomAccess _roomAccess;
 
-        public RoomService(IRoomAccess dataAccess)
+        public RoomService(IRoomAccess roomAccess)
         {
-            _dataAccess = dataAccess;
+            _roomAccess = roomAccess;
         }
 
         public IEnumerable<RoomInfoDTO> GetRoomsInfo()
         {
-            var roomsList = _dataAccess.ReadRoomsData();
+            var roomsList = _roomAccess.ReadRoomsData();
             
             var roomInfoList = new List<RoomInfoDTO>();
 
@@ -46,7 +46,7 @@ namespace Service
 
         public Room GetRoom(int? roomId)
         {
-            var roomsList = _dataAccess.ReadRoomsData();
+            var roomsList = _roomAccess.ReadRoomsData();
 
             var room = roomsList
                 .Where(room => room.ID == roomId)
@@ -57,7 +57,7 @@ namespace Service
 
         public IEnumerable<Room> GetRooms()
         {
-            return _dataAccess.ReadRoomsData();            
+            return _roomAccess.ReadRoomsData();            
         }
 
         public void PostRoomToFile(PostRoomDTO room)
@@ -86,17 +86,17 @@ namespace Service
                 BookedBy = room.BookedBy
             };
 
-            _dataAccess.PrintRoomToFile(newRoom);
+            _roomAccess.PrintRoomToFile(newRoom);
         }
 
         public void DeleteRoom(int roomId)
         {
-            _dataAccess.DeleteRoomFromFile(roomId);
+            _roomAccess.DeleteRoomFromFile(roomId);
         }
 
         public void UpdateRoom(Room room)
         {
-            _dataAccess.UpdateRoomOnFile(room);
+            _roomAccess.UpdateRoomOnFile(room);
         }
     }
 }
