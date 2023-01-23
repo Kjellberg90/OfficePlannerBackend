@@ -23,7 +23,8 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddTransient<IGroupService, GroupService>();
 builder.Services.AddTransient<IRoomService, RoomService>();
-builder.Services.AddTransient<IDataAccess, DataAccess>();
+builder.Services.AddTransient<IRoomAccess, RoomAccess>();
+builder.Services.AddTransient<IGroupAccess, GroupAccess>();
 
 var app = builder.Build();
 

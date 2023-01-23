@@ -12,9 +12,9 @@ namespace Service
     public class GroupService : IGroupService
     {
         private readonly IRoomService _roomService;
-        private readonly IDataAccess _dataAccess;
+        private readonly IGroupAccess _dataAccess;
 
-        public GroupService(IRoomService roomService, IDataAccess dataAccess)
+        public GroupService(IRoomService roomService, IGroupAccess dataAccess)
         {
             _roomService = roomService;
             this._dataAccess = dataAccess;  

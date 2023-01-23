@@ -12,9 +12,9 @@ namespace Service
 {
     public class RoomService : IRoomService
     {
-        private readonly IDataAccess _dataAccess;
+        private readonly IRoomAccess _dataAccess;
 
-        public RoomService(IDataAccess dataAccess)
+        public RoomService(IRoomAccess dataAccess)
         {
             _dataAccess = dataAccess;
         }
