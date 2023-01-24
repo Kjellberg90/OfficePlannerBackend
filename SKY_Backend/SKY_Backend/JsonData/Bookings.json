@@ -1,0 +1,152 @@
+[
+  {
+    "Id": 1,
+    "DayNr": 1,
+    "United": 1,
+    "Innovation": 6,
+    "Committment": 7,
+    "Collaboration": 3,
+    "InspiredA": 2,
+    "InspiredB": 4
+  },
+  {
+    "Id": 2,
+    "DayNr": 2,
+    "United": 1,
+    "Innovation": 6,
+    "Committment": 7,
+    "Collaboration": 3,
+    "InspiredA": 2,
+    "InspiredB": 4
+  },
+  {
+    "Id": 3,
+    "DayNr": 3,
+    "United": null,
+    "Innovation": 5,
+    "Committment": 10,
+    "Collaboration": 9,
+    "InspiredA": 8,
+    "InspiredB": 8
+  },
+  {
+    "Id": 4,
+    "DayNr": 4,
+    "United": null,
+    "Innovation": 5,
+    "Committment": 10,
+    "Collaboration": 9,
+    "InspiredA": 8,
+    "InspiredB": 8
+  },
+  {
+    "Id": 5,
+    "DayNr": 5,
+    "United": null,
+    "Innovation": null,
+    "Committment": null,
+    "Collaboration": null,
+    "InspiredA": null,
+    "InspiredB": null
+  },
+  {
+    "Id": 6,
+    "DayNr": 8,
+    "United": 3,
+    "Innovation": 9,
+    "Committment": 2,
+    "Collaboration": 10,
+    "InspiredA": 7,
+    "InspiredB": 7
+  },
+  {
+    "Id": 7,
+    "DayNr": 9,
+    "United": 3,
+    "Innovation": 9,
+    "Committment": 2,
+    "Collaboration": 10,
+    "InspiredA": 7,
+    "InspiredB": 7
+  },
+  {
+    "Id": 8,
+    "DayNr": 10,
+    "United": 4,
+    "Innovation": 5,
+    "Committment": 7,
+    "Collaboration": 1,
+    "InspiredA": 6,
+    "InspiredB": 6
+  },
+  {
+    "Id": 9,
+    "DayNr": 11,
+    "United": 4,
+    "Innovation": 5,
+    "Committment": 7,
+    "Collaboration": 1,
+    "InspiredA": 6,
+    "InspiredB": 6
+  },
+  {
+    "Id": 10,
+    "DayNr": 12,
+    "United": null,
+    "Innovation": null,
+    "Committment": null,
+    "Collaboration": null,
+    "InspiredA": null,
+    "InspiredB": null
+  },
+  {
+    "Id": 11,
+    "DayNr": 15,
+    "United": 10,
+    "Innovation": 5,
+    "Committment": 7,
+    "Collaboration": 9,
+    "InspiredA": 6,
+    "InspiredB": 6
+  },
+  {
+    "Id": 12,
+    "DayNr": 16,
+    "United": 10,
+    "Innovation": 5,
+    "Committment": 7,
+    "Collaboration": 9,
+    "InspiredA": 6,
+    "InspiredB": 6
+  },
+  {
+    "Id": 13,
+    "DayNr": 17,
+    "United": 3,
+    "Innovation": 1,
+    "Committment": 4,
+    "Collaboration": 2,
+    "InspiredA": 8,
+    "InspiredB": 8
+  },
+  {
+    "Id": 14,
+    "DayNr": 18,
+    "United": 3,
+    "Innovation": 1,
+    "Committment": 4,
+    "Collaboration": 2,
+    "InspiredA": 8,
+    "InspiredB": 8
+  },
+  {
+    "Id": 15,
+    "DayNr": 19,
+    "United": null,
+    "Innovation": null,
+    "Committment": null,
+    "Collaboration": null,
+    "InspiredA": null,
+    "InspiredB": null
+  }
+]
