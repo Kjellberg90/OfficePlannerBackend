@@ -67,7 +67,7 @@ namespace Service
                 });
             }
 
-            return roomInfoList;
+            return roomInfoList.OrderBy(x => x.Name);
         }
     }
 }
