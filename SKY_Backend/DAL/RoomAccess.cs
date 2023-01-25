@@ -33,12 +33,11 @@ namespace DAL
 
         public void PrintRoomToFile(Room newRoom)
         {
-            var mockData = MockData.Instance._rooms;
             var roomsList = ReadRoomsData();
 
             roomsList.Add(newRoom);
 
-            PrintToFile(mockData);
+            PrintToFile(roomsList);
         }
 
         public void DeleteRoomFromFile(int roomId)
