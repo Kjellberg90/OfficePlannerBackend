@@ -10,19 +10,21 @@ namespace Service
     {
         public int ConvertDateToDaySequence(string date)
         {
-            var defaultDate = new DateTime(2023, 01, 09);
+            var defaultDate = new DateTime(2023, 01, 08);
 
             var requestedDate = DateTime.Parse(date);
 
             var daysDiff = (requestedDate - defaultDate).TotalDays;
 
+            Console.WriteLine(daysDiff);
+
             
-            while(daysDiff > 21)
+            while(daysDiff >= 22)
             {
                 daysDiff = daysDiff -21;
             }
 
-            return  ((int)daysDiff+1);
+            return  ((int)daysDiff);
         }
     }
 }

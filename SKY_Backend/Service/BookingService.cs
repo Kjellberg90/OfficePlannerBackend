@@ -21,5 +21,10 @@ namespace Service
         {
             return _bookingAcces.ReadBookingsData();
         }
+
+        public void PostBookings()
+        {
+            _bookingAcces.PrintGroupToFile();
+        }
     }
 }

@@ -10,5 +10,6 @@ namespace Service
     public interface IBookingService
     {
         public IEnumerable<NewBooking> GetBookings();
+        public void PostBookings();
     }
 }
