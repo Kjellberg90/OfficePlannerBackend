@@ -19,11 +19,11 @@ namespace SKY_Backend.Controllers
         }
 
         [HttpGet("get-rooms-info")]
-        public IActionResult GetRoomsInfo()
+        public IActionResult GetRoomsInfo(string date)
         {
             try
             {
-                var result = _roomService.GetRoomsInfo();
+                var result = _roomService.GetRoomsInfo(date);
                 if (result == null)
                 {
                     return NotFound();
@@ -31,87 +31,6 @@ namespace SKY_Backend.Controllers
                 return Ok(result);
             }
             catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("get-room")]
-        public IActionResult GetRoom(int roomId)
-        {
-            try
-            {
-                var result = _roomService.GetRoom(roomId);
-
-                if (result == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("get-rooms")]
-        public IActionResult GetRooms(string date)
-        {
-            try
-            {
-                var result = _roomService.GetRooms(date);
-
-                if (result == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPost("post-room")]
-        public IActionResult PostRoom(PostRoomDTO room)
-        {
-            try
-            {
-                _roomService.PostRoomToFile(room);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpDelete("delete-room")]
-        public IActionResult DeleteRoom(int roomId)
-        {
-            try
-            {
-                _roomService.DeleteRoom(roomId);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPut("update-room")]
-        public IActionResult UpdateRoom(Room room)
-        {
-            try
-            {
-                _roomService.UpdateRoom(room);
-                return Ok();
-            } catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

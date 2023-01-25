@@ -27,6 +27,7 @@ builder.Services.AddTransient<IRoomAccess, RoomAccess>();
 builder.Services.AddTransient<IGroupAccess, GroupAccess>();
 builder.Services.AddTransient<IBookingAccess, BookingAccess>();
 builder.Services.AddTransient<IBookingService, BookingService>();
+builder.Services.AddTransient<IDateConverter, DateConverter>();
 
 var app = builder.Build();
 

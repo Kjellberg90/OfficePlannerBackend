@@ -14,24 +14,35 @@ namespace Service
     {
         private readonly IRoomAccess _roomAccess;
         private readonly IBookingAccess _bookingAccess;
+        private readonly IDateConverter _dateConverter;
+        private readonly IGroupAccess _groupAccess;
 
-        public RoomService(IRoomAccess roomAccess, IBookingAccess bookingAccess)
+        public RoomService(IRoomAccess roomAccess, IBookingAccess bookingAccess, IDateConverter dateConverter, IGroupAccess groupAccess)
         {
             _roomAccess = roomAccess;
             _bookingAccess = bookingAccess;
+            _dateConverter = dateConverter;
+            _groupAccess = groupAccess;
         }
 
-        public IEnumerable<RoomInfoDTO> GetRoomsInfo()
+        public IEnumerable<RoomInfoDTO> GetRoomsInfo(string date)
         {
-            var roomsList = _roomAccess.ReadRoomsData();
+            var dayNr = _dateConverter.ConvertDateToDaySequence(date);
+            var booking = _bookingAccess.ReadBookingsData()
+                .Where(b => b.DayNr == dayNr)
+                .FirstOrDefault();
+
+            var roomsList = booking.Rooms;
 
             var roomInfoList = new List<RoomInfoDTO>();
 
             foreach (var room in roomsList)
             {
-                var group = MockData.Instance._groups
-                    .Where(group => group.Id == room.BookedBy)
+                var group = _groupAccess.ReadGroupsData()
+                    .Where(g => g.Id == room.BookedBy)
                     .FirstOrDefault();
+
+                Console.WriteLine(group);
 
                 var groupSize = group.TeamMembers;
 
@@ -39,75 +50,12 @@ namespace Service
                 {
                     Name = room.Name,
                     Seats = room.Seats,
-                    AvailableSeats = room.Seats - groupSize
+                    AvailableSeats = room.Seats - groupSize,
+                    GroupName = group.Name
                 });
             }
 
             return roomInfoList;
-        }
-
-        public Room GetRoom(int? roomId)
-        {
-            var roomsList = _roomAccess.ReadRoomsData();
-
-            var room = roomsList
-                .Where(room => room.ID == roomId)
-                .FirstOrDefault();
-
-            return room;
-        }
-
-        public IEnumerable<Room> GetRooms(string date)
-        {
-            var converter = new DateConvert();
-            var dayNr = converter.ConvertDateToDaySequence(date);
-
-            var booking = _bookingAccess.ReadBookingsData()
-                .Where(b => b.DayNr == dayNr)
-                .FirstOrDefault();
-
-
-
-            return booking.Rooms;
-        }
-
-        public void PostRoomToFile(PostRoomDTO room)
-        {
-            //int newId;
-
-            //var lastRoom = GetRooms()
-            //    .OrderBy(room => room.ID)
-            //    .LastOrDefault();
-
-            //if (lastRoom == null)
-            //{
-            //    newId = 1;
-            //}
-            //else
-            //{
-            //    newId = lastRoom.ID + 1;
-            //}
-
-
-            //var newRoom = new Room()
-            //{
-            //    ID = newId,
-            //    Name = room.Name,
-            //    Seats = room.Seats,
-            //    BookedBy = room.BookedBy
-            //};
-
-            //_roomAccess.PrintRoomToFile(newRoom);
-        }
-
-        public void DeleteRoom(int roomId)
-        {
-            _roomAccess.DeleteRoomFromFile(roomId);
-        }
-
-        public void UpdateRoom(Room room)
-        {
-            _roomAccess.UpdateRoomOnFile(room);
         }
     }
 }

@@ -11,6 +11,5 @@ namespace DAL.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public int TeamMembers { get; set; }
-        public int? BookedRoomNumber { get; set; }
     }
 }

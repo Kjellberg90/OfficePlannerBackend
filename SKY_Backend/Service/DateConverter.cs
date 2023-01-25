@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Service
 {
-    public class DateConvert
+    public class DateConverter : IDateConverter
     {
         public int ConvertDateToDaySequence(string date)
         {
