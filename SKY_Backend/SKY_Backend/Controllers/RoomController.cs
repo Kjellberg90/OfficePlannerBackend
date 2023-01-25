@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 using Service.DTO;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SKY_Backend.Controllers
 {
@@ -56,11 +57,11 @@ namespace SKY_Backend.Controllers
         }
 
         [HttpGet("get-rooms")]
-        public IActionResult GetRooms()
+        public IActionResult GetRooms(string date)
         {
             try
             {
-                var result = _roomService.GetRooms();
+                var result = _roomService.GetRooms(date);
 
                 if (result == null)
                 {

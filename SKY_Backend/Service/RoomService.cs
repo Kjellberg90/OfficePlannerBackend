@@ -13,16 +13,18 @@ namespace Service
     public class RoomService : IRoomService
     {
         private readonly IRoomAccess _roomAccess;
+        private readonly IBookingAccess _bookingAccess;
 
-        public RoomService(IRoomAccess roomAccess)
+        public RoomService(IRoomAccess roomAccess, IBookingAccess bookingAccess)
         {
             _roomAccess = roomAccess;
+            _bookingAccess = bookingAccess;
         }
 
         public IEnumerable<RoomInfoDTO> GetRoomsInfo()
         {
             var roomsList = _roomAccess.ReadRoomsData();
-            
+
             var roomInfoList = new List<RoomInfoDTO>();
 
             foreach (var room in roomsList)
@@ -55,38 +57,47 @@ namespace Service
             return room;
         }
 
-        public IEnumerable<Room> GetRooms()
+        public IEnumerable<Room> GetRooms(string date)
         {
-            return _roomAccess.ReadRoomsData();            
+            var converter = new DateConvert();
+            var dayNr = converter.ConvertDateToDaySequence(date);
+
+            var booking = _bookingAccess.ReadBookingsData()
+                .Where(b => b.DayNr == dayNr)
+                .FirstOrDefault();
+
+
+
+            return booking.Rooms;
         }
 
         public void PostRoomToFile(PostRoomDTO room)
         {
-            int newId;
+            //int newId;
 
-            var lastRoom = GetRooms()
-                .OrderBy(room => room.ID)
-                .LastOrDefault();
+            //var lastRoom = GetRooms()
+            //    .OrderBy(room => room.ID)
+            //    .LastOrDefault();
 
-            if (lastRoom == null)
-            {
-                newId = 1;
-            }
-            else
-            {
-                newId = lastRoom.ID + 1;
-            }
+            //if (lastRoom == null)
+            //{
+            //    newId = 1;
+            //}
+            //else
+            //{
+            //    newId = lastRoom.ID + 1;
+            //}
 
 
-            var newRoom = new Room()
-            {
-                ID = newId,
-                Name = room.Name,
-                Seats = room.Seats,
-                BookedBy = room.BookedBy
-            };
+            //var newRoom = new Room()
+            //{
+            //    ID = newId,
+            //    Name = room.Name,
+            //    Seats = room.Seats,
+            //    BookedBy = room.BookedBy
+            //};
 
-            _roomAccess.PrintRoomToFile(newRoom);
+            //_roomAccess.PrintRoomToFile(newRoom);
         }
 
         public void DeleteRoom(int roomId)

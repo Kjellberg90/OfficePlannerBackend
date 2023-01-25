@@ -25,6 +25,8 @@ builder.Services.AddTransient<IGroupService, GroupService>();
 builder.Services.AddTransient<IRoomService, RoomService>();
 builder.Services.AddTransient<IRoomAccess, RoomAccess>();
 builder.Services.AddTransient<IGroupAccess, GroupAccess>();
+builder.Services.AddTransient<IBookingAccess, BookingAccess>();
+builder.Services.AddTransient<IBookingService, BookingService>();
 
 var app = builder.Build();
 
