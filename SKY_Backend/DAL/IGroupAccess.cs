@@ -10,8 +10,5 @@ namespace DAL
     public interface IGroupAccess
     {
         public List<Group> ReadGroupsData();
-        public void PrintGroupToFile(Group newGroup);
-        public void DeleteGroupFromFile(int groupId);
-        public void UpdateGroupOnFile(Group newGroupInfo);
     }
 }
