@@ -28,5 +28,12 @@ namespace SKY_Backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("post")]
+        public IActionResult PostBookings()
+        {
+            _bookingService.PostBookings();
+            return Ok();
+        }
     }
 }

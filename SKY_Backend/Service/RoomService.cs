@@ -38,20 +38,32 @@ namespace Service
 
             foreach (var room in roomsList)
             {
+
                 var group = _groupAccess.ReadGroupsData()
                     .Where(g => g.Id == room.BookedBy)
                     .FirstOrDefault();
+                
+                int groupSize;
+                string groupName;
+                
+                if (group == null)
+                {
+                    groupSize = 0;
+                    groupName = string.Empty;
+                }
+                else
+                {
+                    groupSize = group.TeamMembers;
+                    groupName = group.Name;
+                }
 
-                Console.WriteLine(group);
-
-                var groupSize = group.TeamMembers;
 
                 roomInfoList.Add(new RoomInfoDTO
                 {
                     Name = room.Name,
                     Seats = room.Seats,
                     AvailableSeats = room.Seats - groupSize,
-                    GroupName = group.Name
+                    GroupName = groupName
                 });
             }
 

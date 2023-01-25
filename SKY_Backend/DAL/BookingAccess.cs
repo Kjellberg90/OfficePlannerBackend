@@ -10,6 +10,13 @@ namespace DAL
 {
     public class BookingAccess : IBookingAccess
     {
+        private readonly IRoomAccess _roomAccess;
+
+        public BookingAccess(IRoomAccess roomAcces)
+        {
+            _roomAccess = roomAcces;
+        }
+
         public List<NewBooking> ReadBookingsData()
         {
             var groupsList = new List<NewBooking>();
@@ -31,7 +38,11 @@ namespace DAL
 
         public void PrintGroupToFile()
         {
+            var list = ReadBookingsData();
             
+            var orderedList = list.OrderBy(x => x.Id);
+
+            PrintToFile(orderedList);
         }
 
 
