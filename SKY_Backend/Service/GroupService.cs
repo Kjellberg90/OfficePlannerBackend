@@ -11,15 +11,20 @@ namespace Service
 {
     public class GroupService : IGroupService
     {
-        private readonly IRoomService _roomService;
         private readonly IGroupAccess _groupAccess;
 
-        public GroupService(IRoomService roomService, IGroupAccess groupAccess)
+        public GroupService(IGroupAccess groupAccess)
         {
-            _roomService = roomService;
             this._groupAccess = groupAccess;  
         }
 
-        
+        public IEnumerable<string> GetGroups()
+        {
+            var groupList = _groupAccess.ReadGroupsData();
+
+            var groupNames = groupList.Select(x => x.Name);
+
+            return groupNames;
+        }
     }
 }

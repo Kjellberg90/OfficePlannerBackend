@@ -5,6 +5,6 @@ namespace Service
 {
     public interface IGroupService
     {
-
+        public IEnumerable<string> GetGroups(); 
     }
 }
