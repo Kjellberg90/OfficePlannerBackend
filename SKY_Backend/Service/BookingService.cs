@@ -10,21 +10,21 @@ namespace Service
 {
     public class BookingService : IBookingService
     {
-        private readonly IBookingAccess _bookingAcces;
+        private readonly IBookingAccess _bookingAccess;
 
         public BookingService(IBookingAccess bookingService)
         {
-            _bookingAcces = bookingService;
+            _bookingAccess = bookingService;
         }
 
         public IEnumerable<NewBooking> GetBookings()
         {
-            return _bookingAcces.ReadBookingsData();
+            return _bookingAccess.ReadBookingsData();
         }
 
         public void PostBookings()
         {
-            _bookingAcces.PrintGroupToFile();
+            _bookingAccess.PrintGroupToFile();
         }
     }
 }
