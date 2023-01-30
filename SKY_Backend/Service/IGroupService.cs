@@ -5,7 +5,7 @@ namespace Service
 {
     public interface IGroupService
     {
-        public IEnumerable<string> GetGroups(); 
+        public IEnumerable<Group> GetGroups(); 
         public GroupInfoDTO GetGroupInfo(string date, int groupId);
     }
 }

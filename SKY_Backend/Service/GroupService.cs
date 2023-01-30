@@ -32,13 +32,13 @@ namespace Service
             return new GroupInfoDTO { Name = groupInfo.Name, BookedRoom = roomInfo, Members = groupInfo.TeamMembers };
         }
 
-        public IEnumerable<string> GetGroups()
+        public IEnumerable<Group> GetGroups()
         {
             var groupList = _groupAccess.ReadGroupsData();
 
-            var groupNames = groupList.Select(x => x.Name);
+           
 
-            return groupNames;
+            return groupList;
         }
     }
 }
