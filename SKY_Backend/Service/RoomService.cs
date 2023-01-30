@@ -32,6 +32,11 @@ namespace Service
                 .Where(b => b.DayNr == dayNr)
                 .FirstOrDefault();
 
+            if (booking == null)
+            {
+                throw new ArgumentNullException();
+            }
+
             var roomsList = booking.Rooms;
 
             var roomInfoList = new List<RoomInfoDTO>();
@@ -57,12 +62,13 @@ namespace Service
                     groupName = group.Name;
                 }
 
+                int availableSeats = room.Seats - groupSize;
 
                 roomInfoList.Add(new RoomInfoDTO
                 {
                     Name = room.Name,
                     Seats = room.Seats,
-                    AvailableSeats = room.Seats - groupSize,
+                    AvailableSeats = availableSeats < 0 ? 0 : availableSeats,
                     GroupName = groupName
                 });
             }

@@ -14,7 +14,7 @@ namespace DAL
     {
         public List<Group> ReadGroupsData()
         {
-            var groupsList = new List<Group>();
+            var groupList = new List<Group>();
 
             string json;
 
@@ -22,11 +22,11 @@ namespace DAL
             {
                 while ((json = sr.ReadLine()) != null)
                 {
-                    groupsList = JsonSerializer.Deserialize<List<Group>>(json);
+                    groupList = JsonSerializer.Deserialize<List<Group>>(json);
 
-                    return groupsList;
+                    return groupList;
                 }
-                return groupsList;
+                return groupList;
             }
         }
     }

@@ -17,6 +17,42 @@ namespace SKY_Backend.Controllers
             _groupService = groupService;
         }
 
-        
+
+        [HttpGet("GetGroups")]
+        public IActionResult GetGroups()
+        {
+            try
+            {
+                var result = _groupService.GetGroups();
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+        [HttpGet("GroupInfo/{date}&{groupId}")]
+        public IActionResult GroupInfo(string date, int groupId)
+        {
+            try
+            {
+                var result = _groupService.GetGroupInfo(date, groupId);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
