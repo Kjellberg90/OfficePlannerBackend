@@ -26,7 +26,7 @@ namespace Service
             var dayNr = _dateConverter.ConvertDateToDaySequence(date);
             var bookingsList = _bookingAccess.ReadBookingsData();
             var bookings = bookingsList.Where(x => x.DayNr == dayNr).FirstOrDefault();
-            var roomInfo = bookings.Rooms.Where(i => i.ID == groupId).FirstOrDefault();
+            var roomInfo = bookings.Rooms.Where(i => i.BookedBy == groupId).FirstOrDefault();
             var groupInfo = _groupAccess.ReadGroupsData().Where(g => g.Id== groupId).FirstOrDefault();
 
             return new GroupInfoDTO { Name = groupInfo.Name, BookedRoom = roomInfo, Members = groupInfo.TeamMembers };
