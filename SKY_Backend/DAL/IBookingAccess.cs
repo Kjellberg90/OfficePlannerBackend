@@ -11,5 +11,6 @@ namespace DAL
     {
         public void PrintGroupToFile();
         public List<Booking> ReadBookingsData();
+        public void PostSingleBooking(SingleBooking singleBooking);
     }
 }

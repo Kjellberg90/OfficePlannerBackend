@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
+using Service.DTO;
 
 namespace SKY_Backend.Controllers
 {
@@ -28,6 +29,23 @@ namespace SKY_Backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("SingleBooking")]
+        public IActionResult PostSingleBooking([FromBody] SingleBookingDTO singleBooking)
+        {
+            try
+            {
+                _bookingService.PostSingleBooking(singleBooking);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+
 
         [HttpPost("post")]
         public IActionResult PostBookings()
