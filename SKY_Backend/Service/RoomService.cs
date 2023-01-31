@@ -66,6 +66,7 @@ namespace Service
 
                 roomInfoList.Add(new RoomInfoDTO
                 {
+                    RoomId = room.ID,
                     Name = room.Name,
                     Seats = room.Seats,
                     AvailableSeats = availableSeats < 0 ? 0 : availableSeats,
