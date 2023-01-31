@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace DAL.Models
 {
-    public class NewBooking
+    public class SingleBooking
     {
         public int Id { get; set; }
-        public int DayNr { get; set; }
-        public List<Room> Rooms { get; set; }
+        public string? Name { get; set; }
+        public DateTime Date { get; set; }
+        public Room BookedRoom { get; set; }
     }
 }

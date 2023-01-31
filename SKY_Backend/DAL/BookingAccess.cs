@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -17,24 +18,16 @@ namespace DAL
             _roomAccess = roomAcces;
         }
 
-        public List<NewBooking> ReadBookingsData()
+        public void PostSingleBooking(SingleBooking singleBooking)
         {
-            var groupsList = new List<NewBooking>();
-
-            string json;
-
-            using (StreamReader sr = new StreamReader("JsonData/Bookings.json"))
+            var singleBookingsList = new List<SingleBooking>
             {
-                while ((json = sr.ReadLine()) != null)
-                {
-                    groupsList = JsonSerializer.Deserialize<List<NewBooking>>(json);
+                singleBooking
+            };
 
-                    return groupsList;
-                }
-                return groupsList;
-            }
+
+            PrintToFile(singleBookingsList);
         }
-
 
 
 
@@ -48,11 +41,48 @@ namespace DAL
         }
 
 
+        public List<Booking> ReadBookingsData()
+        {
+            var groupsList = new List<Booking>();
+
+            string json;
+
+            using (StreamReader sr = new StreamReader($"JsonData/bookings.json"))
+            {
+                while ((json = sr.ReadLine()) != null)
+                {
+                    groupsList = JsonSerializer.Deserialize<List<Booking>>(json);
+
+                    return groupsList;
+                }
+                return groupsList;
+            }
+        }
+
+        public List<SingleBooking> ReadSingleBookingsData()
+        {
+            var groupsList = new List<SingleBooking>();
+
+            string json;
+
+            using (StreamReader sr = new StreamReader($"JsonData/bookings.json"))
+            {
+                while ((json = sr.ReadLine()) != null)
+                {
+                    groupsList = JsonSerializer.Deserialize<List<SingleBooking>>(json);
+
+                    return groupsList;
+                }
+                return groupsList;
+            }
+        }
+
+
         private void PrintToFile(IEnumerable<object> objects)
         {
             string type = objects.FirstOrDefault().GetType().Name.ToString();
 
-            string printDest = $"JsonData/Bookings.json";
+            string printDest = $"JsonData/{type}s.json";
 
             using (StreamWriter sw = new StreamWriter(printDest))
             {

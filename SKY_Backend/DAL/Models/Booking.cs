@@ -10,12 +10,6 @@ namespace DAL.Models
     {
         public int Id { get; set; }
         public int DayNr { get; set; }
-        public int? United { get; set; }
-        public int? Innovation { get; set; }
-        public int? Committment { get; set; }
-        public int? Collaboration { get; set; }
-        public int? InspiredA { get; set; }
-        public int? InspiredB { get; set; }
-
+        public List<Room> Rooms { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using DAL.Models;
+using Service.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,8 @@ namespace Service
 {
     public interface IBookingService
     {
-        public IEnumerable<NewBooking> GetBookings();
+        public IEnumerable<Booking> GetBookings();
         public void PostBookings();
+        public void PostSingleBooking(SingleBookingDTO singleBookingDTO);
     }
 }
