@@ -20,11 +20,9 @@ namespace DAL
 
         public void PostSingleBooking(SingleBooking singleBooking)
         {
-            var singleBookingsList = new List<SingleBooking>
-            {
-                singleBooking
-            };
+            var singleBookingsList = ReadSingleBookingData();
 
+            singleBookingsList.Add(singleBooking);
 
             PrintToFile(singleBookingsList);
         }
@@ -47,7 +45,7 @@ namespace DAL
 
             string json;
 
-            using (StreamReader sr = new StreamReader($"JsonData/bookings.json"))
+            using (StreamReader sr = new StreamReader($"JsonData/Bookings.json"))
             {
                 while ((json = sr.ReadLine()) != null)
                 {
@@ -59,13 +57,13 @@ namespace DAL
             }
         }
 
-        public List<SingleBooking> ReadSingleBookingsData()
+        public List<SingleBooking> ReadSingleBookingData()
         {
             var groupsList = new List<SingleBooking>();
 
             string json;
 
-            using (StreamReader sr = new StreamReader($"JsonData/bookings.json"))
+            using (StreamReader sr = new StreamReader($"JsonData/SingleBookings.json"))
             {
                 while ((json = sr.ReadLine()) != null)
                 {
