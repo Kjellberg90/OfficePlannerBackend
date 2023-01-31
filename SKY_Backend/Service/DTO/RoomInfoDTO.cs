@@ -8,6 +8,7 @@ namespace Service.DTO
 {
     public class RoomInfoDTO
     {
+        public int RoomId { get; set; }
         public string Name { get; set; }
         public int Seats { get; set; }
         public int AvailableSeats { get; set; }
