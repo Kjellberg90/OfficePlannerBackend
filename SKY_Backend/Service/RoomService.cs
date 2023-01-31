@@ -50,7 +50,7 @@ namespace Service
                 
                 int groupSize;
                 string groupName;
-                
+
                 if (group == null)
                 {
                     groupSize = 0;
@@ -62,7 +62,7 @@ namespace Service
                     groupName = group.Name;
                 }
 
-                int availableSeats = room.Seats - groupSize;
+                int availableSeats = GetAvailableSeats(room, groupSize, date);
 
                 roomInfoList.Add(new RoomInfoDTO
                 {
@@ -75,6 +75,16 @@ namespace Service
             }
 
             return roomInfoList.OrderBy(x => x.Name);
+        }
+
+        public int GetAvailableSeats(Room room, int groupSize,string date)
+        {
+            var singleBookings = _bookingAccess.ReadSingleBookingData()
+                .Where(s => (s.Date == DateTime.Parse(date)) && (s.BookedRoom.ID == room.ID));
+
+            var availableSeats = room.Seats - singleBookings.Count() - groupSize;
+
+            return (availableSeats);
         }
     }
 }
