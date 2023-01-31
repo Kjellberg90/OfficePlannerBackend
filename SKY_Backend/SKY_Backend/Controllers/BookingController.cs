@@ -44,9 +44,6 @@ namespace SKY_Backend.Controllers
             }
         }
 
-
-
-
         [HttpPost("post")]
         public IActionResult PostBookings()
         {
