@@ -17,7 +17,7 @@ namespace Service
             _bookingAccess = bookingService;
         }
 
-        public IEnumerable<NewBooking> GetBookings()
+        public IEnumerable<Booking> GetBookings()
         {
             return _bookingAccess.ReadBookingsData();
         }

@@ -9,7 +9,7 @@ namespace Service
 {
     public interface IBookingService
     {
-        public IEnumerable<NewBooking> GetBookings();
+        public IEnumerable<Booking> GetBookings();
         public void PostBookings();
     }
 }

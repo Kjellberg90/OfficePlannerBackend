@@ -17,9 +17,9 @@ namespace DAL
             _roomAccess = roomAcces;
         }
 
-        public List<NewBooking> ReadBookingsData()
+        public List<Booking> ReadBookingsData()
         {
-            var groupsList = new List<NewBooking>();
+            var groupsList = new List<Booking>();
 
             string json;
 
@@ -27,7 +27,7 @@ namespace DAL
             {
                 while ((json = sr.ReadLine()) != null)
                 {
-                    groupsList = JsonSerializer.Deserialize<List<NewBooking>>(json);
+                    groupsList = JsonSerializer.Deserialize<List<Booking>>(json);
 
                     return groupsList;
                 }

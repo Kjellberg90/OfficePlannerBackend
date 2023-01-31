@@ -10,6 +10,6 @@ namespace DAL
     public interface IBookingAccess
     {
         public void PrintGroupToFile();
-        public List<NewBooking> ReadBookingsData();
+        public List<Booking> ReadBookingsData();
     }
 }
