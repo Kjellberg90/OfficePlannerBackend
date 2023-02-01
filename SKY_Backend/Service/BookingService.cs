@@ -57,7 +57,7 @@ namespace Service
         {
             var singleBookings = _bookingAccess.ReadSingleBookingData();
 
-            if (singleBookings == null)
+            if (singleBookings?.Any() != true || singleBookings == null)
             {
                 return 1;
             }
