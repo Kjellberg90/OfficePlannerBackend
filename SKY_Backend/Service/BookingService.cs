@@ -64,7 +64,7 @@ namespace Service
 
             var lastId = singleBookings
                 .OrderBy(s => s.Id)
-                .FirstOrDefault()
+                .LastOrDefault()
                 .Id;
 
             return lastId + 1;
