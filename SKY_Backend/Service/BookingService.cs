@@ -44,13 +44,31 @@ namespace Service
 
             var singleBooking = new SingleBooking()
             {
-                Id = singleBookingDTO.RoomId,
+                Id = GetSingleBookingId(),
                 Date = bookedDate,
                 Name = singleBookingDTO.Name,
                 BookedRoom = room
             };
 
             _bookingAccess.PostSingleBooking(singleBooking);
+        }
+
+        public int GetSingleBookingId()
+        {
+            var singleBookings = _bookingAccess.ReadSingleBookingData();
+
+            if (singleBookings == null)
+            {
+                return 1;
+            }
+
+            var lastId = singleBookings
+                .OrderBy(s => s.Id)
+                .FirstOrDefault()
+                .Id;
+
+            return lastId + 1;
+
         }
     }
 }
