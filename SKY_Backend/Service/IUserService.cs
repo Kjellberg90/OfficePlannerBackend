@@ -9,6 +9,6 @@ namespace Service
 {
     public interface IUserService
     {
-        public bool UserLogin(LoginDTO login);
+        public SuccessLoginDTO UserLogin(LoginDTO login);
     }
 }

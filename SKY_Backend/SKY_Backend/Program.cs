@@ -26,6 +26,7 @@ builder.Services.AddTransient<IRoomService, RoomService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IRoomAccess, RoomAccess>();
 builder.Services.AddTransient<IGroupAccess, GroupAccess>();
+builder.Services.AddTransient<IUserAcess, UserAccess>();
 builder.Services.AddTransient<IBookingAccess, BookingAccess>();
 builder.Services.AddTransient<IBookingService, BookingService>();
 builder.Services.AddTransient<IDateConverter, DateConverter>();

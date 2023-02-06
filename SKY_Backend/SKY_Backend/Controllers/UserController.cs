@@ -20,14 +20,8 @@ namespace SKY_Backend.Controllers
         {
             try
             {
-                //var user = new UserController();
-
                 var result = _userService.UserLogin(login);
-                //if (result == null)
-                //{
-                //    return NotFound();
-                //}
-                return Ok(result);
+                return Ok(result); // Skicka tebaks true om userName och password stämmer
             }
             catch (Exception ex)
             {
