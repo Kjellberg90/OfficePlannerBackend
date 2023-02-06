@@ -14,9 +14,9 @@ namespace Service
         private readonly IBookingAccess _bookingAccess;
         private readonly IRoomAccess _roomAccess;
 
-        public BookingService(IBookingAccess bookingService, IRoomAccess roomAccess)
+        public BookingService(IBookingAccess bookingAcess, IRoomAccess roomAccess)
         {
-            _bookingAccess = bookingService;
+            _bookingAccess = bookingAcess;
             _roomAccess = roomAccess;
         }
 
