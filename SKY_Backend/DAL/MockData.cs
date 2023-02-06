@@ -54,7 +54,8 @@ namespace DAL
             _users = new List<User>
             {
                 new User { Id = 1, UserName = "admin", Password= "admin" },
-                new User { Id = 2, UserName = "test", Password= "test" }
+                new User { Id = 2, UserName = "test", Password= "test" },
+                new User { Id = 3, UserName= "Daniel", Password= "123" },
             };
         }
 
