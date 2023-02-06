@@ -21,7 +21,7 @@ namespace SKY_Backend.Controllers
             try
             {
                 var result = _userService.UserLogin(login);
-                return Ok(result); // Skicka tebaks true om userName och password stämmer
+                return Ok(result);
             }
             catch (Exception ex)
             {
