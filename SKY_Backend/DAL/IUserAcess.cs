@@ -10,5 +10,7 @@ namespace DAL
     public interface IUserAcess
     {
         public IEnumerable<User> LoginUser(string userName, string password);
+        public List<User> ReadUsersData();
+        public void UserToFile(User user);
     }
 }

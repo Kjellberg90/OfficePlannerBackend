@@ -16,12 +16,27 @@ namespace SKY_Backend.Controllers
         }
 
         [HttpPost("Login")]
-        public IActionResult UserLogin([FromBody]LoginDTO login)
+        public IActionResult UserLogin([FromBody]UserLoginDTO login)
         {
             try
             {
                 var result = _userService.UserLogin(login);
                 return Ok(result);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+        [HttpPost("Register")]
+        public IActionResult UserRegister([FromBody] UserRegisterDTO register)
+        {
+            try
+            {
+                _userService.UserRegister(register);
+                return Ok();
             }
             catch (Exception ex)
             {

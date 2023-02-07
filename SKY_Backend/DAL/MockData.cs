@@ -8,7 +8,6 @@ namespace DAL
         public IEnumerable<Group> _groups { get; private set; }
         public IEnumerable<Room> _rooms { get; private set; }
         public IEnumerable<Booking> _newBookings { get; private set; }
-        public IEnumerable<User> _users { get; private set; }
         
         private static MockData _instance;
 
@@ -50,13 +49,6 @@ namespace DAL
                 new Room { ID = 4, Name = "Collaboration", Seats = 6},
                 new Room { ID = 5, Name = "Inspired", Seats = 8}
             };
-
-            _users = new List<User>
-            {
-                new User { Id = 1, UserName = "admin", Password= "admin" },
-                new User { Id = 2, UserName = "test", Password= "test" },
-                new User { Id = 3, UserName= "Daniel", Password= "123" },
-            };
         }
 
         
@@ -68,11 +60,6 @@ namespace DAL
         public IEnumerable<Room> GetRoomsInfo()
         {
             return _rooms;
-        }
-
-        public IEnumerable<User> GetUsersInfo()
-        {
-            return _users;
         }
     }
 }
