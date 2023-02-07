@@ -1,4 +1,5 @@
 ﻿using DAL;
+using DAL.Models;
 using Service.DTO;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace Service
             _userAcess = userAcess;
         }
 
-        public SuccessLoginDTO UserLogin(LoginDTO login)
+        public SuccessLoginDTO UserLogin(UserLoginDTO login)
         {
 			try
 			{
@@ -39,5 +40,41 @@ namespace Service
                 throw new Exception(ex.Message);
             }
         }
+
+        public void UserRegister(UserRegisterDTO register)
+        {
+
+            var newUser = new User()
+            {
+                Id = GetUserId(),
+                UserName = register.userName,
+                Password = register.password
+            };
+            
+            
+            _userAcess.UserToFile(newUser);
+        }
+
+        public int GetUserId()
+        {
+            var users = _userAcess.ReadUsersData();
+            
+            if (users == null)
+            {
+                return 1;
+            }
+            
+            var lastId = users
+                .OrderBy(x => x.Id)
+                .LastOrDefault()
+                .Id;
+            
+            return lastId + 1;
+
+        }
+
+        
+
+        
     }
 }

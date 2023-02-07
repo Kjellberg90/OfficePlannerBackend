@@ -9,6 +9,7 @@ namespace Service
 {
     public interface IUserService
     {
-        public SuccessLoginDTO UserLogin(LoginDTO login);
+        public SuccessLoginDTO UserLogin(UserLoginDTO login);
+        public void UserRegister(UserRegisterDTO register);
     }
 }
