@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Service;
 using Service.DTO;
+using System.Security.Claims;
+using System.Text;
 
 namespace SKY_Backend.Controllers
 {
@@ -9,19 +12,40 @@ namespace SKY_Backend.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly ITokenService _tokenService;
+        public IConfiguration _configuration;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IConfiguration configuration, ITokenService tokenService)
         {
             _userService = userService;
+            _configuration = configuration;
+            _tokenService = tokenService;
         }
 
         [HttpPost("Login")]
-        public IActionResult UserLogin([FromBody]UserLoginDTO login)
+        public async Task<IActionResult> UserLogin([FromBody]UserLoginDTO login)
         {
             try
             {
-                var result = _userService.UserLogin(login);
-                return Ok(result);
+                if (login.UserName != null && login.Password != null)
+                {
+                    var result = _userService.UserLogin(login);
+
+                    if (result != null)
+                    {
+                        var createdToken = _tokenService.CreateJWTToken(result);
+                        return Ok(new { token = createdToken, user = result });
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+                else
+                {
+                    return NotFound();
+                }
+
             }
             catch (Exception ex)
             {
@@ -30,6 +54,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
+    
         [HttpPost("Register")]
         public IActionResult UserRegister([FromBody] UserRegisterDTO register)
         {
