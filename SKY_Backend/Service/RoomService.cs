@@ -3,6 +3,7 @@ using DAL.Models;
 using Service.DTO;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -47,7 +48,7 @@ namespace Service
                 var group = _groupAccess.ReadGroupsData()
                     .Where(g => g.Id == room.BookedBy)
                     .FirstOrDefault();
-                
+
                 int groupSize;
                 string groupName;
 
@@ -77,7 +78,71 @@ namespace Service
             return roomInfoList.OrderBy(x => x.Name);
         }
 
-        public int GetAvailableSeats(Room room, int groupSize,string date)
+        public IEnumerable<AdminRoomOverviewDTO> AdminRoomsOverview(string date)
+        {
+            var formattedDate = _dateConverter.ConvertDateToDaySequence(date);
+            var scheduleWeek = GetScheduleWeekNr(formattedDate);
+            var weekDays = GetWeekDays(scheduleWeek, formattedDate);
+
+            var bookings = new List<Booking>();
+
+            foreach (var day in weekDays)
+            {
+                var booking = _bookingAccess.ReadBookingsData()
+                    .Where(x => x.DayNr == day)
+                    .OrderBy(x => x.Id)
+                    .FirstOrDefault();
+
+                if (booking == null)
+                {
+                    throw new Exception("Missing booking");
+                }
+
+                bookings.Add(booking);
+            }
+
+            var roomNames = _roomAccess.ReadRoomsData().Select(x => x.Name);
+            var overviewList = new List<AdminRoomOverviewDTO>();
+
+            foreach (var room in roomNames)
+            {
+                var roomName = room;
+                var groupNames = new List<string>();
+                for (int i = 0; i < bookings.Count; i++)
+                {
+                    var rooms = bookings[i].Rooms;
+
+                    var groupId = rooms
+                        .Where(x => x.Name == roomName)
+                        .Select(x => x.BookedBy)
+                        .FirstOrDefault();
+
+                    var groupName = _groupAccess.ReadGroupsData()
+                            .Where(x => x.Id == groupId)
+                            .Select(x => x.Name)
+                            .FirstOrDefault();
+
+                    if (groupName == null)
+                    {
+                        groupNames.Add("");
+                    }
+                    else
+                    {
+                        groupNames.Add(groupName);
+                    }
+                }
+                overviewList.Add(
+                    new AdminRoomOverviewDTO
+                    {
+                        roomName = roomName,
+                        groupNames = groupNames,
+                    });
+            }
+
+            return overviewList;
+        }
+
+        public int GetAvailableSeats(Room room, int groupSize, string date)
         {
             var singleBookings = _bookingAccess.ReadSingleBookingData()
                 .Where(s => (s.Date == DateTime.Parse(date)) && (s.BookedRoom.ID == room.ID));
@@ -85,6 +150,37 @@ namespace Service
             var availableSeats = room.Seats - singleBookings.Count() - groupSize;
 
             return (availableSeats);
+        }
+
+        public int GetScheduleWeekNr(int dayNr)
+        {
+            if (dayNr == 0) { throw new Exception("Incorrect day number"); }
+
+            if (dayNr >= 1 && dayNr < 8)
+            {
+                return 1;
+            }
+            else if (dayNr >= 8 && dayNr < 15)
+            {
+                return 2;
+            }
+            else
+            {
+                return 3;
+            }
+        }
+
+        public List<int> GetWeekDays(int week, int dayNr)
+        {
+            var list = new List<int>();
+            var firstWeekDay = (7 * (week - 1) + 1);
+
+            for (int i = firstWeekDay; i < (firstWeekDay + 7); i++)
+            {
+                list.Add(i);
+            }
+
+            return list;
         }
     }
 }

@@ -35,5 +35,22 @@ namespace SKY_Backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("adminOverview/{date}")]
+        public IActionResult AdminOverview(string date)
+        {
+            try
+            {
+                var result = _roomService.AdminRoomsOverview(date);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
