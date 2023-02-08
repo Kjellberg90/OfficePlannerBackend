@@ -6,14 +6,13 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using static DAL.MockData;
 
 namespace DAL
 {
     public class UserAccess : IUserAcess
     {
 
-        public IEnumerable<User> LoginUser(string userName, string password)
+        public IEnumerable<User> LoginUser(string userName)
         {
             var users = ReadUsersData();
             return users;
