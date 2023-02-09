@@ -1,5 +1,8 @@
 using DAL;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Service;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +33,23 @@ builder.Services.AddTransient<IUserAcess, UserAccess>();
 builder.Services.AddTransient<IBookingAccess, BookingAccess>();
 builder.Services.AddTransient<IBookingService, BookingService>();
 builder.Services.AddTransient<IDateConverter, DateConverter>();
+builder.Services.AddTransient<ITokenService, TokenService>();
+
+//--------------------------JWT-Token stuff----------------------------------------------------------------------
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
+});
+//--------------------------JWT-Token stuff----------------------------------------------------------------------
 
 var app = builder.Build();
 
