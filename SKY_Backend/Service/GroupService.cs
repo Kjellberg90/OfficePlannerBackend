@@ -36,9 +36,24 @@ namespace Service
         {
             var groupList = _groupAccess.ReadGroupsData();
 
-           
-
             return groupList;
+        }
+
+        public void UpdateGroup(int groupId, NewGroupInfoDTO newGroup)
+        {
+            var group = _groupAccess.ReadGroupsData()
+                .Where(g => g.Id == groupId)
+                .FirstOrDefault();
+
+            if (group == null)
+            {
+                throw new Exception("Group not found");
+            }
+
+            group.Name = newGroup.Name;
+            group.TeamMembers = newGroup.TeamMembers;
+
+            _groupAccess.PostUpdatedGroup(group);
         }
     }
 }

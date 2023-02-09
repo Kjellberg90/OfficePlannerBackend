@@ -10,5 +10,6 @@ namespace DAL
     public interface IGroupAccess
     {
         public List<Group> ReadGroupsData();
+        public void PostUpdatedGroup(Group group);
     }
 }

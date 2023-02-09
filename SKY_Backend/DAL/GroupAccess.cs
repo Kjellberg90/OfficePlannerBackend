@@ -29,5 +29,32 @@ namespace DAL
                 return groupList;
             }
         }
+
+        public void PostUpdatedGroup(Group group)
+        {
+            var groupList = ReadGroupsData();
+
+            int index = groupList.FindIndex(g => g.Id == group.Id);
+
+            if (index != -1)
+            {
+                groupList[index] = group;
+            }
+
+            PrintToFile(groupList.OrderBy(g => g.Id));
+        }
+
+        private void PrintToFile(IEnumerable<object> objects)
+        {
+            string type = objects.FirstOrDefault().GetType().Name.ToString();
+
+            string printDest = $"JsonData/{type}s.json";
+
+            using (StreamWriter sw = new StreamWriter(printDest))
+            {
+                var json = JsonSerializer.Serialize(objects);
+                sw.WriteLine(json);
+            }
+        }
     }
 }

@@ -54,5 +54,19 @@ namespace SKY_Backend.Controllers
                 throw new Exception(ex.Message);
             }
         }
+
+        [HttpPut("UpdateGroup/{groupId}")]
+        public IActionResult UpdateGroup(int groupId, [FromBody] NewGroupInfoDTO newGroup)
+        {
+            try
+            {
+                _groupService.UpdateGroup(groupId, newGroup);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
