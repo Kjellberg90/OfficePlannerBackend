@@ -10,5 +10,6 @@ namespace Service
         public void UpdateGroup(int groupId, NewGroupInfoDTO newGroup);
         public void DeleteGroup(int groupId);
         public void Refresh();
+        public void AddGroup(AddGroupDTO addGroupDTO);
     }
 }

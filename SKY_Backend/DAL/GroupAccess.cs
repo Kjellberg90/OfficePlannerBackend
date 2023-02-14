@@ -56,7 +56,7 @@ namespace DAL
                 return groupList;
             }
         }
-        private void PrintToFile(IEnumerable<object> objects)
+        public void PrintToFile(IEnumerable<object> objects)
         {
             string type = objects.FirstOrDefault().GetType().Name.ToString();
 

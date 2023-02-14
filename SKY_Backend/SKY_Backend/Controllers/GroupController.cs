@@ -97,5 +97,20 @@ namespace SKY_Backend.Controllers
                 throw new Exception(ex.Message);
             }
         }
+
+        [HttpPost("AddGroup")]
+        public IActionResult AddGroup([FromBody] AddGroupDTO addGroupDTO)
+        {
+            try
+            {
+                _groupService.AddGroup(addGroupDTO);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

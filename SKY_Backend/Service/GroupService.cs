@@ -64,5 +64,38 @@ namespace Service
         {
             _groupAccess.RefreshData();
         }
+        public void AddGroup(AddGroupDTO addGroupDTO)
+        {
+            var groups = _groupAccess.ReadGroupsData();
+
+            var newGroup = new Group()
+            {
+                Id = GetGroupId(),
+                Name = addGroupDTO.Name,
+                TeamMembers = addGroupDTO.GroupSize,
+                Division = addGroupDTO.Division
+            };
+
+            groups.Add(newGroup);
+            _groupAccess.PrintToFile(groups);
+        }
+
+        public int GetGroupId()
+        {
+            var groups = _groupAccess.ReadGroupsData();
+
+            if (groups?.Any() != true || groups == null)
+            {
+                return 1;
+            }
+
+            var lastId = groups
+                .OrderBy(s => s.Id)
+                .LastOrDefault()
+                .Id;
+
+            return lastId + 1;
+
+        }
     }
 }
