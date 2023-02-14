@@ -68,5 +68,34 @@ namespace SKY_Backend.Controllers
                 throw new Exception(ex.Message);
             }
         }
+
+        [HttpDelete("DeleteGroup/{groupId}")]
+        public IActionResult DeleteGroup(int groupId)
+        {
+            try
+            {
+                _groupService.DeleteGroup(groupId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace, ex.Message);
+                throw new Exception(ex.Message);
+            }
+        }
+
+        [HttpPost("RefreshData")]
+        public IActionResult RefreshData()
+        {
+            try
+            {
+                _groupService.Refresh();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

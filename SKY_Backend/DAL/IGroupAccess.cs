@@ -11,5 +11,7 @@ namespace DAL
     {
         public List<Group> ReadGroupsData();
         public void PostUpdatedGroup(Group group);
+        public void DeleteGroupFromFile(int groupId);
+        public void RefreshData();
     }
 }

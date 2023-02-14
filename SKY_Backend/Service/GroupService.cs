@@ -55,5 +55,14 @@ namespace Service
 
             _groupAccess.PostUpdatedGroup(group);
         }
+        public void DeleteGroup(int groupId)
+        {
+            _groupAccess.DeleteGroupFromFile(groupId);
+        }
+
+        public void Refresh()
+        {
+            _groupAccess.RefreshData();
+        }
     }
 }
