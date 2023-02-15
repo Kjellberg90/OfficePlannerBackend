@@ -29,16 +29,74 @@ namespace Service
             var roomInfo = bookings.Rooms.Where(i => i.BookedBy == groupId).FirstOrDefault();
             var groupInfo = _groupAccess.ReadGroupsData().Where(g => g.Id== groupId).FirstOrDefault();
 
-            return new GroupInfoDTO { Name = groupInfo.Name, BookedRoom = roomInfo, Members = groupInfo.TeamMembers };
+            return new GroupInfoDTO { Name = groupInfo.Name, BookedRoom = roomInfo, GroupSize = groupInfo.GroupSize };
         }
 
         public IEnumerable<Group> GetGroups()
         {
             var groupList = _groupAccess.ReadGroupsData();
 
-           
-
             return groupList;
+        }
+
+        public void UpdateGroup(int groupId, NewGroupInfoDTO newGroup)
+        {
+            var group = _groupAccess.ReadGroupsData()
+                .Where(g => g.Id == groupId)
+                .FirstOrDefault();
+
+            if (group == null)
+            {
+                throw new Exception("Group not found");
+            }
+
+            group.Name = newGroup.Name;
+            group.GroupSize = newGroup.GroupSize;
+            group.Division = newGroup.Division;
+
+            _groupAccess.PostUpdatedGroup(group);
+        }
+        public void DeleteGroup(int groupId)
+        {
+            _groupAccess.DeleteGroupFromFile(groupId);
+        }
+
+        public void Refresh()
+        {
+            _groupAccess.RefreshData();
+        }
+        public void AddGroup(AddGroupDTO addGroupDTO)
+        {
+            var groups = _groupAccess.ReadGroupsData();
+
+            var newGroup = new Group()
+            {
+                Id = GetGroupId(),
+                Name = addGroupDTO.Name,
+                GroupSize = addGroupDTO.GroupSize,
+                Division = addGroupDTO.Division
+            };
+
+            groups.Add(newGroup);
+            _groupAccess.PrintToFile(groups);
+        }
+
+        public int GetGroupId()
+        {
+            var groups = _groupAccess.ReadGroupsData();
+
+            if (groups?.Any() != true || groups == null)
+            {
+                return 1;
+            }
+
+            var lastId = groups
+                .OrderBy(s => s.Id)
+                .LastOrDefault()
+                .Id;
+
+            return lastId + 1;
+
         }
     }
 }

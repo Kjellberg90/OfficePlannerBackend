@@ -10,6 +10,7 @@ namespace DAL.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int TeamMembers { get; set; }
+        public int GroupSize { get; set; }
+        public string? Division { get; set; }
     }
 }
