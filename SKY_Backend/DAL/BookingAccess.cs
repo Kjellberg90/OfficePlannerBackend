@@ -38,7 +38,7 @@ namespace DAL
             PrintToFile(orderedList);
         }
 
-
+        
         public List<Booking> ReadBookingsData()
         {
             var groupsList = new List<Booking>();
@@ -73,6 +73,11 @@ namespace DAL
                 }
                 return groupsList;
             }
+        }
+
+        public void DeleteSingleBooking(List<SingleBooking> bookingList)
+        {
+            PrintToFile(bookingList);
         }
 
 

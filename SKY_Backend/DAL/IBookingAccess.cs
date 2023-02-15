@@ -13,5 +13,7 @@ namespace DAL
         public List<Booking> ReadBookingsData();
         public List<SingleBooking> ReadSingleBookingData();
         public void PostSingleBooking(SingleBooking singleBooking);
+
+        public void DeleteSingleBooking(List<SingleBooking> bookingList);
     }
 }
