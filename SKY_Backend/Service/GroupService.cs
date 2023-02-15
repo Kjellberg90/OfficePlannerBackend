@@ -29,7 +29,7 @@ namespace Service
             var roomInfo = bookings.Rooms.Where(i => i.BookedBy == groupId).FirstOrDefault();
             var groupInfo = _groupAccess.ReadGroupsData().Where(g => g.Id== groupId).FirstOrDefault();
 
-            return new GroupInfoDTO { Name = groupInfo.Name, BookedRoom = roomInfo, Members = groupInfo.TeamMembers };
+            return new GroupInfoDTO { Name = groupInfo.Name, BookedRoom = roomInfo, GroupSize = groupInfo.GroupSize };
         }
 
         public IEnumerable<Group> GetGroups()
@@ -51,7 +51,8 @@ namespace Service
             }
 
             group.Name = newGroup.Name;
-            group.TeamMembers = newGroup.TeamMembers;
+            group.GroupSize = newGroup.GroupSize;
+            group.Division = newGroup.Division;
 
             _groupAccess.PostUpdatedGroup(group);
         }
@@ -72,7 +73,7 @@ namespace Service
             {
                 Id = GetGroupId(),
                 Name = addGroupDTO.Name,
-                TeamMembers = addGroupDTO.GroupSize,
+                GroupSize = addGroupDTO.GroupSize,
                 Division = addGroupDTO.Division
             };
 

@@ -9,6 +9,7 @@ namespace Service.DTO
     public class NewGroupInfoDTO
     {
         public string Name { get; set; }
-        public int TeamMembers { get; set; }
+        public int GroupSize { get; set; }
+        public string? Division { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace Service.DTO
     public class PostGroupDTO
     {
         public string Name { get; set; }
-        public int TeamMembers { get; set; }
+        public int GroupSize { get; set; }
         public int? BookedRoomId { get; set; }
     }
 }

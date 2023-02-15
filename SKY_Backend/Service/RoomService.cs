@@ -59,7 +59,7 @@ namespace Service
                 }
                 else
                 {
-                    groupSize = group.TeamMembers;
+                    groupSize = group.GroupSize;
                     groupName = group.Name;
                 }
 

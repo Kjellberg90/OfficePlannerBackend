@@ -10,7 +10,7 @@ namespace Service.DTO
     public class GroupInfoDTO
     {
         public string Name { get; set; }
-        public int Members { get; set; }
+        public int GroupSize { get; set; }
         public Room? BookedRoom { get; set; }
     }
 }

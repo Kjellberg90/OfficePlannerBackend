@@ -28,16 +28,16 @@ namespace DAL
         {
             _groups = new List<Group>
             {
-                new Group { Id = 1, Name = "DQT", TeamMembers = 6, Division = "A"},
-                new Group { Id = 2, Name = "Phoenix", TeamMembers = 4, Division = "A"},
-                new Group { Id = 3, Name = "Bazinga", TeamMembers = 4, Division = "A"},
-                new Group { Id = 4, Name = "ConSys", TeamMembers = 4, Division = "A"},
-                new Group { Id = 5, Name = "PAST", TeamMembers = 6, Division = "B"},
-                new Group { Id = 6, Name = "Heimdall", TeamMembers = 6, Division = "B"},
-                new Group { Id = 7, Name = "Battery", TeamMembers = 5, Division = "B"},
-                new Group { Id = 8, Name = "ConCor", TeamMembers = 7, Division = "C"},
-                new Group { Id = 9, Name = "Everest", TeamMembers = 6, Division = "C"},
-                new Group { Id = 10, Name = "Portal", TeamMembers = 2, Division = "C"}
+                new Group { Id = 1, Name = "DQT", GroupSize = 6, Division = "A"},
+                new Group { Id = 2, Name = "Phoenix", GroupSize = 4, Division = "A"},
+                new Group { Id = 3, Name = "Bazinga", GroupSize = 4, Division = "A"},
+                new Group { Id = 4, Name = "ConSys", GroupSize = 4, Division = "A"},
+                new Group { Id = 5, Name = "PAST", GroupSize = 6, Division = "B"},
+                new Group { Id = 6, Name = "Heimdall", GroupSize = 6, Division = "B"},
+                new Group { Id = 7, Name = "Battery", GroupSize = 5, Division = "B"},
+                new Group { Id = 8, Name = "ConCor", GroupSize = 7, Division = "C"},
+                new Group { Id = 9, Name = "Everest", GroupSize = 6, Division = "C"},
+                new Group { Id = 10, Name = "Portal", GroupSize = 2, Division = "C"}
 
             };
 
