@@ -2,9 +2,11 @@
 using Service.DTO;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Service
 {
@@ -13,5 +15,7 @@ namespace Service
         public IEnumerable<Booking> GetBookings();
         public void PostBookings();
         public void PostSingleBooking(SingleBookingDTO singleBookingDTO);
+        public IEnumerable<UserDTO> GetSingleBookingsForDate(string date, int bookedRoomId);
+        public void DeleteSingleBooking(DeleteSingleBookingDTO deleteSingleBooking);
     }
 }
