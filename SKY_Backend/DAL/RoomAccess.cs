@@ -31,12 +31,8 @@ namespace DAL
             }
         }
 
-        public void PrintRoomToFile(Room newRoom)
+        public void PrintRoomToFile(List<Room> roomsList)
         {
-            var roomsList = ReadRoomsData();
-
-            roomsList.Add(newRoom);
-
             PrintToFile(roomsList);
         }
 
@@ -49,24 +45,23 @@ namespace DAL
             PrintToFile(roomsList);
         }
 
-        public void UpdateRoomOnFile(Room newRoomData)
+        public void AdminDeleteRoom(List<Room> rooms)
+        {
+            PrintToFile(rooms);
+        }
+
+        public void UpdateRoomOnFile(Room newRoom)
         {
             var roomsList = ReadRoomsData();
 
             var room = roomsList
-                .Where(room => room.ID == newRoomData.ID)
+                .Where(room => room.ID == newRoom.ID)
                 .FirstOrDefault();
 
-            if (room == null)
-            {
-                throw new Exception("Room not found");
-            }
+                roomsList.FirstOrDefault(room => room.ID == newRoom.ID).Seats = newRoom.Seats;
+                roomsList.FirstOrDefault(room => room.ID == newRoom.ID).Name = newRoom.Name;
 
-            roomsList.FirstOrDefault(room => room.ID == newRoomData.ID).Seats = newRoomData.Seats;
-            roomsList.FirstOrDefault(room => room.ID == newRoomData.ID).Name = newRoomData.Name;
-            roomsList.FirstOrDefault(room => room.ID == newRoomData.ID).BookedBy = newRoomData.BookedBy;
-
-            PrintToFile(roomsList);
+            PrintToFile(roomsList.OrderBy(r => r.ID));
         }
 
         private void PrintToFile(IEnumerable<object> objects)
@@ -80,6 +75,12 @@ namespace DAL
                 var json = JsonSerializer.Serialize(objects);
                 sw.WriteLine(json);
             }
+        }
+
+        public void RefreshData()
+        {
+            var mock = new MockData();
+            PrintToFile(mock._rooms);
         }
     }
 }
