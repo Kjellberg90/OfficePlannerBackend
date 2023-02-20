@@ -76,7 +76,7 @@ namespace SKY_Backend.Controllers
             try
             {
                 _roomService.AdminDeleteRoom(adminDeleteRoom);
-                return Ok();
+                return Ok(adminDeleteRoom);
             }
             catch (Exception ex)
             {

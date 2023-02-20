@@ -43,11 +43,11 @@ namespace DAL
 
             _rooms = new List<Room>
             {
-                new Room { ID = 1, Name = "United", Seats = 6},
-                new Room { ID = 2, Name = "Innovation", Seats = 8},
-                new Room { ID = 3, Name = "Committment", Seats = 6},
-                new Room { ID = 4, Name = "Collaboration", Seats = 6},
-                new Room { ID = 5, Name = "Inspired", Seats = 8},
+                new Room { ID = 1, Name = "Collaboration", Seats = 6},
+                new Room { ID = 2, Name = "Committment", Seats = 6},
+                new Room { ID = 3, Name = "Innovation", Seats = 8},
+                new Room { ID = 4, Name = "Inspired", Seats = 8},
+                new Room { ID = 5, Name = "United", Seats = 6},
                 new Room { ID = 6, Name = "Inspired A", Seats = 4},
                 new Room { ID = 7, Name = "Inspired B", Seats = 4}
             };

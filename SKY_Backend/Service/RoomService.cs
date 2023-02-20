@@ -186,19 +186,10 @@ namespace Service
 
             var roomToDelete = roomList.Where(x => x.ID == adminDeleteRoom.Id).FirstOrDefault();
 
-            //AdminDeleteAllBookingsToConnectedToRoom(adminDeleteRoom);
-
             roomList.Remove(roomToDelete);
 
             _roomAccess.AdminDeleteRoom(roomList);
         }
-
-        //public void AdminDeleteAllBookingsToConnectedToRoom(AdminDeleteRoomDTO adminDeleteRoom)
-        //{
-        //    var bookingList = _bookingAccess.ReadBookingsData();
-
-        //    var bookingsToDelete = bookingList.Where(x => x.Rooms == adminDeleteRoom.Name)
-        //}
 
         public void UpdateRoom(int roomId, AdminEditRoomDTO adminEditRoom)
         {
