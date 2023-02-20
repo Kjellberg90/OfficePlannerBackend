@@ -52,5 +52,81 @@ namespace SKY_Backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("adminGetRooms")]
+        public IActionResult AdminGetRooms()
+        {
+            try
+            {
+                var result = _roomService.AdminGetRooms();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("adminDeleteRooms")]
+        public IActionResult AdminDeleteRoom([FromBody] AdminDeleteRoomDTO adminDeleteRoom)
+        {
+            try
+            {
+                _roomService.AdminDeleteRoom(adminDeleteRoom);
+                return Ok(adminDeleteRoom);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.StackTrace);
+            }
+        }
+
+        [HttpPost("adminAddRooms")]
+        public IActionResult AdminPostRoom([FromBody] AdminPostRoomDTO adminAddRoom)
+        {
+            try
+            {
+                _roomService.AdminPostRoom(adminAddRoom);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.StackTrace);
+            }
+        }
+
+        [HttpPut("adminroomEditRoom")]
+        public IActionResult AdminEditRoom(int roomId, [FromBody] AdminEditRoomDTO adminEditRoom)
+        {
+            try
+            {
+                _roomService.UpdateRoom(roomId, adminEditRoom);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+        [HttpPost("RefreshData")]
+        public IActionResult RefreshData()
+        {
+            try
+            {
+                _roomService.Refresh();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

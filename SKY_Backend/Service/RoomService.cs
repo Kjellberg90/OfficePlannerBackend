@@ -142,6 +142,72 @@ namespace Service
             return overviewList;
         }
 
+        public IEnumerable<AdminRoomDTO> AdminGetRooms()
+        {
+            var rooms = _roomAccess.ReadRoomsData();
+
+            List<AdminRoomDTO> adminRoomList = new List<AdminRoomDTO>();
+
+            foreach (var room in rooms) {
+
+                adminRoomList.Add(
+                    new AdminRoomDTO
+                    {
+                        Id = room.ID,
+                        Name = room.Name,
+                        Seats = room.Seats,
+                    }
+                    );
+            }
+            return adminRoomList;
+        }
+
+        public void AdminPostRoom(AdminPostRoomDTO adminAddRoom)
+        {
+            var roomsList = _roomAccess.ReadRoomsData();
+
+            var newRoom = new Room()
+            {
+                ID = GetRoomId(),
+                Name = adminAddRoom.Name,
+                Seats = adminAddRoom.Seats,
+                BookedBy = null
+            };
+
+            roomsList.Add( newRoom );
+
+            _roomAccess.PrintRoomToFile(roomsList);
+
+        }
+
+        public void AdminDeleteRoom(AdminDeleteRoomDTO adminDeleteRoom)
+        {
+            var roomList = _roomAccess.ReadRoomsData();
+
+            var roomToDelete = roomList.Where(x => x.ID == adminDeleteRoom.Id).FirstOrDefault();
+
+            roomList.Remove(roomToDelete);
+
+            _roomAccess.AdminDeleteRoom(roomList);
+        }
+
+        public void UpdateRoom(int roomId, AdminEditRoomDTO adminEditRoom)
+        {
+            var room = _roomAccess.ReadRoomsData()
+                .Where(x => x.ID == roomId)
+                .FirstOrDefault();
+
+            if (room == null)
+            {
+                throw new Exception("Room not found");
+            }
+
+            room.Name = adminEditRoom.Name;
+            room.Seats = adminEditRoom.Seats;
+
+            _roomAccess.UpdateRoomOnFile(room);
+        }
+
         public int GetAvailableSeats(Room room, int groupSize, string date)
         {
             var singleBookings = _bookingAccess.ReadSingleBookingData()
@@ -181,6 +247,29 @@ namespace Service
             }
 
             return list;
+        }
+
+        public int GetRoomId()
+        {
+            var rooms = _roomAccess.ReadRoomsData();
+
+            if (rooms?.Any() != true || rooms == null)
+            {
+                return 1;
+            }
+
+            var lastId = rooms
+                .OrderBy(s => s.ID)
+                .LastOrDefault()
+                .ID;
+
+            return lastId + 1;
+
+        }
+
+        public void Refresh()
+        {
+            _roomAccess.RefreshData();
         }
     }
 }
