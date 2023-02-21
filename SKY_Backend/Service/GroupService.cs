@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Service.DTO;
+using System.Globalization;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Service
 {
@@ -27,7 +29,7 @@ namespace Service
             var bookingsList = _bookingAccess.ReadBookingsData();
             var bookings = bookingsList.Where(x => x.DayNr == dayNr).FirstOrDefault();
             var roomInfo = bookings.Rooms.Where(i => i.BookedBy == groupId).FirstOrDefault();
-            var groupInfo = _groupAccess.ReadGroupsData().Where(g => g.Id== groupId).FirstOrDefault();
+            var groupInfo = _groupAccess.ReadGroupsData().Where(g => g.Id == groupId).FirstOrDefault();
 
             return new GroupInfoDTO { Name = groupInfo.Name, BookedRoom = roomInfo, GroupSize = groupInfo.GroupSize };
         }
@@ -98,5 +100,146 @@ namespace Service
             return lastId + 1;
 
         }
+
+        public List<WeeklyGroupScheduleDTO> GetWeeklysSchedule(string date, int groupId)
+        {
+            var formattedDate = DateTime.Parse(date);
+
+            var formattedDateToString = formattedDate.DayOfWeek.ToString();
+
+            var monday = new DateTime();
+
+
+            if (formattedDateToString == "Sunday")
+            {
+                monday = formattedDate.AddDays(-(int)formattedDate.DayOfWeek + (int)DayOfWeek.Monday - 7);
+            }
+            else
+            {
+                monday = formattedDate.AddDays(-(int)formattedDate.DayOfWeek + (int)DayOfWeek.Monday);
+            }
+
+
+            List<Booking> weeklyBookings = new List<Booking>();
+            List<string> weeksDates = new List<string>();
+
+            var dayNumber = _dateConverter.ConvertDateToDaySequence(date);
+            var scheduleWeek = GetScheduleWeekNr(dayNumber);
+            var weekDays = GetWeekDays(scheduleWeek, dayNumber);
+
+            for (int i = 0; i < 7; i++)
+            {
+                var individualDate = monday.AddDays(i);
+                var dateToFormattedString = individualDate.ToString("dddd");
+                weeksDates.Add(dateToFormattedString);
+            }
+
+            foreach (var day in weekDays)
+            {
+                var booking = _bookingAccess.ReadBookingsData()
+                    .Where(x => x.DayNr == day)
+                    .OrderBy(x => x.Id)
+                    .FirstOrDefault();
+
+                if (booking == null)
+                {
+                    throw new Exception("Missing booking");
+                }
+
+                weeklyBookings.Add(booking);
+            }
+
+            List<Room> roomList = new List<Room>();
+
+            foreach (var day in weeklyBookings)
+            {
+                var bookedRoom = day.Rooms.Where(x => x.BookedBy == groupId).FirstOrDefault();
+                roomList.Add(bookedRoom);
+            }
+
+            List<WeeklyGroupScheduleDTO> weeklyRoomSchedule = new List<WeeklyGroupScheduleDTO>();
+
+            for (int i = 0; i < 7; i++)
+            {
+                if (roomList[i] != null)
+                {
+                    var individualday = new WeeklyGroupScheduleDTO()
+                    {
+                        date = weeksDates[i],
+                        room = roomList[i].Name,
+                    };
+                    weeklyRoomSchedule.Add(individualday);
+                }
+                else
+                {
+                    var individualday = new WeeklyGroupScheduleDTO()
+                    {
+                        date = weeksDates[i],
+                        room = "Unbooked",
+                    };
+                    weeklyRoomSchedule.Add(individualday);
+                }
+            }
+            return weeklyRoomSchedule;
+        }
+
+        public GetCurrentWeekDTO GetCurrentWeek(string date)
+        {
+            var formattedDate = DateTime.Parse(date);
+            var formattedDateToString = formattedDate.DayOfWeek.ToString();
+            var monday = new DateTime();
+
+            if (formattedDateToString == "Sunday")
+            {
+                monday = formattedDate.AddDays(-(int)formattedDate.DayOfWeek + (int)DayOfWeek.Monday - 7);
+            }
+            else
+            {
+                monday = formattedDate.AddDays(-(int)formattedDate.DayOfWeek + (int)DayOfWeek.Monday);
+            }
+
+            Calendar cal = new CultureInfo("sv-SE").Calendar;
+
+            int week = cal.GetWeekOfYear(monday, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+
+            var currentWeek = new GetCurrentWeekDTO()
+            {
+                Week = week,
+            };
+
+            return currentWeek;
+        }
+
+        public int GetScheduleWeekNr(int dayNr)
+        {
+            if (dayNr == 0) { throw new Exception("Incorrect day number"); }
+
+            if (dayNr >= 1 && dayNr < 8)
+            {
+                return 1;
+            }
+            else if (dayNr >= 8 && dayNr < 15)
+            {
+                return 2;
+            }
+            else
+            {
+                return 3;
+            }
+        }
+
+        public List<int> GetWeekDays(int week, int dayNr)
+        {
+            var list = new List<int>();
+            var firstWeekDay = (7 * (week - 1) + 1);
+
+            for (int i = firstWeekDay; i < (firstWeekDay + 7); i++)
+            {
+                list.Add(i);
+            }
+
+            return list;
+        }
     }
+
 }
