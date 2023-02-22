@@ -241,7 +241,7 @@ namespace Service
             var list = new List<int>();
             var firstWeekDay = (7 * (week - 1) + 1);
 
-            for (int i = firstWeekDay; i < (firstWeekDay + 7); i++)
+            for (int i = firstWeekDay; i < (firstWeekDay + 5); i++)
             {
                 list.Add(i);
             }
