@@ -112,5 +112,36 @@ namespace SKY_Backend.Controllers
                 throw new Exception(ex.Message);
             }
         }
+
+        [HttpGet("GetWeeklyGroupSchedule")]
+        public IActionResult GetWeeklyScheduleForGroup(string date, int groupId)
+        {
+            try
+            {
+                var result =  _groupService.GetWeeklysSchedule(date, groupId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                throw new Exception(ex.Message);
+            }
+        }
+
+        [HttpGet("GetCurrentWeek")]
+        public IActionResult GetCurrentWeek(string date)
+        {
+            try
+            {
+                var result = _groupService.GetCurrentWeek(date);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine(ex.StackTrace);
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
