@@ -9,5 +9,6 @@ namespace Service.DTO
     public class GetCurrentWeekDTO
     {
         public int Week { get; set; }
+        public string Day { get; set; }
     }
 }

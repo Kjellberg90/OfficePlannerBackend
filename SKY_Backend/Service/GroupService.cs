@@ -183,10 +183,12 @@ namespace Service
             return weeklyRoomSchedule;
         }
 
-        public GetCurrentWeekDTO GetCurrentWeek(string date)
+        public GetCurrentWeekDTO GetCurrentWeekAndDay(string date)
         {
             var formattedDate = DateTime.Parse(date);
             var formattedDateToString = formattedDate.DayOfWeek.ToString();
+            var dateInputday = DateTime.Parse(date);
+            var dayOfWeek = dateInputday.DayOfWeek.ToString();
             var monday = new DateTime();
 
             if (formattedDateToString == "Sunday")
@@ -205,6 +207,7 @@ namespace Service
             var currentWeek = new GetCurrentWeekDTO()
             {
                 Week = week,
+                Day = dayOfWeek,
             };
 
             return currentWeek;
