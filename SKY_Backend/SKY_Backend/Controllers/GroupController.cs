@@ -128,12 +128,12 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        [HttpGet("GetCurrentWeek")]
-        public IActionResult GetCurrentWeek(string date)
+        [HttpGet("GetCurrentWeekAndDay")]
+        public IActionResult GetCurrentWeekAndDay(string date)
         {
             try
             {
-                var result = _groupService.GetCurrentWeek(date);
+                var result = _groupService.GetCurrentWeekAndDay(date);
                 return Ok(result);
             }
             catch (Exception ex)

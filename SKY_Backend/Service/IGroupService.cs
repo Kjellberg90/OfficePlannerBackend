@@ -12,6 +12,6 @@ namespace Service
         public void Refresh();
         public void AddGroup(AddGroupDTO addGroupDTO);
         public List<WeeklyGroupScheduleDTO> GetWeeklysSchedule(string date, int groupId);
-        public GetCurrentWeekDTO GetCurrentWeek(string date);
+        public GetCurrentWeekDTO GetCurrentWeekAndDay(string date);
     }
 }
