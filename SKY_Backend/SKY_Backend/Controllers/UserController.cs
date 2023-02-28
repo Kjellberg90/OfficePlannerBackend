@@ -22,6 +22,7 @@ namespace SKY_Backend.Controllers
             _tokenService = tokenService;
         }
 
+        [AllowAnonymous]
         [HttpPost("Login")]
         public async Task<IActionResult> UserLogin([FromBody]UserLoginDTO login)
         {
@@ -54,7 +55,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
-    
+        [AllowAnonymous]
         [HttpPost("Register")]
         public IActionResult UserRegister([FromBody] UserRegisterDTO register)
         {
