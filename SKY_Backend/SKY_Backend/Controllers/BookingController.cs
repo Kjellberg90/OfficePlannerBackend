@@ -17,6 +17,7 @@ namespace SKY_Backend.Controllers
             _bookingService = bookingService;
         }
 
+        [AllowAnonymous]
         [HttpGet("bookings")]
         public IActionResult GetBookings()
         {
@@ -31,6 +32,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet("GetSingleBookings")]
         public IActionResult GetSingleBookings(string date, int roomId)
         {
@@ -45,6 +47,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost("SingleBooking")]
         public IActionResult PostSingleBooking([FromBody] SingleBookingDTO singleBooking)
         {
@@ -59,6 +62,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpDelete("DeleteSingleBooking")]
         public IActionResult DeleteBookings([FromBody]DeleteSingleBookingDTO deleteSingleBooking)
         {
@@ -74,6 +78,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost("post")]
         public IActionResult PostBookings()
         {

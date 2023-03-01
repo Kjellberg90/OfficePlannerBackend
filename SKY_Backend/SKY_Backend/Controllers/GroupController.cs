@@ -1,4 +1,5 @@
 ﻿using DAL.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
@@ -17,7 +18,7 @@ namespace SKY_Backend.Controllers
             _groupService = groupService;
         }
 
-
+        [AllowAnonymous]
         [HttpGet("GetGroups")]
         public IActionResult GetGroups()
         {
@@ -55,6 +56,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut("UpdateGroup/{groupId}")]
         public IActionResult UpdateGroup(int groupId, [FromBody] NewGroupInfoDTO newGroup)
         {
@@ -69,6 +71,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
+        [Authorize]
         [HttpDelete("DeleteGroup/{groupId}")]
         public IActionResult DeleteGroup(int groupId)
         {
@@ -84,6 +87,22 @@ namespace SKY_Backend.Controllers
             }
         }
 
+        [AllowAnonymous]
+        [HttpPost("RefreshData")]
+        public IActionResult RefreshData()
+        {
+            try
+            {
+                _groupService.Refresh();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        [Authorize]
         [HttpPost("AddGroup")]
         public IActionResult AddGroup([FromBody] AddGroupDTO addGroupDTO)
         {
@@ -99,6 +118,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet("GetWeeklyGroupSchedule")]
         public IActionResult GetWeeklyScheduleForGroup(string date, int groupId)
         {
@@ -114,6 +134,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet("GetCurrentWeekAndDay")]
         public IActionResult GetCurrentWeekAndDay(string date)
         {
