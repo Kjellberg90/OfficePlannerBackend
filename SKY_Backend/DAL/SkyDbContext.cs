@@ -16,6 +16,7 @@ namespace DAL
         public DbSet<SQLBooking> Bookings { get; set; }
         public DbSet<SQLSchedule> Schedules { get; set; }
         public DbSet<SQLSingleBooking> SingleBookings { get; set; }
+        public DbSet<SQLUser> Users { get; set; }
 
 
 

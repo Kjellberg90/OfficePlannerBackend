@@ -1,5 +1,6 @@
 ﻿using DAL;
 using DAL.Models;
+using DAL.SQLModels;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Service.DTO;
 using System;
@@ -22,46 +23,53 @@ namespace Service
 
         public SuccessLoginDTO UserLogin(UserLoginDTO login)
         {
-			try
-			{
-
-                var user = _userAcess.LoginUser(login.UserName)
-                    .Where(x => x.UserName == login.UserName)
-                    .FirstOrDefault();
-
-                if (user != null)
+            using(var context = new SkyDbContext())
+            {
+                try
                 {
+                    var user = context.Users
+                        .Where(x => x.UserName == login.UserName)
+                        .FirstOrDefault();
+
+                    if (user == null) throw new Exception("User not found");
+
                     var passwordMatch = PasswordDecryption(login.Password, user.Password);
+
                     if (passwordMatch)
                     {
-                        return new SuccessLoginDTO() { Id = user.Id, Name = user.UserName, };
+                        return new SuccessLoginDTO()
+                        {
+                            Id = user.Id,
+                            Name = login.UserName,
+                        };
                     }
+                    return null;
                 }
-
-                return null;
-                
-			}
-			catch (Exception ex)
-			{
-
-                throw new Exception(ex.Message);
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
             }
+            
         }
 
         public void UserRegister(UserRegisterDTO register)
         {
-            var newUser = new User()
+            using (var context = new SkyDbContext())
             {
-                Id = GetUserId(),
-                UserName = register.userName,
-                Password = PasswordEncryption(register.password)
-            };
+                if (context.Users.Any(u => u.UserName == register.userName))
+                {
+                    throw new Exception("UserName taken");
+                }
+                
+                var newUser = new SQLUser
+                {
+                    UserName = register.userName,
+                    Password = PasswordEncryption(register.password)
+                };
 
-            var userExists = CheckIfUserExists(register.userName);
-
-            if(!userExists)
-            {
-                _userAcess.UserToFile(newUser);
+                context.Users.Add(newUser);
+                context.SaveChanges();
             }
         }
 
