@@ -14,12 +14,10 @@ namespace Service
 {
     public class GroupService : IGroupService
     {
-        private readonly IGroupAccess _groupAccess;
         private readonly IDateConverter _dateConverter;
         private readonly IBookingAccess _bookingAccess;
-        public GroupService(IGroupAccess groupAccess, IDateConverter dateConverter, IBookingAccess bookingAccess)
+        public GroupService(IDateConverter dateConverter, IBookingAccess bookingAccess)
         {
-            this._groupAccess = groupAccess;
             this._dateConverter = dateConverter;
             this._bookingAccess = bookingAccess;
         }
@@ -84,10 +82,6 @@ namespace Service
             }
         }
 
-        public void Refresh()
-        {
-            _groupAccess.RefreshData();
-        }
         public void AddGroup(AddGroupDTO addGroupDTO)
         {
             using (var context = new SkyDbContext())

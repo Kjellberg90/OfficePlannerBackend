@@ -84,20 +84,6 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        [HttpPost("RefreshData")]
-        public IActionResult RefreshData()
-        {
-            try
-            {
-                _groupService.Refresh();
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
         [HttpPost("AddGroup")]
         public IActionResult AddGroup([FromBody] AddGroupDTO addGroupDTO)
         {
