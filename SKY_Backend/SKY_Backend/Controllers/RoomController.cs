@@ -1,4 +1,5 @@
 ﻿using DAL.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
@@ -18,6 +19,7 @@ namespace SKY_Backend.Controllers
             _roomService = roomService;
         }
 
+        [AllowAnonymous]
         [HttpGet("get-rooms-info")]
         public IActionResult GetRoomsInfo(string date)
         {
@@ -36,6 +38,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("adminOverview/{date}")]
         public IActionResult AdminOverview(string date)
         {
@@ -53,6 +56,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("adminGetRooms")]
         public IActionResult AdminGetRooms()
         {
@@ -70,6 +74,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
+        [Authorize]
         [HttpDelete("adminDeleteRooms")]
         public IActionResult AdminDeleteRoom([FromBody] AdminDeleteRoomDTO adminDeleteRoom)
         {
@@ -85,6 +90,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost("adminAddRooms")]
         public IActionResult AdminPostRoom([FromBody] AdminPostRoomDTO adminAddRoom)
         {
@@ -100,6 +106,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut("adminroomEditRoom")]
         public IActionResult AdminEditRoom(int roomId, [FromBody] AdminEditRoomDTO adminEditRoom)
         {
@@ -114,7 +121,7 @@ namespace SKY_Backend.Controllers
                 throw new Exception(ex.Message);
             }
         }
-
+        [AllowAnonymous]
         [HttpPost("RefreshData")]
         public IActionResult RefreshData()
         {
