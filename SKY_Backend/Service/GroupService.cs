@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Service.DTO;
 using System.Globalization;
 using System.Security.Cryptography.X509Certificates;
+using DAL.SQLModels;
 
 namespace Service
 {
@@ -26,41 +27,61 @@ namespace Service
         public GroupInfoDTO GetGroupInfo(string date, int groupId)
         {
             var dayNr = _dateConverter.ConvertDateToDaySequence(date);
-            var bookingsList = _bookingAccess.ReadBookingsData();
-            var bookings = bookingsList.Where(x => x.DayNr == dayNr).FirstOrDefault();
-            var roomInfo = bookings.Rooms.Where(i => i.BookedBy == groupId).FirstOrDefault();
-            var groupInfo = _groupAccess.ReadGroupsData().Where(g => g.Id == groupId).FirstOrDefault();
 
-            return new GroupInfoDTO { Name = groupInfo.Name, BookedRoom = roomInfo, GroupSize = groupInfo.GroupSize };
+            using (var context = new SkyDbContext())
+            {
+                var group = context.Groups.FirstOrDefault(g => g.Id == groupId);
+
+                var booking = context.Bookings
+                    .Where(b => b.GroupID == groupId && b.DayNr == dayNr)
+                    .FirstOrDefault()
+                    ;
+
+                var groupInfo = booking == null ?
+                    new GroupInfoDTO { Name = group.Name, GroupSize = group.GroupSize } :
+                    new GroupInfoDTO { Name = group.Name, GroupSize = group.GroupSize, BookedRoom = booking.Room };
+
+                return groupInfo;
+            }
         }
 
-        public IEnumerable<Group> GetGroups()
+        public IEnumerable<SQLGroup> GetGroups()
         {
-            var groupList = _groupAccess.ReadGroupsData();
-
-            return groupList;
+            using (var context = new SkyDbContext())
+            {
+                var groupList = context.Groups.ToList();
+                return groupList;
+            }
         }
 
         public void UpdateGroup(int groupId, NewGroupInfoDTO newGroup)
         {
-            var group = _groupAccess.ReadGroupsData()
-                .Where(g => g.Id == groupId)
-                .FirstOrDefault();
-
-            if (group == null)
+            using (var context = new SkyDbContext())
             {
-                throw new Exception("Group not found");
+                var group = context.Groups
+                    .Where(g => g.Id == groupId)
+                    .FirstOrDefault();
+
+                if (group == null) throw new Exception("Group not found");
+
+                group.Name = newGroup.Name;
+                group.GroupSize = newGroup.GroupSize;
+                if (newGroup.Division != null) group.Department = newGroup.Division;
+
+                context.SaveChanges();
             }
-
-            group.Name = newGroup.Name;
-            group.GroupSize = newGroup.GroupSize;
-            group.Division = newGroup.Division;
-
-            _groupAccess.PostUpdatedGroup(group);
         }
+
         public void DeleteGroup(int groupId)
         {
-            _groupAccess.DeleteGroupFromFile(groupId);
+            using (var context = new SkyDbContext())
+            {
+                var group = context.Groups.FirstOrDefault(r => r.Id == groupId);
+                if (group == null) throw new ArgumentNullException(nameof(group));
+
+                context.Groups.Remove(group);
+                context.SaveChanges();
+            }
         }
 
         public void Refresh()
@@ -69,46 +90,24 @@ namespace Service
         }
         public void AddGroup(AddGroupDTO addGroupDTO)
         {
-            var groups = _groupAccess.ReadGroupsData();
-
-            var newGroup = new Group()
+            using (var context = new SkyDbContext())
             {
-                Id = GetGroupId(),
-                Name = addGroupDTO.Name,
-                GroupSize = addGroupDTO.GroupSize,
-                Division = addGroupDTO.Division
-            };
+                context.Groups.Add(new SQLGroup
+                {
+                    Name = addGroupDTO.Name,
+                    GroupSize = addGroupDTO.GroupSize,
+                    Department = addGroupDTO.Division
+                });
 
-            groups.Add(newGroup);
-            _groupAccess.PrintToFile(groups);
-        }
-
-        public int GetGroupId()
-        {
-            var groups = _groupAccess.ReadGroupsData();
-
-            if (groups?.Any() != true || groups == null)
-            {
-                return 1;
+                context.SaveChanges();
             }
-
-            var lastId = groups
-                .OrderBy(s => s.Id)
-                .LastOrDefault()
-                .Id;
-
-            return lastId + 1;
-
         }
 
         public List<WeeklyGroupScheduleDTO> GetWeeklysSchedule(string date, int groupId)
         {
             var formattedDate = DateTime.Parse(date);
-
             var formattedDateToString = formattedDate.DayOfWeek.ToString();
-
             var monday = new DateTime();
-
 
             if (formattedDateToString == "Sunday")
             {
@@ -119,8 +118,6 @@ namespace Service
                 monday = formattedDate.AddDays(-(int)formattedDate.DayOfWeek + (int)DayOfWeek.Monday);
             }
 
-
-            List<Booking> weeklyBookings = new List<Booking>();
             List<string> weeksDates = new List<string>();
 
             var dayNumber = _dateConverter.ConvertDateToDaySequence(date);
@@ -134,53 +131,30 @@ namespace Service
                 weeksDates.Add(dateToFormattedString);
             }
 
-            foreach (var day in weekDays)
-            {
-                var booking = _bookingAccess.ReadBookingsData()
-                    .Where(x => x.DayNr == day)
-                    .OrderBy(x => x.Id)
-                    .FirstOrDefault();
-
-                if (booking == null)
-                {
-                    throw new Exception("Missing booking");
-                }
-
-                weeklyBookings.Add(booking);
-            }
-
-            List<Room> roomList = new List<Room>();
-
-            foreach (var day in weeklyBookings)
-            {
-                var bookedRoom = day.Rooms.Where(x => x.BookedBy == groupId).FirstOrDefault();
-                roomList.Add(bookedRoom);
-            }
-
             List<WeeklyGroupScheduleDTO> weeklyRoomSchedule = new List<WeeklyGroupScheduleDTO>();
 
-            for (int i = 0; i < 7; i++)
+            using (var context = new SkyDbContext())
             {
-                if (roomList[i] != null)
+                for (int i = weekDays.Min(); i < (weekDays.Min() + weekDays.Count); i++)
                 {
-                    var individualday = new WeeklyGroupScheduleDTO()
+                    var bookings = context.Bookings
+                        .Where(b => b.GroupID == groupId && b.DayNr == i)
+                        .FirstOrDefault();
+
+                    string roomName = "Unbooked";
+                    if (bookings != null)
                     {
-                        date = weeksDates[i],
-                        room = roomList[i].Name,
-                    };
-                    weeklyRoomSchedule.Add(individualday);
-                }
-                else
-                {
-                    var individualday = new WeeklyGroupScheduleDTO()
+                        roomName = context.Rooms.FirstOrDefault(r => r.Id == bookings.RoomID).Name;
+                    }                        
+
+                    weeklyRoomSchedule.Add(new WeeklyGroupScheduleDTO
                     {
-                        date = weeksDates[i],
-                        room = "Unbooked",
-                    };
-                    weeklyRoomSchedule.Add(individualday);
+                        date = weeksDates[i - weekDays.Min()],
+                        room = roomName,
+                    });
                 }
+                return weeklyRoomSchedule;
             }
-            return weeklyRoomSchedule;
         }
 
         public GetCurrentWeekDTO GetCurrentWeekAndDay(string date)

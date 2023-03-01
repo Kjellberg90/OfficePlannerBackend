@@ -1,4 +1,5 @@
 ﻿using DAL.Models;
+using DAL.SQLModels;
 using Service.DTO;
 using System;
 using System.Collections.Generic;
@@ -12,10 +13,11 @@ namespace Service
 {
     public interface IBookingService
     {
-        public IEnumerable<Booking> GetBookings();
+        public IEnumerable<SQLBooking> GetBookings();
         public void PostBookings();
         public void PostSingleBooking(SingleBookingDTO singleBookingDTO);
         public IEnumerable<UserDTO> GetSingleBookingsForDate(string date, int bookedRoomId);
         public void DeleteSingleBooking(DeleteSingleBookingDTO deleteSingleBooking);
+        public void RefreshBookings();
     }
 }

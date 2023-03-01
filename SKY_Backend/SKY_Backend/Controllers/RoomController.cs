@@ -114,19 +114,5 @@ namespace SKY_Backend.Controllers
                 throw new Exception(ex.Message);
             }
         }
-
-        [HttpPost("RefreshData")]
-        public IActionResult RefreshData()
-        {
-            try
-            {
-                _roomService.Refresh();
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
     }
 }
