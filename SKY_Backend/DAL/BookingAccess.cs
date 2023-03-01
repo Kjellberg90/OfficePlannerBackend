@@ -11,12 +11,12 @@ namespace DAL
 {
     public class BookingAccess : IBookingAccess
     {
-        private readonly IRoomAccess _roomAccess;
+        //private readonly IRoomAccess _roomAccess;
 
-        public BookingAccess(IRoomAccess roomAcces)
-        {
-            _roomAccess = roomAcces;
-        }
+        //public BookingAccess(IRoomAccess roomAcces)
+        //{
+        //    _roomAccess = roomAcces;
+        //}
 
         public void PostSingleBooking(SingleBooking singleBooking)
         {

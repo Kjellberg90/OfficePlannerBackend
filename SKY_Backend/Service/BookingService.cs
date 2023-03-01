@@ -14,13 +14,11 @@ namespace Service
     public class BookingService : IBookingService
     {
         private readonly IBookingAccess _bookingAccess;
-        private readonly IRoomAccess _roomAccess;
         private readonly IDateConverter _dateConverter;
 
-        public BookingService(IBookingAccess bookingAcess, IRoomAccess roomAccess, IDateConverter dateConverter)
+        public BookingService(IBookingAccess bookingAcess, IDateConverter dateConverter)
         {
             _bookingAccess = bookingAcess;
-            _roomAccess = roomAccess;
             _dateConverter = dateConverter;
         }
 
@@ -138,25 +136,31 @@ namespace Service
                 var groups = context.Groups.ToArray();
                 var schedules = context.Schedules.ToArray();
                 var bookings = context.Bookings.ToArray();
-                foreach (var group in groups)
-                {
-                    Console.WriteLine("Group: " + group.Name);
-                }
-                foreach (var room in rooms)
-                {
-                    Console.WriteLine("Room: " + room.Name);
-                }
-                foreach (var schedule in schedules)
-                {
-                    Console.WriteLine("Schedule: " + schedule.Name);
-                }
-                foreach (var booking in bookings)
-                {
-                    Console.WriteLine("Bookings ID: " + booking.Id);
-                    Console.WriteLine("Bookings DayNr: " + booking.DayNr);
-                    Console.WriteLine("Bookings: RoomId" + booking.RoomID);
+                var users = context.Users.ToArray();
 
+                foreach ( var user in users)
+                {
+                    Console.WriteLine("Users: " + user.UserName);
                 }
+                //foreach (var group in groups)
+                //{
+                //    Console.WriteLine("Group: " + group.Name);
+                //}
+                //foreach (var room in rooms)
+                //{
+                //    Console.WriteLine("Room: " + room.Name);
+                //}
+                //foreach (var schedule in schedules)
+                //{
+                //    Console.WriteLine("Schedule: " + schedule.Name);
+                //}
+                //foreach (var booking in bookings)
+                //{
+                //    Console.WriteLine("Bookings ID: " + booking.Id);
+                //    Console.WriteLine("Bookings DayNr: " + booking.DayNr);
+                //    Console.WriteLine("Bookings: RoomId" + booking.RoomID);
+
+                //}
             }
         }
     }
