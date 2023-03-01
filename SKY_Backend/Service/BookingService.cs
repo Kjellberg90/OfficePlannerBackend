@@ -1,5 +1,6 @@
 ﻿using DAL;
 using DAL.Models;
+using DAL.SQLModels;
 using Service.DTO;
 using System;
 using System.Collections.Generic;
@@ -23,9 +24,14 @@ namespace Service
             _dateConverter = dateConverter;
         }
 
-        public IEnumerable<Booking> GetBookings()
+        public IEnumerable<SQLBooking> GetBookings()
         {
-            return _bookingAccess.ReadBookingsData();
+            using (var context = new SkyDbContext())
+            {
+                var bookings = context.Bookings.ToList();
+                return bookings;
+            }
+
         }
 
         public void PostBookings()
@@ -35,79 +41,123 @@ namespace Service
 
         public IEnumerable<UserDTO> GetSingleBookingsForDate(string date, int bookedRoomId)
         {
-            var singleBookings = _bookingAccess.ReadSingleBookingData();
-
-            var CurrentDate = DateTime.Parse(date);
-
-            var singleBookingsOnDay = singleBookings.Where(x => x.Date == CurrentDate && x.BookedRoom.ID == bookedRoomId);
-
-            List<UserDTO> users = new List<UserDTO>();
-
-            foreach (var user in singleBookingsOnDay)
+            using (var context = new SkyDbContext())
             {
-                var userToAdd = new UserDTO()
+                var singleBookings = context.SingleBookings.ToList();
+                var currentDate = DateTime.Parse(date);
+                var singleBookingsOnDay = singleBookings.Where(x => x.Date == currentDate && x.RoomID == bookedRoomId);
+
+                var users = new List<UserDTO>();
+
+                foreach (var user in singleBookingsOnDay)
                 {
-                    Id = user.Id,
-                    UserName = user.Name
-                };
+                    users.Add(new UserDTO
+                    {
+                        Id = user.ID,
+                        UserName = user.Name
+                    });
+                }
 
-                users.Add(userToAdd);
+                return users;
             }
-
-            return users;
         }
 
         public void PostSingleBooking(SingleBookingDTO singleBookingDTO)
         {
-            var bookedDate = DateTime.Parse(singleBookingDTO.Date);
-            var room = _roomAccess.ReadRoomsData()
-                .Where(r => r.ID == singleBookingDTO.RoomId)
-                .FirstOrDefault();
-
-            if (room == null)
+            using (var context = new SkyDbContext())
             {
-                throw new Exception("Room not found");
+                var bookedDate = DateTime.Parse(singleBookingDTO.Date);
+                var room = context.Rooms
+                    .Where(r => r.Id == singleBookingDTO.RoomId)
+                    .FirstOrDefault();
+
+                if (room == null) throw new Exception("Room not found");
+
+                context.SingleBookings.Add(new SQLSingleBooking
+                {
+                    Name = singleBookingDTO.Name,
+                    Date = bookedDate,
+                    RoomID = singleBookingDTO.RoomId
+                });
+
+                context.SaveChanges();
             }
-
-            var singleBooking = new SingleBooking()
-            {
-                Id = GetSingleBookingId(),
-                Date = bookedDate,
-                Name = singleBookingDTO.Name,
-                BookedRoom = room
-            };
-
-            _bookingAccess.PostSingleBooking(singleBooking);
         }
 
         public void DeleteSingleBooking(DeleteSingleBookingDTO deleteSingleBooking)
         {
-            var bookingList = _bookingAccess.ReadSingleBookingData();
-            var date = DateTime.Parse(deleteSingleBooking.date);
+            using (var context = new SkyDbContext())
+            {
+                var date = DateTime.Parse(deleteSingleBooking.date);
+                var singleBookingToDelete = context.SingleBookings
+                    .Where(x => x.Name == deleteSingleBooking.userName && x.Date == date && x.RoomID == deleteSingleBooking.roomId)
+                    .FirstOrDefault();
 
-            var singleBookingtoDelete = bookingList.Where(x => x.Name == deleteSingleBooking.userName && x.Date == date && x.BookedRoom.ID == deleteSingleBooking.roomId).FirstOrDefault();
+                if (singleBookingToDelete == null) throw new Exception("SingleBooking not found");
 
-            bookingList.Remove(singleBookingtoDelete);
-
-            _bookingAccess.DeleteSingleBooking(bookingList);
+                context.SingleBookings.Remove(singleBookingToDelete); 
+                context.SaveChanges();
+            }
         }
 
-        public int GetSingleBookingId()
+        public void RefreshBookings()
         {
-            var singleBookings = _bookingAccess.ReadSingleBookingData();
-
-            if (singleBookings?.Any() != true || singleBookings == null)
+            using (var context = new SkyDbContext())
             {
-                return 1;
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+
+                var data = _bookingAccess.ReadBookingsData();
+
+                foreach (var booking in data)
+                {
+                    var roomsList = booking.Rooms;
+
+                    foreach (var room in roomsList)
+                    {
+                        if (room.BookedBy != null)
+                        {
+                            context.Bookings.Add(
+                            new SQLBooking
+                            {
+                                DayNr = booking.DayNr,
+                                GroupID = (int)room.BookedBy,
+                                RoomID = context.Rooms.Where(x => x.Name == room.Name).FirstOrDefault().Id,
+                                ScheduleID = 1
+                            }
+                            );
+                        }
+
+                    }
+                }
+
+                context.SaveChanges();
+
+
+                var rooms = context.Rooms.ToArray();
+                var groups = context.Groups.ToArray();
+                var schedules = context.Schedules.ToArray();
+                var bookings = context.Bookings.ToArray();
+                foreach (var group in groups)
+                {
+                    Console.WriteLine("Group: " + group.Name);
+                }
+                foreach (var room in rooms)
+                {
+                    Console.WriteLine("Room: " + room.Name);
+                }
+                foreach (var schedule in schedules)
+                {
+                    Console.WriteLine("Schedule: " + schedule.Name);
+                }
+                foreach (var booking in bookings)
+                {
+                    Console.WriteLine("Bookings ID: " + booking.Id);
+                    Console.WriteLine("Bookings DayNr: " + booking.DayNr);
+                    Console.WriteLine("Bookings: RoomId" + booking.RoomID);
+
+                }
             }
-
-            var lastId = singleBookings
-                .OrderBy(s => s.Id)
-                .LastOrDefault()
-                .Id;
-
-            return lastId + 1;
-
         }
     }
 }

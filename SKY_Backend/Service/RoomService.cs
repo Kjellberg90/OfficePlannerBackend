@@ -1,8 +1,10 @@
 ﻿using DAL;
 using DAL.Models;
+using DAL.SQLModels;
 using Service.DTO;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Dynamic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -13,69 +15,53 @@ namespace Service
 {
     public class RoomService : IRoomService
     {
-        private readonly IRoomAccess _roomAccess;
-        private readonly IBookingAccess _bookingAccess;
         private readonly IDateConverter _dateConverter;
-        private readonly IGroupAccess _groupAccess;
 
-        public RoomService(IRoomAccess roomAccess, IBookingAccess bookingAccess, IDateConverter dateConverter, IGroupAccess groupAccess)
+        public RoomService(IDateConverter dateConverter)
         {
-            _roomAccess = roomAccess;
-            _bookingAccess = bookingAccess;
             _dateConverter = dateConverter;
-            _groupAccess = groupAccess;
         }
 
         public IEnumerable<RoomInfoDTO> GetRoomsInfo(string date)
         {
             var dayNr = _dateConverter.ConvertDateToDaySequence(date);
-            var booking = _bookingAccess.ReadBookingsData()
-                .Where(b => b.DayNr == dayNr)
-                .FirstOrDefault();
-
-            if (booking == null)
-            {
-                throw new ArgumentNullException();
-            }
-
-            var roomsList = booking.Rooms;
-
             var roomInfoList = new List<RoomInfoDTO>();
 
-            foreach (var room in roomsList)
+            using (var context = new SkyDbContext())
             {
+                var rooms = context.Rooms.ToList();
+                var bookings = context.Bookings
+                    .Where(b => b.DayNr == dayNr)
+                    .ToList();
 
-                var group = _groupAccess.ReadGroupsData()
-                    .Where(g => g.Id == room.BookedBy)
-                    .FirstOrDefault();
-
-                int groupSize;
-                string groupName;
-
-                if (group == null)
+                foreach (var room in rooms)
                 {
-                    groupSize = 0;
-                    groupName = string.Empty;
+                    var booking = bookings.Find(b => b.RoomID == room.Id);
+
+                    SQLGroup? group = null;
+                    
+                    if (booking != null)
+                    {
+                        group = context.Groups.FirstOrDefault(g => g.Id == booking.GroupID);
+                    }
+
+                    var groupSize = group == null ? 0 : group.GroupSize;
+
+                    var availableSeats = GetAvailableSeats(room, groupSize, date);
+
+                    roomInfoList.Add(new RoomInfoDTO
+                    {
+                        Name = room.Name,
+                        RoomId = room.Id,
+                        Seats = room.Seats,
+                        GroupName = group == null ? "" : group.Name,
+                        AvailableSeats = availableSeats >= 0 ? availableSeats : 0
+                    }); ;
+
                 }
-                else
-                {
-                    groupSize = group.GroupSize;
-                    groupName = group.Name;
-                }
 
-                int availableSeats = GetAvailableSeats(room, groupSize, date);
-
-                roomInfoList.Add(new RoomInfoDTO
-                {
-                    RoomId = room.ID,
-                    Name = room.Name,
-                    Seats = room.Seats,
-                    AvailableSeats = availableSeats < 0 ? 0 : availableSeats,
-                    GroupName = groupName
-                });
+                return roomInfoList;
             }
-
-            return roomInfoList.OrderBy(x => x.Name);
         }
 
         public IEnumerable<AdminRoomOverviewDTO> AdminRoomsOverview(string date)
@@ -84,138 +70,117 @@ namespace Service
             var scheduleWeek = GetScheduleWeekNr(formattedDate);
             var weekDays = GetWeekDays(scheduleWeek, formattedDate);
 
-            var bookings = new List<Booking>();
-
-            foreach (var day in weekDays)
+            using (var context = new SkyDbContext())
             {
-                var booking = _bookingAccess.ReadBookingsData()
-                    .Where(x => x.DayNr == day)
-                    .OrderBy(x => x.Id)
-                    .FirstOrDefault();
+                var overviewList = new List<AdminRoomOverviewDTO>();
+                var rooms = context.Rooms.ToList();
 
-                if (booking == null)
+                foreach (var room in rooms)
                 {
-                    throw new Exception("Missing booking");
+                    var overview = GetOverview(room, weekDays);
+                    overviewList.Add(overview);
                 }
 
-                bookings.Add(booking);
+                return overviewList;
             }
+        }
 
-            var roomNames = _roomAccess.ReadRoomsData().Select(x => x.Name);
-            var overviewList = new List<AdminRoomOverviewDTO>();
-
-            foreach (var room in roomNames)
+        public AdminRoomOverviewDTO GetOverview(SQLRoom room, List<int> days)
+        {
+            using (var context = new SkyDbContext())
             {
-                var roomName = room;
-                var groupNames = new List<string>();
-                for (int i = 0; i < bookings.Count; i++)
-                {
-                    var rooms = bookings[i].Rooms;
+                var groupNamesList = new List<string>();
 
-                    var groupId = rooms
-                        .Where(x => x.Name == roomName)
-                        .Select(x => x.BookedBy)
+                foreach (var day in days)
+                {
+                    var booking = context.Bookings
+                        .Where(b => b.DayNr == day && b.RoomID == room.Id)
                         .FirstOrDefault();
 
-                    var groupName = _groupAccess.ReadGroupsData()
-                            .Where(x => x.Id == groupId)
-                            .Select(x => x.Name)
-                            .FirstOrDefault();
-
-                    if (groupName == null)
+                    if (booking != null)
                     {
-                        groupNames.Add("");
+                        groupNamesList.Add(context.Groups.FirstOrDefault(g => g.Id == booking.GroupID).Name);
                     }
                     else
                     {
-                        groupNames.Add(groupName);
+                        groupNamesList.Add("");
                     }
                 }
-                overviewList.Add(
-                    new AdminRoomOverviewDTO
-                    {
-                        roomName = roomName,
-                        groupNames = groupNames,
-                    });
-            }
 
-            return overviewList;
+                return new AdminRoomOverviewDTO { roomName = room.Name, groupNames = groupNamesList };
+            }
         }
 
         public IEnumerable<AdminRoomDTO> AdminGetRooms()
         {
-            var rooms = _roomAccess.ReadRoomsData();
+            using (var context = new SkyDbContext())
+            {
+                var rooms = context.Rooms.ToList();
+                var adminRoomList = new List<AdminRoomDTO>();
 
-            List<AdminRoomDTO> adminRoomList = new List<AdminRoomDTO>();
-
-            foreach (var room in rooms) {
-
-                adminRoomList.Add(
-                    new AdminRoomDTO
+                foreach (var room in rooms)
+                {
+                    adminRoomList.Add(new AdminRoomDTO
                     {
-                        Id = room.ID,
+                        Id = room.Id,
                         Name = room.Name,
                         Seats = room.Seats,
-                    }
-                    );
+                    });
+                }
+                return adminRoomList;
             }
-            return adminRoomList;
         }
 
         public void AdminPostRoom(AdminPostRoomDTO adminAddRoom)
         {
-            var roomsList = _roomAccess.ReadRoomsData();
-
-            var newRoom = new Room()
+            using (var context = new SkyDbContext())
             {
-                ID = GetRoomId(),
-                Name = adminAddRoom.Name,
-                Seats = adminAddRoom.Seats,
-                BookedBy = null
-            };
+                context.Rooms.Add(new SQLRoom
+                {
+                    Name = adminAddRoom.Name,
+                    Seats = adminAddRoom.Seats
+                });
 
-            roomsList.Add( newRoom );
-
-            _roomAccess.PrintRoomToFile(roomsList);
-
+                context.SaveChanges();
+            }
         }
 
         public void AdminDeleteRoom(AdminDeleteRoomDTO adminDeleteRoom)
         {
-            var roomList = _roomAccess.ReadRoomsData();
+            using (var context = new SkyDbContext())
+            {
+                var room = context.Rooms.FirstOrDefault(r => r.Id == adminDeleteRoom.Id);
+                if (room == null) throw new ArgumentNullException(nameof(room));
 
-            var roomToDelete = roomList.Where(x => x.ID == adminDeleteRoom.Id).FirstOrDefault();
-
-            roomList.Remove(roomToDelete);
-
-            _roomAccess.AdminDeleteRoom(roomList);
+                context.Rooms.Remove(room);
+                context.SaveChanges();
+            }
         }
 
         public void UpdateRoom(int roomId, AdminEditRoomDTO adminEditRoom)
         {
-            var room = _roomAccess.ReadRoomsData()
-                .Where(x => x.ID == roomId)
-                .FirstOrDefault();
-
-            if (room == null)
+            using (var context = new SkyDbContext())
             {
-                throw new Exception("Room not found");
+                var room = context.Rooms.FirstOrDefault(r => r.Id == roomId);
+                if (room == null) throw new ArgumentNullException($"Room {roomId}");
+
+                room.Name = adminEditRoom.Name;
+                room.Seats = adminEditRoom.Seats;
+
+                context.SaveChanges();
             }
-
-            room.Name = adminEditRoom.Name;
-            room.Seats = adminEditRoom.Seats;
-
-            _roomAccess.UpdateRoomOnFile(room);
         }
 
-        public int GetAvailableSeats(Room room, int groupSize, string date)
+        public int GetAvailableSeats(SQLRoom room, int groupSize, string date)
         {
-            var singleBookings = _bookingAccess.ReadSingleBookingData()
-                .Where(s => (s.Date == DateTime.Parse(date)) && (s.BookedRoom.ID == room.ID));
+            using (var context = new SkyDbContext())
+            {
+                var singleBookings = context.SingleBookings
+                    .Where(s => (s.Date == DateTime.Parse(date)) && (s.RoomID == room.Id));
 
-            var availableSeats = room.Seats - singleBookings.Count() - groupSize;
-
-            return (availableSeats);
+                var availableSeats = room.Seats - singleBookings.Count() - groupSize;
+                return availableSeats;
+            }
         }
 
         public int GetScheduleWeekNr(int dayNr)
@@ -247,29 +212,6 @@ namespace Service
             }
 
             return list;
-        }
-
-        public int GetRoomId()
-        {
-            var rooms = _roomAccess.ReadRoomsData();
-
-            if (rooms?.Any() != true || rooms == null)
-            {
-                return 1;
-            }
-
-            var lastId = rooms
-                .OrderBy(s => s.ID)
-                .LastOrDefault()
-                .ID;
-
-            return lastId + 1;
-
-        }
-
-        public void Refresh()
-        {
-            _roomAccess.RefreshData();
         }
     }
 }

@@ -85,5 +85,20 @@ namespace SKY_Backend.Controllers
             _bookingService.PostBookings();
             return Ok();
         }
+
+        [HttpPost("Refresh")]
+        public IActionResult Test()
+        {
+            try
+            {
+                _bookingService.RefreshBookings();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

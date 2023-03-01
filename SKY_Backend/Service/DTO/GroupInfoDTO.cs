@@ -1,4 +1,5 @@
 ﻿using DAL.Models;
+using DAL.SQLModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,6 @@ namespace Service.DTO
     {
         public string Name { get; set; }
         public int GroupSize { get; set; }
-        public Room? BookedRoom { get; set; }
+        public SQLRoom? BookedRoom { get; set; }
     }
 }

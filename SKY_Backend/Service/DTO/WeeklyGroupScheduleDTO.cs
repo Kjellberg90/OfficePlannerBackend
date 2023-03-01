@@ -10,6 +10,5 @@ namespace Service.DTO
     {
         public string? date { get; set; }
         public string? room { get; set; }
-        public int? week { get; set; }
     }
 }
