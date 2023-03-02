@@ -14,20 +14,12 @@ namespace DAL.SQLModels
 
 
         [ForeignKey(typeof(SQLGroup))]
-        public int? GroupID { get; set; }
-        [ManyToOne]
-        public SQLGroup? Group { get; set; }
-
+        public int GroupID { get; set; }
 
         [ForeignKey(typeof(SQLRoom))]
         public int RoomID { get; set; }
-        [ManyToOne]
-        public SQLRoom Room { get; set; }
-
 
         [ForeignKey(typeof(SQLSchedule))]
         public int ScheduleID { get; set; }
-        [ManyToOne]
-        public SQLSchedule Schedule { get; set; } 
     }
 }

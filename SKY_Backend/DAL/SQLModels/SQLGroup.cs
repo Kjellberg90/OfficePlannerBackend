@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualBasic;
+using SQLite;
 using SQLiteNetExtensions.Attributes;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace DAL.SQLModels
 {
     public class SQLGroup
     {
-        [Key]
+        [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }
@@ -21,6 +22,6 @@ namespace DAL.SQLModels
         public string? Department { get; set; }
 
         [OneToMany]
-        public Collection<SQLBooking> Bookings { get; set; }
+        public Collection<SQLBooking> Booking { get; set; }
     }
 }
