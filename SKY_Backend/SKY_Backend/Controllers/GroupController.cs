@@ -87,20 +87,20 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        [AllowAnonymous]
-        [HttpPost("RefreshData")]
-        public IActionResult RefreshData()
-        {
-            try
-            {
-                _groupService.Refresh();
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
+        //[AllowAnonymous]
+        //[HttpPost("RefreshData")]
+        //public IActionResult RefreshData()
+        //{
+        //    try
+        //    {
+        //        _groupService.Refresh();
+        //        return Ok();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
 
         [Authorize]
         [HttpPost("AddGroup")]

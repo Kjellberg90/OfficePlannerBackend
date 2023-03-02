@@ -14,9 +14,9 @@ namespace DAL.SQLModels
 
 
         [ForeignKey(typeof(SQLGroup))]
-        public int GroupID { get; set; }
+        public int? GroupID { get; set; }
         [ManyToOne]
-        public SQLGroup Group { get; set; }
+        public SQLGroup? Group { get; set; }
 
 
         [ForeignKey(typeof(SQLRoom))]
