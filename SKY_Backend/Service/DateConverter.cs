@@ -16,8 +16,6 @@ namespace Service
 
             var daysDiff = (requestedDate - defaultDate).TotalDays;
 
-            Console.WriteLine(daysDiff);
-
             
             while(daysDiff >= 22)
             {

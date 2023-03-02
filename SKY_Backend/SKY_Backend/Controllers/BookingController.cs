@@ -78,6 +78,23 @@ namespace SKY_Backend.Controllers
             }
         }
 
+        //[FromBody] UpdateBookingsDTO[] updateBookingsDTO, 
+
+        //[Authorize]
+        [HttpPut("UpdateBookings/{date}")]
+        public IActionResult UpdateBookings([FromBody] UpdateBookingsDTO[] updateBookingsDTO, string date)
+        {
+            try
+            {
+                _bookingService.UpdateBookings(updateBookingsDTO, date);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         [AllowAnonymous]
         [HttpPost("post")]
         public IActionResult PostBookings()

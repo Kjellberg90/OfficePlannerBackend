@@ -1,6 +1,7 @@
 ﻿using DAL;
 using DAL.Models;
 using DAL.SQLModels;
+using Microsoft.EntityFrameworkCore;
 using Service.DTO;
 using System;
 using System.Collections.Generic;
@@ -93,8 +94,60 @@ namespace Service
 
                 if (singleBookingToDelete == null) throw new Exception("SingleBooking not found");
 
-                context.SingleBookings.Remove(singleBookingToDelete); 
+                context.SingleBookings.Remove(singleBookingToDelete);
                 context.SaveChanges();
+            }
+        }
+
+        public void UpdateBookings(UpdateBookingsDTO[] updateBookings, string date)
+        {
+            var dayNr = _dateConverter.ConvertDateToDaySequence(date);
+            var weekNr = GetScheduleWeekNr(dayNr);
+            var weekDays = GetWeekDays(weekNr);
+
+            foreach (var booking in updateBookings)
+            {
+                PostUpdates(booking, weekDays);
+            }
+        }
+
+        public void PostUpdates(UpdateBookingsDTO updateInfo, List<int> days)
+        {
+            using (var context = new SkyDbContext())
+            {
+                var roomId = context.Rooms.FirstOrDefault(r => r.Name == updateInfo.roomName).Id;
+
+                foreach (var day in days.Select((value, i) => new { i, value }))
+                {
+                    var booking = context.Bookings
+                        .Where(b => b.DayNr == day.value && b.RoomID == roomId)
+                        .FirstOrDefault();
+
+                    if (updateInfo.groupNames[day.i] == "" && booking != null)
+                    {
+                        context.Bookings.Remove(booking);
+                        context.SaveChanges();
+                        continue;
+                    } else if (updateInfo.groupNames[day.i] != "" && booking == null)
+                    {
+                        var groupId = context.Groups.FirstOrDefault(g => g.Name == updateInfo.groupNames[day.i]).Id;
+
+                        context.Bookings.Add(new SQLBooking
+                        {
+                            DayNr = day.value,
+                            RoomID = roomId,
+                            GroupID = groupId,
+                            ScheduleID = 1,
+                        });
+                        context.SaveChanges();
+                    } else if (updateInfo.groupNames[day.i] != "" && booking != null)
+                    {
+                        var groupId = context.Groups.FirstOrDefault(g => g.Name == updateInfo.groupNames[day.i]).Id;
+
+                        booking.GroupID = groupId;
+                        context.SaveChanges();
+                    }
+                }
             }
         }
 
@@ -138,7 +191,7 @@ namespace Service
                 var bookings = context.Bookings.ToArray();
                 var users = context.Users.ToArray();
 
-                foreach ( var user in users)
+                foreach (var user in users)
                 {
                     Console.WriteLine("Users: " + user.UserName);
                 }
@@ -162,6 +215,37 @@ namespace Service
 
                 //}
             }
+        }
+
+        public int GetScheduleWeekNr(int dayNr)
+        {
+            if (dayNr == 0) { throw new Exception("Incorrect day number"); }
+
+            if (dayNr >= 1 && dayNr < 8)
+            {
+                return 1;
+            }
+            else if (dayNr >= 8 && dayNr < 15)
+            {
+                return 2;
+            }
+            else
+            {
+                return 3;
+            }
+        }
+
+        public List<int> GetWeekDays(int week)
+        {
+            var list = new List<int>();
+            var firstWeekDay = (7 * (week - 1) + 1);
+
+            for (int i = firstWeekDay; i < (firstWeekDay + 5); i++)
+            {
+                list.Add(i);
+            }
+
+            return list;
         }
     }
 }
