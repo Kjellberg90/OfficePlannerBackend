@@ -35,9 +35,16 @@ namespace Service
                     .FirstOrDefault()
                     ;
 
-                var groupInfo = booking == null ?
-                    new GroupInfoDTO { Name = group.Name, GroupSize = group.GroupSize } :
-                    new GroupInfoDTO { Name = group.Name, GroupSize = group.GroupSize, BookedRoom = booking.Room };
+                GroupInfoDTO groupInfo;
+
+                if (booking == null)
+                {
+                    groupInfo = new GroupInfoDTO { Name = group.Name, GroupSize = group.GroupSize };
+                } else
+                {
+                    var room = context.Rooms.FirstOrDefault(r => r.Id == booking.RoomID);
+                    groupInfo = new GroupInfoDTO { Name = group.Name, GroupSize = group.GroupSize, BookedRoom = room };
+                }
 
                 return groupInfo;
             }

@@ -1,4 +1,5 @@
-﻿using SQLiteNetExtensions.Attributes;
+﻿using SQLite;
+using SQLiteNetExtensions.Attributes;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +8,7 @@ namespace DAL.SQLModels
 {
     public class SQLRoom
     {
-        [Key]
+        [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }
