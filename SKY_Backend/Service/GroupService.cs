@@ -128,7 +128,8 @@ namespace Service
             for (int i = 0; i < 7; i++)
             {
                 var individualDate = monday.AddDays(i);
-                var dateToFormattedString = individualDate.ToString("dddd");
+                var dateToFormattedString = individualDate.ToString("dddd", new CultureInfo("en-GB"));
+
                 weeksDates.Add(dateToFormattedString);
             }
 
