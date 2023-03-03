@@ -13,5 +13,6 @@ namespace Service.DTO
         public int Seats { get; set; }
         public int AvailableSeats { get; set; }
         public string? GroupName { get; set; }
+        public int SingleBookings { get; set; }
     }
 }
