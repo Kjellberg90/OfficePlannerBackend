@@ -26,6 +26,7 @@ namespace Service
         {
             var dayNr = _dateConverter.ConvertDateToDaySequence(date);
             var roomInfoList = new List<RoomInfoDTO>();
+            var currentDate = DateTime.Parse(date);
 
             using (var context = new SkyDbContext())
             {
@@ -49,14 +50,20 @@ namespace Service
 
                     var availableSeats = GetAvailableSeats(room, groupSize, date);
 
+                    var singelBookings = context.SingleBookings
+                        .Where(s => s.Date == currentDate && s.RoomID == room.Id)
+                        .ToList()
+                        .Count();
+
                     roomInfoList.Add(new RoomInfoDTO
                     {
                         Name = room.Name,
                         RoomId = room.Id,
                         Seats = room.Seats,
                         GroupName = group == null ? "" : group.Name,
-                        AvailableSeats = availableSeats >= 0 ? availableSeats : 0
-                    }); ;
+                        AvailableSeats = availableSeats >= 0 ? availableSeats : 0,
+                        SingleBookings = singelBookings
+                    });
 
                 }
 
