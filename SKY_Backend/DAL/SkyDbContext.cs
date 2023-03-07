@@ -17,6 +17,7 @@ namespace DAL
         public DbSet<SQLSchedule> Schedules { get; set; }
         public DbSet<SQLSingleBooking> SingleBookings { get; set; }
         public DbSet<SQLUser> Users { get; set; }
+        public DbSet<SQLSingleRoomBooking> SingleRoomBookings { get; set; }
 
 
 
@@ -62,6 +63,7 @@ namespace DAL
             modelBuilder.Entity<SQLSchedule>().HasData(
                 new SQLSchedule { Id = 1, Name = "Default", WeekInterval = 3 }
                 );
+
         }
     }
 }
