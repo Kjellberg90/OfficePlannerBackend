@@ -123,7 +123,7 @@ namespace SKY_Backend.Controllers
 
         //[Authorize]
         [HttpPost("postGroupToRoom")]
-        public IActionResult PostGroupToRoom([FromBody]GroupToRoomDTO postGroupToRoomDTO)
+        public IActionResult PostGroupToRoom([FromBody]GroupToRoomBookingDTO postGroupToRoomDTO)
         {
             try
             {
@@ -139,7 +139,7 @@ namespace SKY_Backend.Controllers
 
         //[Authorize]
         [HttpDelete("deleteGroupToRoomBooking")]
-        public IActionResult DeleteGroupToRoomBooking([FromBody]GroupToRoomDTO daleteGroupToRoomDTO)
+        public IActionResult DeleteGroupToRoomBooking([FromBody]GroupToRoomBookingDTO daleteGroupToRoomDTO)
         {
             try
             {

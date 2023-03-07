@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Service.DTO
 {
-    public class GroupToRoomDTO
+    public class GroupToRoomBookingDTO
     {
         public int GroupId { get; set; }
         public int RoomId { get; set; }

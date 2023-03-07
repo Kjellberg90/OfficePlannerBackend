@@ -9,7 +9,6 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Service
 {
@@ -154,7 +153,7 @@ namespace Service
             }
         }
 
-        public void PostGroupToRoomBooking(GroupToRoomDTO postGroupToRoomDTO)
+        public void PostGroupToRoomBooking(GroupToRoomBookingDTO postGroupToRoomDTO)
         {
 
             using (var context = new SkyDbContext())
@@ -226,7 +225,7 @@ namespace Service
             }
         }
 
-        public void DeleteGroupToRoomBooking(GroupToRoomDTO groupToRoom)
+        public void DeleteGroupToRoomBooking(GroupToRoomBookingDTO groupToRoom)
         {
             using (var context = new SkyDbContext())
             {

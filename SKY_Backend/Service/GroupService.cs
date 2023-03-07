@@ -9,7 +9,6 @@ using Service.DTO;
 using System.Globalization;
 using System.Security.Cryptography.X509Certificates;
 using DAL.SQLModels;
-using System.Data.Entity;
 
 namespace Service
 {
@@ -149,7 +148,7 @@ namespace Service
 
             using (var context = new SkyDbContext())
             {
-                var test = 0;
+                var dayCounter = 0;
                 for (int i = weekDays.Min(); i < (weekDays.Min() + weekDays.Count); i++)
                 {
                     
@@ -158,7 +157,7 @@ namespace Service
                         .FirstOrDefault();
 
                     var singleRoomBookings = context.SingleRoomBookings
-                        .Where(s => s.GroupID == groupId && s.Date == dates[test] && s.DayNr == i)
+                        .Where(s => s.GroupID == groupId && s.Date == dates[dayCounter] && s.DayNr == i)
                         .FirstOrDefault();
 
 
@@ -177,7 +176,7 @@ namespace Service
                         date = weeksDates[i - weekDays.Min()],
                         room = roomName,
                     });
-                    test++;
+                    dayCounter++;
                 }
 
                 return weeklyRoomSchedule;

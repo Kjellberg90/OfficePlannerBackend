@@ -20,8 +20,8 @@ namespace Service
         public void DeleteSingleBooking(DeleteSingleBookingDTO deleteSingleBooking);
         public void UpdateBookings(UpdateBookingsDTO[] updateBookings, string date);
         public void RefreshBookings();
-        public void PostGroupToRoomBooking(GroupToRoomDTO postGroupToRoomDTO);
+        public void PostGroupToRoomBooking(GroupToRoomBookingDTO postGroupToRoomDTO);
         public List<GroupBookedToRoom> GetBookingsForRoom();
-        public void DeleteGroupToRoomBooking(GroupToRoomDTO groupToRoom);
+        public void DeleteGroupToRoomBooking(GroupToRoomBookingDTO groupToRoom);
     }
 }
