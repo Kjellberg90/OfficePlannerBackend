@@ -123,11 +123,27 @@ namespace SKY_Backend.Controllers
 
         //[Authorize]
         [HttpPost("postGroupToRoom")]
-        public IActionResult postGroupToRoom([FromBody]PostGroupToRoomDTO postGroupToRoomDTO)
+        public IActionResult PostGroupToRoom([FromBody]GroupToRoomDTO postGroupToRoomDTO)
         {
             try
             {
                 _bookingService.PostGroupToRoomBooking(postGroupToRoomDTO);
+                return Ok(); 
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                throw new Exception(ex.Message);
+            }
+        }
+
+        //[Authorize]
+        [HttpDelete("deleteGroupToRoomBooking")]
+        public IActionResult DeleteGroupToRoomBooking([FromBody]GroupToRoomDTO daleteGroupToRoomDTO)
+        {
+            try
+            {
+                _bookingService.DeleteGroupToRoomBooking(daleteGroupToRoomDTO);
                 return Ok(); 
             }
             catch (Exception ex)

@@ -154,7 +154,7 @@ namespace Service
             }
         }
 
-        public void PostGroupToRoomBooking(PostGroupToRoomDTO postGroupToRoomDTO)
+        public void PostGroupToRoomBooking(GroupToRoomDTO postGroupToRoomDTO)
         {
 
             using (var context = new SkyDbContext())
@@ -187,6 +187,10 @@ namespace Service
                 {
                     availableSeats = true;
                 }
+                else
+                {
+                    throw new Exception("Groupsize is larger then available seats");
+                }
 
                 var isBooked = false;
                 foreach (var item in bookingsByDayNr)
@@ -215,6 +219,28 @@ namespace Service
                         );
                     context.SaveChanges();
                 }
+                else
+                {
+                    throw new Exception("Room is already booked by another group");
+                }
+            }
+        }
+
+        public void DeleteGroupToRoomBooking(GroupToRoomDTO groupToRoom)
+        {
+            using (var context = new SkyDbContext())
+            {
+                var singleRoomBookings = context.SingleRoomBookings.ToList();
+                var date = DateTime.Parse(groupToRoom.Date);
+
+                var singleroomBooking = singleRoomBookings
+                    .Where(s => s.RoomID == groupToRoom.RoomId && s.Date == date)
+                    .FirstOrDefault();
+
+                if (singleroomBooking == null) throw new Exception("Booking not found");
+
+                context.SingleRoomBookings.Remove(singleroomBooking);
+                context.SaveChanges();
             }
         }
 
