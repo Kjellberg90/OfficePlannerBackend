@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 using Service.DTO;
+using System.Globalization;
 
 namespace SKY_Backend.Controllers
 {
@@ -73,7 +74,6 @@ namespace SKY_Backend.Controllers
             }
             catch (Exception ex)
             {
-
                 throw new Exception(ex.StackTrace);
             }
         }
@@ -101,6 +101,40 @@ namespace SKY_Backend.Controllers
         {
             _bookingService.PostBookings();
             return Ok();
+        }
+
+
+
+        //[Authorize]
+        [HttpGet("getGroupsBookedToRoom")]
+        public IActionResult GetGroupsBookedToRoom()
+        {
+            try
+            {
+                var result = _bookingService.GetBookingsForRoom();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                throw new Exception(ex.Message);
+            }
+        }
+
+        //[Authorize]
+        [HttpPost("postGroupToRoom")]
+        public IActionResult postGroupToRoom([FromBody]PostGroupToRoomDTO postGroupToRoomDTO)
+        {
+            try
+            {
+                _bookingService.PostGroupToRoomBooking(postGroupToRoomDTO);
+                return Ok(); 
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                throw new Exception(ex.Message);
+            }
         }
 
         [HttpPost("Refresh")]

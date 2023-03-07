@@ -20,5 +20,10 @@ namespace DAL.SQLModels
 
         [OneToMany]
         public Collection<SQLSingleBooking> SingleBookings { get; set; }
+
+        [OneToMany]
+        public Collection<SQLSingleRoomBooking> SingleRoomBooking { get; set; }
+
+
     }
 }

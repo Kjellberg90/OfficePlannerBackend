@@ -9,6 +9,7 @@ using Service.DTO;
 using System.Globalization;
 using System.Security.Cryptography.X509Certificates;
 using DAL.SQLModels;
+using System.Data.Entity;
 
 namespace Service
 {
@@ -35,14 +36,24 @@ namespace Service
                     .FirstOrDefault()
                     ;
 
+                var singleRoomBookings = context.SingleRoomBookings
+                        .Where(s => s.GroupID == groupId && s.DayNr == dayNr)
+                        .FirstOrDefault();
+
                 GroupInfoDTO groupInfo;
 
-                if (booking == null)
+                if (booking == null && singleRoomBookings == null)
                 {
                     groupInfo = new GroupInfoDTO { Name = group.Name, GroupSize = group.GroupSize };
-                } else
+                } 
+                else if(booking != null)
                 {
                     var room = context.Rooms.FirstOrDefault(r => r.Id == booking.RoomID);
+                    groupInfo = new GroupInfoDTO { Name = group.Name, GroupSize = group.GroupSize, BookedRoom = room };
+                }
+                else
+                {
+                    var room = context.Rooms.FirstOrDefault(r => r.Id == singleRoomBookings.RoomID);
                     groupInfo = new GroupInfoDTO { Name = group.Name, GroupSize = group.GroupSize, BookedRoom = room };
                 }
 
@@ -124,12 +135,13 @@ namespace Service
             var dayNumber = _dateConverter.ConvertDateToDaySequence(date);
             var scheduleWeek = GetScheduleWeekNr(dayNumber);
             var weekDays = GetWeekDays(scheduleWeek, dayNumber);
+            var dates = new List<DateTime>();
 
             for (int i = 0; i < 7; i++)
             {
                 var individualDate = monday.AddDays(i);
                 var dateToFormattedString = individualDate.ToString("dddd", new CultureInfo("en-GB"));
-
+                dates.Add(individualDate);
                 weeksDates.Add(dateToFormattedString);
             }
 
@@ -137,24 +149,37 @@ namespace Service
 
             using (var context = new SkyDbContext())
             {
+                var test = 0;
                 for (int i = weekDays.Min(); i < (weekDays.Min() + weekDays.Count); i++)
                 {
+                    
                     var bookings = context.Bookings
                         .Where(b => b.GroupID == groupId && b.DayNr == i)
                         .FirstOrDefault();
+
+                    var singleRoomBookings = context.SingleRoomBookings
+                        .Where(s => s.GroupID == groupId && s.Date == dates[test] && s.DayNr == i)
+                        .FirstOrDefault();
+
 
                     string roomName = "Unbooked";
                     if (bookings != null)
                     {
                         roomName = context.Rooms.FirstOrDefault(r => r.Id == bookings.RoomID).Name;
-                    }                        
+                    }    
+                    else if (singleRoomBookings != null)
+                    {
+                        roomName = context.Rooms.FirstOrDefault(r => r.Id == singleRoomBookings.RoomID).Name;
+                    }
 
                     weeklyRoomSchedule.Add(new WeeklyGroupScheduleDTO
                     {
                         date = weeksDates[i - weekDays.Min()],
                         room = roomName,
                     });
+                    test++;
                 }
+
                 return weeklyRoomSchedule;
             }
         }

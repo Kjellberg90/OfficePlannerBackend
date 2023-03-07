@@ -35,15 +35,24 @@ namespace Service
                     .Where(b => b.DayNr == dayNr)
                     .ToList();
 
+                var singleRoomBookings = context.SingleRoomBookings
+                    .Where(s => s.DayNr == dayNr)
+                    .ToList();
+
                 foreach (var room in rooms)
                 {
                     var booking = bookings.Find(b => b.RoomID == room.Id);
+                    var singleRoomBooking = singleRoomBookings.Find(b => b.RoomID == room.Id);
 
                     SQLGroup? group = null;
                     
                     if (booking != null)
                     {
                         group = context.Groups.FirstOrDefault(g => g.Id == booking.GroupID);
+                    }
+                    else if(singleRoomBooking != null)
+                    {
+                        group = context.Groups.FirstOrDefault(g => g.Id == singleRoomBooking.GroupID);
                     }
 
                     var groupSize = group == null ? 0 : group.GroupSize;

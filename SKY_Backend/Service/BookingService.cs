@@ -9,6 +9,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Service
 {
@@ -128,7 +129,8 @@ namespace Service
                         context.Bookings.Remove(booking);
                         context.SaveChanges();
                         continue;
-                    } else if (updateInfo.groupNames[day.i] != "" && booking == null)
+                    }
+                    else if (updateInfo.groupNames[day.i] != "" && booking == null)
                     {
                         var groupId = context.Groups.FirstOrDefault(g => g.Name == updateInfo.groupNames[day.i]).Id;
 
@@ -140,7 +142,8 @@ namespace Service
                             ScheduleID = 1,
                         });
                         context.SaveChanges();
-                    } else if (updateInfo.groupNames[day.i] != "" && booking != null)
+                    }
+                    else if (updateInfo.groupNames[day.i] != "" && booking != null)
                     {
                         var groupId = context.Groups.FirstOrDefault(g => g.Name == updateInfo.groupNames[day.i]).Id;
 
@@ -148,6 +151,100 @@ namespace Service
                         context.SaveChanges();
                     }
                 }
+            }
+        }
+
+        public void PostGroupToRoomBooking(PostGroupToRoomDTO postGroupToRoomDTO)
+        {
+
+            using (var context = new SkyDbContext())
+            {
+                var regularBookings = context.Bookings.ToList();
+                var date = DateTime.Parse(postGroupToRoomDTO.Date);
+                var dayNr = _dateConverter.ConvertDateToDaySequence(postGroupToRoomDTO.Date);
+
+                var booking = context.SingleRoomBookings
+                    .Where(b => b.RoomID == postGroupToRoomDTO.RoomId && b.Date == date)
+                    .FirstOrDefault();
+
+                var bookingsByDayNr = regularBookings
+                    .Where(b => b.DayNr == dayNr)
+                    .ToList();
+                var rooms = context.Rooms.ToList();
+
+                var room = rooms
+                    .Where(r => r.Id == postGroupToRoomDTO?.RoomId)
+                    .FirstOrDefault();
+
+                var groups = context.Groups.ToList();
+
+                var group = groups
+                    .Where(g => g.Id == postGroupToRoomDTO?.GroupId)
+                    .FirstOrDefault();
+
+                bool availableSeats = false;
+                if (room.Seats >= group.GroupSize)
+                {
+                    availableSeats = true;
+                }
+
+                var isBooked = false;
+                foreach (var item in bookingsByDayNr)
+                {
+                    var regularBooking = regularBookings
+                        .Where(b => b.RoomID == item.RoomID && b.DayNr == item.DayNr)
+                        .FirstOrDefault();
+
+                    if (regularBooking.RoomID == postGroupToRoomDTO.RoomId && regularBooking.DayNr == dayNr)
+                    {
+                        isBooked = true;
+                    }
+                }
+
+
+                if (booking == null && isBooked != true && availableSeats)
+                {
+                    context.SingleRoomBookings.Add(
+                            new SQLSingleRoomBooking
+                            {
+                                RoomID = postGroupToRoomDTO.RoomId,
+                                GroupID = postGroupToRoomDTO.GroupId,
+                                Date = date,
+                                DayNr = dayNr,
+                            }
+                        );
+                    context.SaveChanges();
+                }
+            }
+        }
+
+        public List<GroupBookedToRoom> GetBookingsForRoom()
+        {
+            using (var context = new SkyDbContext())
+            {
+                var GroupsBookedToRooms = context.SingleRoomBookings.ToList();
+                var rooms = context.Rooms.ToList();
+                var groups = context.Groups.ToList();
+
+                var roomBookings = new List<GroupBookedToRoom>();
+
+                foreach (var booking in GroupsBookedToRooms)
+                {
+                    var room = rooms.Where(r => r.Id == booking.RoomID).FirstOrDefault();
+                    var group = groups.Where(g => g.Id == booking.GroupID).FirstOrDefault();
+                    var date = booking.Date.ToString();
+                    var id = booking.Id;
+
+                    roomBookings.Add(new GroupBookedToRoom
+                    {
+                        Id = id,
+                        RoomName = room.Name,
+                        GroupName = group.Name,
+                        Date = date
+                    }
+                    );
+                }
+                return roomBookings;
             }
         }
 
@@ -178,7 +275,6 @@ namespace Service
                             }
                             );
                         }
-
                     }
                 }
 
