@@ -1,4 +1,5 @@
-﻿using SQLiteNetExtensions.Attributes;
+﻿using SQLite;
+using SQLiteNetExtensions.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace DAL.SQLModels
 {
     public class SQLBooking
     {
+        [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         public int DayNr { get; set; }
 

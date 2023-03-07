@@ -11,5 +11,6 @@ namespace Service.DTO
         public string date { get; set; }
         public string userName { get; set; }
         public int roomId { get; set; }
+        public List<int> pinNumbers { get; set; }
     }
 }
