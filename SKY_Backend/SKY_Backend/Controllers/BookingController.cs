@@ -139,11 +139,11 @@ namespace SKY_Backend.Controllers
 
         //[Authorize]
         [HttpDelete("deleteGroupToRoomBooking")]
-        public IActionResult DeleteGroupToRoomBooking([FromBody]GroupToRoomBookingDTO daleteGroupToRoomDTO)
+        public IActionResult DeleteGroupToRoomBooking(int Id)
         {
             try
             {
-                _bookingService.DeleteGroupToRoomBooking(daleteGroupToRoomDTO);
+                _bookingService.DeleteGroupToRoomBooking(Id);
                 return Ok(); 
             }
             catch (Exception ex)

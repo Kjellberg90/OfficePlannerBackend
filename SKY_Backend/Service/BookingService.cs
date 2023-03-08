@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Service.DTO;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -225,15 +226,14 @@ namespace Service
             }
         }
 
-        public void DeleteGroupToRoomBooking(GroupToRoomBookingDTO groupToRoom)
+        public void DeleteGroupToRoomBooking(int bookingId)
         {
             using (var context = new SkyDbContext())
             {
                 var singleRoomBookings = context.SingleRoomBookings.ToList();
-                var date = DateTime.Parse(groupToRoom.Date);
 
                 var singleroomBooking = singleRoomBookings
-                    .Where(s => s.RoomID == groupToRoom.RoomId && s.Date == date)
+                    .Where(s => s.Id == bookingId)
                     .FirstOrDefault();
 
                 if (singleroomBooking == null) throw new Exception("Booking not found");
@@ -257,7 +257,7 @@ namespace Service
                 {
                     var room = rooms.Where(r => r.Id == booking.RoomID).FirstOrDefault();
                     var group = groups.Where(g => g.Id == booking.GroupID).FirstOrDefault();
-                    var date = booking.Date.ToString();
+                    var date = booking.Date.ToString("yyyy-MM-dd", new CultureInfo("en-GB"));
                     var id = booking.Id;
 
                     roomBookings.Add(new GroupBookedToRoom
@@ -265,7 +265,7 @@ namespace Service
                         Id = id,
                         RoomName = room.Name,
                         GroupName = group.Name,
-                        Date = date
+                        Date = date,
                     }
                     );
                 }
