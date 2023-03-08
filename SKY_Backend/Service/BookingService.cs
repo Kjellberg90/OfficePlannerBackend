@@ -9,6 +9,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Service
 {
@@ -65,6 +66,10 @@ namespace Service
         {
             using (var context = new SkyDbContext())
             {
+                int pinInt = singleBookingDTO.PinNumbers
+                    .Select((t, i) => t * Convert.ToInt32(Math.Pow(10, singleBookingDTO.PinNumbers.Count - i - 1)))
+                    .Sum();
+
                 var bookedDate = DateTime.Parse(singleBookingDTO.Date);
                 var room = context.Rooms
                     .Where(r => r.Id == singleBookingDTO.RoomId)
@@ -76,7 +81,8 @@ namespace Service
                 {
                     Name = singleBookingDTO.Name,
                     Date = bookedDate,
-                    RoomID = singleBookingDTO.RoomId
+                    RoomID = singleBookingDTO.RoomId,
+                    PinCode = pinInt
                 });
 
                 context.SaveChanges();
@@ -93,6 +99,18 @@ namespace Service
                     .FirstOrDefault();
 
                 if (singleBookingToDelete == null) throw new Exception("SingleBooking not found");
+                var loggedPin = singleBookingToDelete.PinCode;
+                var pinArray = loggedPin.ToString().Select(o => Convert.ToInt32(o) - 48).ToList();
+
+                for (int i = 0; i < pinArray.Count; i++)
+                {
+                    if (pinArray[i] != deleteSingleBooking.pinNumbers[i])
+                    {
+                        throw new ArgumentException("Incorrect PIN");
+                    }
+                }
+
+
 
                 context.SingleBookings.Remove(singleBookingToDelete);
                 context.SaveChanges();

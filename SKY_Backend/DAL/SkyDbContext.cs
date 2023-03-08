@@ -35,7 +35,8 @@ namespace DAL
             //    .WithMany(s => s.Bookings)
             //    .HasForeignKey(b => b.ScheduleId);
 
-
+            //modelBuilder.Entity<SQLSingleBooking>()
+            //    .HasNoKey();
 
             modelBuilder.Entity<SQLRoom>().HasData(
                 new SQLRoom { Id = 1, Name = "Collaboration", Seats = 6 },

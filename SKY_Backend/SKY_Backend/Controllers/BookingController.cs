@@ -74,11 +74,10 @@ namespace SKY_Backend.Controllers
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.StackTrace);
+                Console.WriteLine(ex.StackTrace);
+                throw new Exception(ex.Message);
             }
         }
-
-        //[FromBody] UpdateBookingsDTO[] updateBookingsDTO, 
 
         //[Authorize]
         [HttpPut("UpdateBookings/{date}")]
