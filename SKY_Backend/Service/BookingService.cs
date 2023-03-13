@@ -154,6 +154,73 @@ namespace Service
             }
         }
 
+        public void EditGroupToRoomBooking(int bookingId, GroupToRoomBookingDTO groupToRoomBooking)
+        {
+            using (var context = new SkyDbContext())
+            {
+                var regularBookings = context.Bookings.ToList();
+                var date = DateTime.Parse(groupToRoomBooking.Date);
+                var dayNr = _dateConverter.ConvertDateToDaySequence(groupToRoomBooking.Date);
+
+                var booking = context.SingleRoomBookings.
+                    Where(b => b.Id == bookingId).
+                    FirstOrDefault();
+
+                var rooms = context.Rooms.ToList();
+
+                var room = rooms
+                    .Where(r => r.Id == groupToRoomBooking.RoomId)
+                    .FirstOrDefault();
+
+                var groups = context.Groups.ToList();
+
+                var group = groups
+                    .Where(g => g.Id == groupToRoomBooking.GroupId)
+                    .FirstOrDefault();
+
+                bool availableSeats = false;
+                if (room.Seats >= group.GroupSize)
+                {
+                    availableSeats = true;
+                }
+                else
+                {
+                    throw new Exception("Groupsize is larger then available seats");
+                }
+
+                var bookingsByDayNr = regularBookings
+                    .Where(b => b.DayNr == dayNr)
+                    .ToList();
+
+                var isBooked = false;
+                foreach (var item in bookingsByDayNr)
+                {
+                    var regularBooking = regularBookings
+                        .Where(b => b.RoomID == item.RoomID && b.DayNr == item.DayNr)
+                        .FirstOrDefault();
+
+                    if (regularBooking.RoomID == groupToRoomBooking.RoomId && regularBooking.DayNr == dayNr)
+                    {
+                        isBooked = true;
+                    }
+                }
+
+                if (booking !=null && isBooked != true && availableSeats)
+                {
+                    booking.RoomID= groupToRoomBooking.RoomId;
+                    booking.GroupID = groupToRoomBooking.GroupId;
+                    booking.DayNr = dayNr;
+                    booking.Date = date;
+                }
+                else
+                {
+                    throw new Exception("Room is already booked by another group");
+                }
+
+                context.SaveChanges();
+            }
+        }
+
         public void PostGroupToRoomBooking(GroupToRoomBookingDTO postGroupToRoomDTO)
         {
 
@@ -242,6 +309,7 @@ namespace Service
                 context.SaveChanges();
             }
         }
+
 
         public List<GroupBookedToRoom> GetBookingsForRoom()
         {
