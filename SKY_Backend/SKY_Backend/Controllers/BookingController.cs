@@ -104,7 +104,7 @@ namespace SKY_Backend.Controllers
 
 
 
-        //[Authorize]
+        [Authorize]
         [HttpGet("getGroupsBookedToRoom")]
         public IActionResult GetGroupsBookedToRoom()
         {
@@ -120,7 +120,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpPost("postGroupToRoom")]
         public IActionResult PostGroupToRoom([FromBody]GroupToRoomBookingDTO postGroupToRoomDTO)
         {
@@ -136,13 +136,29 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpDelete("deleteGroupToRoomBooking")]
-        public IActionResult DeleteGroupToRoomBooking([FromBody]GroupToRoomBookingDTO daleteGroupToRoomDTO)
+        public IActionResult DeleteGroupToRoomBooking(int Id)
         {
             try
             {
-                _bookingService.DeleteGroupToRoomBooking(daleteGroupToRoomDTO);
+                _bookingService.DeleteGroupToRoomBooking(Id);
+                return Ok(); 
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                throw new Exception(ex.Message);
+            }
+        }
+        
+        [Authorize]
+        [HttpPut("EditGroupToRoomBooking")]
+        public IActionResult PutGroupToRoomBooking(int Id, [FromBody]GroupToRoomBookingDTO groupToRoomBooking)
+        {
+            try
+            {
+                _bookingService.EditGroupToRoomBooking(Id, groupToRoomBooking);
                 return Ok(); 
             }
             catch (Exception ex)
