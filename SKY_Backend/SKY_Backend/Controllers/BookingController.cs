@@ -18,7 +18,7 @@ namespace SKY_Backend.Controllers
             _bookingService = bookingService;
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin, User")]
         [HttpGet("bookings")]
         public IActionResult GetBookings()
         {
@@ -33,7 +33,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin, User")]
         [HttpGet("GetSingleBookings")]
         public IActionResult GetSingleBookings(string date, int roomId)
         {
@@ -48,7 +48,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin, User")]
         [HttpPost("SingleBooking")]
         public IActionResult PostSingleBooking([FromBody] SingleBookingDTO singleBooking)
         {
@@ -63,7 +63,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin, User")]
         [HttpDelete("DeleteSingleBooking")]
         public IActionResult DeleteBookings([FromBody]DeleteSingleBookingDTO deleteSingleBooking)
         {
@@ -79,7 +79,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        //[Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPut("UpdateBookings/{date}")]
         public IActionResult UpdateBookings([FromBody] UpdateBookingsDTO[] updateBookingsDTO, string date)
         {
@@ -104,7 +104,7 @@ namespace SKY_Backend.Controllers
 
 
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet("getGroupsBookedToRoom")]
         public IActionResult GetGroupsBookedToRoom()
         {
@@ -120,7 +120,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost("postGroupToRoom")]
         public IActionResult PostGroupToRoom([FromBody]GroupToRoomBookingDTO postGroupToRoomDTO)
         {
@@ -136,7 +136,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("deleteGroupToRoomBooking")]
         public IActionResult DeleteGroupToRoomBooking(int Id)
         {
@@ -152,7 +152,7 @@ namespace SKY_Backend.Controllers
             }
         }
         
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPut("EditGroupToRoomBooking")]
         public IActionResult PutGroupToRoomBooking(int Id, [FromBody]GroupToRoomBookingDTO groupToRoomBooking)
         {
@@ -168,6 +168,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost("Refresh")]
         public IActionResult Test()
         {

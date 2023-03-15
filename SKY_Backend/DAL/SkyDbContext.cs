@@ -1,5 +1,4 @@
-﻿using DAL.Models;
-using DAL.SQLModels;
+﻿using DAL.SQLModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -64,7 +63,6 @@ namespace DAL
             modelBuilder.Entity<SQLSchedule>().HasData(
                 new SQLSchedule { Id = 1, Name = "Default", WeekInterval = 3 }
                 );
-
         }
     }
 }
