@@ -336,11 +336,14 @@ namespace Service
 
                 var oldSingleRoomBookings = singleRoomBookings
                     .Where(d => d.Date < DateTime.Now.AddDays(-1))
-                    .FirstOrDefault();
+                    .ToList();
 
                 if (oldSingleRoomBookings == null) throw new Exception("No old bookings where found");
 
-                context.SingleRoomBookings.Remove(oldSingleRoomBookings);
+                foreach(var booking in oldSingleRoomBookings)
+                {
+                    context.SingleRoomBookings.Remove(booking);
+                }
                 context.SaveChanges();
             }
         }
