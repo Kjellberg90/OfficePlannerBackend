@@ -152,7 +152,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpDelete("deleteOldSingleRoomBookings")]
         public IActionResult DeleteOldSingleRoomBookings()
         {
