@@ -18,7 +18,7 @@ namespace SKY_Backend.Controllers
             _groupService = groupService;
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin, User")]
         [HttpGet("GetGroups")]
         public IActionResult GetGroups()
         {
@@ -37,7 +37,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
-
+        [Authorize(Roles = "Admin, User")]
         [HttpGet("GroupInfo/{date}&{groupId}")]
         public IActionResult GroupInfo(string date, int groupId)
         {
@@ -56,7 +56,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPut("UpdateGroup/{groupId}")]
         public IActionResult UpdateGroup(int groupId, [FromBody] NewGroupInfoDTO newGroup)
         {
@@ -71,7 +71,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteGroup/{groupId}")]
         public IActionResult DeleteGroup(int groupId)
         {
@@ -87,7 +87,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost("AddGroup")]
         public IActionResult AddGroup([FromBody] AddGroupDTO addGroupDTO)
         {
@@ -103,7 +103,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin, User")]
         [HttpGet("GetWeeklyGroupSchedule")]
         public IActionResult GetWeeklyScheduleForGroup(string date, int groupId)
         {
@@ -119,7 +119,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin, User")]
         [HttpGet("GetCurrentWeekAndDay")]
         public IActionResult GetCurrentWeekAndDay(string date)
         {
