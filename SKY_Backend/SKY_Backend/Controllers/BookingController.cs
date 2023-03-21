@@ -151,7 +151,23 @@ namespace SKY_Backend.Controllers
                 throw new Exception(ex.Message);
             }
         }
-        
+
+        [Authorize]
+        [HttpDelete("deleteOldSingleRoomBookings")]
+        public IActionResult DeleteOldSingleRoomBookings()
+        {
+            try
+            {
+                _bookingService.DeleteOldSingleRoomBookings();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                throw new Exception(ex.Message);
+            }
+        }
+
         [Authorize]
         [HttpPut("EditGroupToRoomBooking")]
         public IActionResult PutGroupToRoomBooking(int Id, [FromBody]GroupToRoomBookingDTO groupToRoomBooking)
