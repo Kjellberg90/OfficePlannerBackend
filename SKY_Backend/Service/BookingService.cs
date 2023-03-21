@@ -353,7 +353,7 @@ namespace Service
         {
             using (var context = new SkyDbContext())
             {
-                var GroupsBookedToRooms = context.SingleRoomBookings.ToList();
+                var GroupsBookedToRooms = context.SingleRoomBookings.OrderByDescending(b => b.Date).ToList();
                 var rooms = context.Rooms.ToList();
                 var groups = context.Groups.ToList();
 
