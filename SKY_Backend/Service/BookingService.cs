@@ -328,6 +328,26 @@ namespace Service
             }
         }
 
+        public void DeleteOldSingleRoomBookings()
+        {
+            using (var context = new SkyDbContext())
+            {
+                var singleRoomBookings = context.SingleRoomBookings.ToList();
+
+                var oldSingleRoomBookings = singleRoomBookings
+                    .Where(d => d.Date < DateTime.Now.AddDays(-1))
+                    .ToList();
+
+                if (oldSingleRoomBookings == null) throw new Exception("No old bookings where found");
+
+                foreach(var booking in oldSingleRoomBookings)
+                {
+                    context.SingleRoomBookings.Remove(booking);
+                }
+                context.SaveChanges();
+            }
+        }
+
 
         public List<GroupBookedToRoom> GetBookingsForRoom()
         {
