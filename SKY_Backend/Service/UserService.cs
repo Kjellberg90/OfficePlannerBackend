@@ -41,6 +41,7 @@ namespace Service
                         {
                             Id = user.Id,
                             Name = login.UserName,
+                            role = user.role.ToString(),
                         };
                     }
                     return null;
