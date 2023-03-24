@@ -12,5 +12,6 @@ namespace DAL.Models
         public string? Name { get; set; }
         public DateTime Date { get; set; }
         public Room BookedRoom { get; set; }
+        public string Password { get; set; }
     }
 }
