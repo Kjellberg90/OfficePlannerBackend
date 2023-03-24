@@ -56,53 +56,6 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpPut("UpdateGroup/{groupId}")]
-        public IActionResult UpdateGroup(int groupId, [FromBody] NewGroupInfoDTO newGroup)
-        {
-            try
-            {
-                _groupService.UpdateGroup(groupId, newGroup);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpDelete("DeleteGroup/{groupId}")]
-        public IActionResult DeleteGroup(int groupId)
-        {
-            try
-            {
-                _groupService.DeleteGroup(groupId);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace, ex.Message);
-                throw new Exception(ex.Message);
-            }
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpPost("AddGroup")]
-        public IActionResult AddGroup([FromBody] AddGroupDTO addGroupDTO)
-        {
-            try
-            {
-                _groupService.AddGroup(addGroupDTO);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-                throw new Exception(ex.Message);
-            }
-        }
-
         [Authorize(Roles = "Admin, User")]
         [HttpGet("GetWeeklyGroupSchedule")]
         public IActionResult GetWeeklyScheduleForGroup(string date, int groupId)
