@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Service;
 using Service.DTO;
 using System.Globalization;
+//using System.Web.Http;
 
 namespace SKY_Backend.Controllers
 {
@@ -74,6 +75,11 @@ namespace SKY_Backend.Controllers
             }
             catch (Exception ex)
             {
+                if (ex.Message == "Incorrect password")
+                {
+                    return StatusCode(401, ex.Message);
+                }
+
                 Console.WriteLine(ex.StackTrace);
                 throw new Exception(ex.Message);
             }

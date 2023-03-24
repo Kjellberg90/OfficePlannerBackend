@@ -9,8 +9,8 @@ namespace Service.DTO
     public class DeleteSingleBookingDTO
     {
         public string date { get; set; }
-        public string userName { get; set; }
+        public string name { get; set; }
         public int roomId { get; set; }
-        public List<int> pinNumbers { get; set; }
+        public string password { get; set; }
     }
 }
