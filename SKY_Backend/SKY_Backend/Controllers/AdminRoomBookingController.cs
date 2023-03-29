@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Service;
+using Service.AdminRoomBookingService;
+using Service.BookingService;
 using Service.DTO;
 
 namespace SKY_Backend.Controllers
@@ -10,11 +11,11 @@ namespace SKY_Backend.Controllers
     [ApiController]
     public class AdminRoomBookingController : ControllerBase
     {
-        private readonly IBookingService _bookingService;
+        private readonly IAdminRoomBookingService _adminBookingService;
 
-        public AdminRoomBookingController(IBookingService bookingService)
+        public AdminRoomBookingController(IAdminRoomBookingService adminBookingService)
         {
-            _bookingService = bookingService;
+            _adminBookingService = adminBookingService;
         }
 
         [Authorize(Roles = "Admin")]
@@ -23,7 +24,7 @@ namespace SKY_Backend.Controllers
         {
             try
             {
-                _bookingService.UpdateBookings(updateBookingsDTO, date);
+                _adminBookingService.UpdateBookings(updateBookingsDTO, date);
                 return Ok();
             }
             catch (Exception ex)
@@ -38,7 +39,7 @@ namespace SKY_Backend.Controllers
         {
             try
             {
-                var result = _bookingService.GetBookingsForRoom();
+                var result = _adminBookingService.GetBookingsForRoom();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -54,7 +55,7 @@ namespace SKY_Backend.Controllers
         {
             try
             {
-                _bookingService.PostGroupToRoomBooking(postGroupToRoomDTO);
+                _adminBookingService.PostGroupToRoomBooking(postGroupToRoomDTO);
                 return Ok();
             }
             catch (Exception ex)
@@ -70,7 +71,7 @@ namespace SKY_Backend.Controllers
         {
             try
             {
-                _bookingService.DeleteGroupToRoomBooking(Id);
+                _adminBookingService.DeleteGroupToRoomBooking(Id);
                 return Ok();
             }
             catch (Exception ex)
@@ -86,7 +87,7 @@ namespace SKY_Backend.Controllers
         {
             try
             {
-                _bookingService.DeleteOldSingleRoomBookings();
+                _adminBookingService.DeleteOldSingleRoomBookings();
                 return Ok();
             }
             catch (Exception ex)
@@ -102,7 +103,7 @@ namespace SKY_Backend.Controllers
         {
             try
             {
-                _bookingService.EditGroupToRoomBooking(Id, groupToRoomBooking);
+                _adminBookingService.EditGroupToRoomBooking(Id, groupToRoomBooking);
                 return Ok();
             }
             catch (Exception ex)
@@ -112,13 +113,13 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        [AllowAnonymous] //Ändra denna till [Authorize(Roles = "Admin")] innan merge till main
+        [Authorize(Roles = "Admin")]
         [HttpPost("Refresh")]
         public IActionResult Test()
         {
             try
             {
-                _bookingService.RefreshBookings();
+                _adminBookingService.RefreshBookings();
                 return Ok();
             }
             catch (Exception ex)

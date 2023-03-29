@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Service;
+using Service.BookingService;
 using Service.DTO;
 using System.Globalization;
 
@@ -9,11 +9,11 @@ namespace SKY_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BookingController : ControllerBase
+    public class SingleBookingController : ControllerBase
     {
-        private readonly IBookingService _bookingService;
+        private readonly ISingleBookingService _bookingService;
 
-        public BookingController(IBookingService bookingService)
+        public SingleBookingController(ISingleBookingService bookingService)
         {
             _bookingService = bookingService;
         }

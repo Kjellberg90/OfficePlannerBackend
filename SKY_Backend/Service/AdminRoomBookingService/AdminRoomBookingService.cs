@@ -1,121 +1,24 @@
 ﻿using DAL;
-using DAL.Models;
 using DAL.SQLModels;
-using Microsoft.EntityFrameworkCore;
 using Service.DTO;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Service
+namespace Service.AdminRoomBookingService
 {
-    public class BookingService : IBookingService
+    public class AdminRoomBookingService : IAdminRoomBookingService
     {
         private readonly IBookingAccess _bookingAccess;
         private readonly IDateConverter _dateConverter;
 
-        public BookingService(IBookingAccess bookingAcess, IDateConverter dateConverter)
+        public AdminRoomBookingService(IBookingAccess bookingAcess, IDateConverter dateConverter)
         {
             _bookingAccess = bookingAcess;
             _dateConverter = dateConverter;
-        }
-
-        public IEnumerable<SQLBooking> GetBookings()
-        {
-            using (var context = new SkyDbContext())
-            {
-                var bookings = context.Bookings.ToList();
-                return bookings;
-            }
-
-        }
-
-        public void PostBookings()
-        {
-            _bookingAccess.PrintGroupToFile();
-        }
-
-        public IEnumerable<UserDTO> GetSingleBookingsForDate(string date, int bookedRoomId)
-        {
-            using (var context = new SkyDbContext())
-            {
-                var singleBookings = context.SingleBookings.ToList();
-                var currentDate = DateTime.Parse(date);
-                var singleBookingsOnDay = singleBookings.Where(x => x.Date == currentDate && x.RoomID == bookedRoomId);
-
-                var users = new List<UserDTO>();
-
-                foreach (var user in singleBookingsOnDay)
-                {
-                    users.Add(new UserDTO
-                    {
-                        Id = user.ID,
-                        UserName = user.Name
-                    });
-                }
-
-                return users;
-            }
-        }
-
-        public void PostSingleBooking(SingleBookingDTO singleBookingDTO)
-        {
-            using (var context = new SkyDbContext())
-            {
-                int pinInt = singleBookingDTO.PinNumbers
-                    .Select((t, i) => t * Convert.ToInt32(Math.Pow(10, singleBookingDTO.PinNumbers.Count - i - 1)))
-                    .Sum();
-
-                var bookedDate = DateTime.Parse(singleBookingDTO.Date);
-                var room = context.Rooms
-                    .Where(r => r.Id == singleBookingDTO.RoomId)
-                    .FirstOrDefault();
-
-                if (room == null) throw new Exception("Room not found");
-
-                context.SingleBookings.Add(new SQLSingleBooking
-                {
-                    Name = singleBookingDTO.Name,
-                    Date = bookedDate,
-                    RoomID = singleBookingDTO.RoomId,
-                    PinCode = pinInt
-                });
-
-                context.SaveChanges();
-            }
-        }
-
-        public void DeleteSingleBooking(DeleteSingleBookingDTO deleteSingleBooking)
-        {
-            using (var context = new SkyDbContext())
-            {
-                var date = DateTime.Parse(deleteSingleBooking.date);
-                var singleBookingToDelete = context.SingleBookings
-                    .Where(x => x.Name == deleteSingleBooking.userName && x.Date == date && x.RoomID == deleteSingleBooking.roomId)
-                    .FirstOrDefault();
-
-                if (singleBookingToDelete == null) throw new Exception("SingleBooking not found");
-                var loggedPin = singleBookingToDelete.PinCode;
-                var pinArray = loggedPin.ToString().Select(o => Convert.ToInt32(o) - 48).ToList();
-
-                for (int i = 0; i < pinArray.Count; i++)
-                {
-                    if (pinArray[i] != deleteSingleBooking.pinNumbers[i])
-                    {
-                        throw new ArgumentException("Incorrect PIN");
-                    }
-                }
-
-
-
-                context.SingleBookings.Remove(singleBookingToDelete);
-                context.SaveChanges();
-            }
         }
 
         public void UpdateBookings(UpdateBookingsDTO[] updateBookings, string date)
@@ -172,70 +75,33 @@ namespace Service
             }
         }
 
-        public void EditGroupToRoomBooking(int bookingId, GroupToRoomBookingDTO groupToRoomBooking)
+        public List<GroupBookedToRoom> GetBookingsForRoom()
         {
             using (var context = new SkyDbContext())
             {
-                var regularBookings = context.Bookings.ToList();
-                var date = DateTime.Parse(groupToRoomBooking.Date);
-                var dayNr = _dateConverter.ConvertDateToDaySequence(groupToRoomBooking.Date);
-
-                var booking = context.SingleRoomBookings.
-                    Where(b => b.Id == bookingId).
-                    FirstOrDefault();
-
+                var GroupsBookedToRooms = context.SingleRoomBookings.OrderByDescending(b => b.Date).ToList();
                 var rooms = context.Rooms.ToList();
-
-                var room = rooms
-                    .Where(r => r.Id == groupToRoomBooking.RoomId)
-                    .FirstOrDefault();
-
                 var groups = context.Groups.ToList();
 
-                var group = groups
-                    .Where(g => g.Id == groupToRoomBooking.GroupId)
-                    .FirstOrDefault();
+                var roomBookings = new List<GroupBookedToRoom>();
 
-                bool availableSeats = false;
-                if (room.Seats >= group.GroupSize)
+                foreach (var booking in GroupsBookedToRooms)
                 {
-                    availableSeats = true;
-                }
-                else
-                {
-                    throw new Exception("Groupsize is larger then available seats");
-                }
+                    var room = rooms.Where(r => r.Id == booking.RoomID).FirstOrDefault();
+                    var group = groups.Where(g => g.Id == booking.GroupID).FirstOrDefault();
+                    var date = booking.Date.ToString("yyyy-MM-dd", new CultureInfo("en-GB"));
+                    var id = booking.Id;
 
-                var bookingsByDayNr = regularBookings
-                    .Where(b => b.DayNr == dayNr)
-                    .ToList();
-
-                var isBooked = false;
-                foreach (var item in bookingsByDayNr)
-                {
-                    var regularBooking = regularBookings
-                        .Where(b => b.RoomID == item.RoomID && b.DayNr == item.DayNr)
-                        .FirstOrDefault();
-
-                    if (regularBooking.RoomID == groupToRoomBooking.RoomId && regularBooking.DayNr == dayNr)
+                    roomBookings.Add(new GroupBookedToRoom
                     {
-                        isBooked = true;
+                        Id = id,
+                        RoomName = room.Name,
+                        GroupName = group.Name,
+                        Date = date,
                     }
+                    );
                 }
-
-                if (booking !=null && isBooked != true && availableSeats)
-                {
-                    booking.RoomID= groupToRoomBooking.RoomId;
-                    booking.GroupID = groupToRoomBooking.GroupId;
-                    booking.DayNr = dayNr;
-                    booking.Date = date;
-                }
-                else
-                {
-                    throw new Exception("Room is already booked by another group");
-                }
-
-                context.SaveChanges();
+                return roomBookings;
             }
         }
 
@@ -340,7 +206,7 @@ namespace Service
 
                 if (oldSingleRoomBookings == null) throw new Exception("No old bookings where found");
 
-                foreach(var booking in oldSingleRoomBookings)
+                foreach (var booking in oldSingleRoomBookings)
                 {
                     context.SingleRoomBookings.Remove(booking);
                 }
@@ -348,34 +214,70 @@ namespace Service
             }
         }
 
-
-        public List<GroupBookedToRoom> GetBookingsForRoom()
+        public void EditGroupToRoomBooking(int bookingId, GroupToRoomBookingDTO groupToRoomBooking)
         {
             using (var context = new SkyDbContext())
             {
-                var GroupsBookedToRooms = context.SingleRoomBookings.OrderByDescending(b => b.Date).ToList();
+                var regularBookings = context.Bookings.ToList();
+                var date = DateTime.Parse(groupToRoomBooking.Date);
+                var dayNr = _dateConverter.ConvertDateToDaySequence(groupToRoomBooking.Date);
+
+                var booking = context.SingleRoomBookings.
+                    Where(b => b.Id == bookingId).
+                    FirstOrDefault();
+
                 var rooms = context.Rooms.ToList();
+
+                var room = rooms
+                    .Where(r => r.Id == groupToRoomBooking.RoomId)
+                    .FirstOrDefault();
+
                 var groups = context.Groups.ToList();
 
-                var roomBookings = new List<GroupBookedToRoom>();
+                var group = groups
+                    .Where(g => g.Id == groupToRoomBooking.GroupId)
+                    .FirstOrDefault();
 
-                foreach (var booking in GroupsBookedToRooms)
+                bool availableSeats = false;
+                if (room.Seats >= group.GroupSize)
                 {
-                    var room = rooms.Where(r => r.Id == booking.RoomID).FirstOrDefault();
-                    var group = groups.Where(g => g.Id == booking.GroupID).FirstOrDefault();
-                    var date = booking.Date.ToString("yyyy-MM-dd", new CultureInfo("en-GB"));
-                    var id = booking.Id;
-
-                    roomBookings.Add(new GroupBookedToRoom
-                    {
-                        Id = id,
-                        RoomName = room.Name,
-                        GroupName = group.Name,
-                        Date = date,
-                    }
-                    );
+                    availableSeats = true;
                 }
-                return roomBookings;
+                else
+                {
+                    throw new Exception("Groupsize is larger then available seats");
+                }
+
+                var bookingsByDayNr = regularBookings
+                    .Where(b => b.DayNr == dayNr)
+                    .ToList();
+
+                var isBooked = false;
+                foreach (var item in bookingsByDayNr)
+                {
+                    var regularBooking = regularBookings
+                        .Where(b => b.RoomID == item.RoomID && b.DayNr == item.DayNr)
+                        .FirstOrDefault();
+
+                    if (regularBooking.RoomID == groupToRoomBooking.RoomId && regularBooking.DayNr == dayNr)
+                    {
+                        isBooked = true;
+                    }
+                }
+
+                if (booking != null && isBooked != true && availableSeats)
+                {
+                    booking.RoomID = groupToRoomBooking.RoomId;
+                    booking.GroupID = groupToRoomBooking.GroupId;
+                    booking.DayNr = dayNr;
+                    booking.Date = date;
+                }
+                else
+                {
+                    throw new Exception("Room is already booked by another group");
+                }
+
+                context.SaveChanges();
             }
         }
 
@@ -422,25 +324,6 @@ namespace Service
                 {
                     Console.WriteLine("Users: " + user.UserName);
                 }
-                //foreach (var group in groups)
-                //{
-                //    Console.WriteLine("Group: " + group.Name);
-                //}
-                //foreach (var room in rooms)
-                //{
-                //    Console.WriteLine("Room: " + room.Name);
-                //}
-                //foreach (var schedule in schedules)
-                //{
-                //    Console.WriteLine("Schedule: " + schedule.Name);
-                //}
-                //foreach (var booking in bookings)
-                //{
-                //    Console.WriteLine("Bookings ID: " + booking.Id);
-                //    Console.WriteLine("Bookings DayNr: " + booking.DayNr);
-                //    Console.WriteLine("Bookings: RoomId" + booking.RoomID);
-
-                //}
             }
         }
 
@@ -465,9 +348,9 @@ namespace Service
         public List<int> GetWeekDays(int week)
         {
             var list = new List<int>();
-            var firstWeekDay = (7 * (week - 1) + 1);
+            var firstWeekDay = 7 * (week - 1) + 1;
 
-            for (int i = firstWeekDay; i < (firstWeekDay + 5); i++)
+            for (int i = firstWeekDay; i < firstWeekDay + 5; i++)
             {
                 list.Add(i);
             }
