@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Service;
+using Service.AdminRomService;
 using Service.DTO;
+using Service.RoomService;
 
 namespace SKY_Backend.Controllers
 {
@@ -11,11 +12,11 @@ namespace SKY_Backend.Controllers
     public class AdminRoomController : ControllerBase
     {
 
-        private readonly IRoomService _roomService;
+        private readonly IAdminRoomService _adminRoomService;
 
-        public AdminRoomController(IRoomService roomService)
+        public AdminRoomController(IAdminRoomService adminRoomService)
         {
-            _roomService = roomService;
+            _adminRoomService = adminRoomService;
         }
 
         [Authorize(Roles = "Admin")]
@@ -24,7 +25,7 @@ namespace SKY_Backend.Controllers
         {
             try
             {
-                var result = _roomService.AdminRoomsOverview(date);
+                var result = _adminRoomService.AdminRoomsOverview(date);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -42,7 +43,7 @@ namespace SKY_Backend.Controllers
         {
             try
             {
-                var result = _roomService.AdminGetRooms();
+                var result = _adminRoomService.AdminGetRooms();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -60,7 +61,7 @@ namespace SKY_Backend.Controllers
         {
             try
             {
-                _roomService.AdminDeleteRoom(adminDeleteRoom);
+                _adminRoomService.AdminDeleteRoom(adminDeleteRoom);
                 return Ok(adminDeleteRoom);
             }
             catch (Exception ex)
@@ -76,7 +77,7 @@ namespace SKY_Backend.Controllers
         {
             try
             {
-                _roomService.AdminPostRoom(adminAddRoom);
+                _adminRoomService.AdminPostRoom(adminAddRoom);
                 return Ok();
             }
             catch (Exception ex)
@@ -92,7 +93,7 @@ namespace SKY_Backend.Controllers
         {
             try
             {
-                _roomService.UpdateRoom(roomId, adminEditRoom);
+                _adminRoomService.UpdateRoom(roomId, adminEditRoom);
                 return Ok();
             }
             catch (Exception ex)

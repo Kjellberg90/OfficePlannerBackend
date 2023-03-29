@@ -4,7 +4,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Service;
 using Service.AdminGroupService;
+using Service.AdminRomService;
 using Service.GroupService;
+using Service.RoomService;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 
@@ -43,6 +45,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddTransient<IGroupService, GroupService>();
 builder.Services.AddTransient<IAdminGroupService, AdminGroupService>();
 builder.Services.AddTransient<IRoomService, RoomService>();
+builder.Services.AddTransient<IAdminRoomService, AdminRoomService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IUserAcess, UserAccess>();
 builder.Services.AddTransient<IBookingAccess, BookingAccess>();

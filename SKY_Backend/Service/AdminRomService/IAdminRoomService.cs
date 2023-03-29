@@ -1,16 +1,18 @@
-﻿using DAL.Models;
-using Service.DTO;
+﻿using Service.DTO;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Service
+namespace Service.AdminRomService
 {
-    public interface IRoomService
+    public interface IAdminRoomService
     {
-        public IEnumerable<RoomInfoDTO> GetRoomsInfo(string date);
         public IEnumerable<AdminRoomOverviewDTO> AdminRoomsOverview(string date);
-        public IEnumerable<AdminRoomDTO> AdminGetRooms();
         public void AdminDeleteRoom(AdminDeleteRoomDTO adminDeleteRoom);
         public void AdminPostRoom(AdminPostRoomDTO adminAddRoom);
         public void UpdateRoom(int roomId, AdminEditRoomDTO adminEditRoom);
-
+        public IEnumerable<AdminRoomDTO> AdminGetRooms();
     }
 }

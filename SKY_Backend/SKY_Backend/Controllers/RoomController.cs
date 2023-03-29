@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Service;
 using Service.DTO;
+using Service.RoomService;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SKY_Backend.Controllers
