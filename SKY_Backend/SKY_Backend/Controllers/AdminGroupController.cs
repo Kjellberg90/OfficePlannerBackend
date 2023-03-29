@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Service;
+using Service.AdminGroupService;
 using Service.DTO;
+using Service.GroupService;
 
 namespace SKY_Backend.Controllers
 {
@@ -10,11 +11,11 @@ namespace SKY_Backend.Controllers
     [ApiController]
     public class AdminGroupController : ControllerBase
     {
-        private readonly IGroupService _groupService;
+        private readonly IAdminGroupService _admingroupService;
 
-        public AdminGroupController(IGroupService groupService)
+        public AdminGroupController(IAdminGroupService admingroupService)
         {
-            _groupService = groupService;
+            _admingroupService = admingroupService;
         }
 
         [Authorize(Roles = "Admin")]
@@ -23,7 +24,7 @@ namespace SKY_Backend.Controllers
         {
             try
             {
-                _groupService.UpdateGroup(groupId, newGroup);
+                _admingroupService.UpdateGroup(groupId, newGroup);
                 return Ok();
             }
             catch (Exception ex)
@@ -38,7 +39,7 @@ namespace SKY_Backend.Controllers
         {
             try
             {
-                _groupService.DeleteGroup(groupId);
+                _admingroupService.DeleteGroup(groupId);
                 return Ok();
             }
             catch (Exception ex)
@@ -54,7 +55,7 @@ namespace SKY_Backend.Controllers
         {
             try
             {
-                _groupService.AddGroup(addGroupDTO);
+                _admingroupService.AddGroup(addGroupDTO);
                 return Ok();
             }
             catch (Exception ex)

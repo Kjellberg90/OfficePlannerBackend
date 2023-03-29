@@ -2,15 +2,13 @@
 using DAL.SQLModels;
 using Service.DTO;
 
-namespace Service
+namespace Service.GroupService
 {
     public interface IGroupService
     {
         public IEnumerable<SQLGroup> GetGroups();
         public GroupInfoDTO GetGroupInfo(string date, int groupId);
-        public void UpdateGroup(int groupId, NewGroupInfoDTO newGroup);
-        public void DeleteGroup(int groupId);
-        public void AddGroup(AddGroupDTO addGroupDTO);
+
         public List<WeeklyGroupScheduleDTO> GetWeeklysSchedule(string date, int groupId);
         public GetCurrentWeekDTO GetCurrentWeekAndDay(string date);
     }
