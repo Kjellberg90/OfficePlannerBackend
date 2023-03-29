@@ -7,9 +7,9 @@ using Service.AdminGroupService;
 using Service.AdminRomService;
 using Service.AdminRoomBookingService;
 using Service.BookingService;
+using Service.DateHandler;
 using Service.GroupService;
 using Service.RoomService;
-using Service.UserService;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 
@@ -54,7 +54,7 @@ builder.Services.AddTransient<IUserAcess, UserAccess>();
 builder.Services.AddTransient<IBookingAccess, BookingAccess>();
 builder.Services.AddTransient<IAdminRoomBookingService, AdminRoomBookingService>();
 builder.Services.AddTransient<ISingleBookingService, SingleBookingService>();
-builder.Services.AddTransient<IDateConverter, DateConverter>();
+builder.Services.AddTransient<IDateHandler, DateHandler>();
 builder.Services.AddTransient<ITokenService, TokenService>();
 
 //--------------------------JWT-Token stuff----------------------------------------------------------------------

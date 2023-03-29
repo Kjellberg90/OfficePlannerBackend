@@ -1,5 +1,6 @@
 ﻿using DAL;
 using DAL.SQLModels;
+using Service.DateHandler;
 using Service.DTO;
 using System;
 using System.Collections.Generic;
@@ -13,18 +14,18 @@ namespace Service.AdminRoomBookingService
     public class AdminRoomBookingService : IAdminRoomBookingService
     {
         private readonly IBookingAccess _bookingAccess;
-        private readonly IDateConverter _dateConverter;
+        private readonly IDateHandler _dateHandler;
 
-        public AdminRoomBookingService(IBookingAccess bookingAcess, IDateConverter dateConverter)
+        public AdminRoomBookingService(IBookingAccess bookingAcess, IDateHandler datehandler)
         {
             _bookingAccess = bookingAcess;
-            _dateConverter = dateConverter;
+            _dateHandler = datehandler;
         }
 
         public void UpdateBookings(UpdateBookingsDTO[] updateBookings, string date)
         {
-            var dayNr = _dateConverter.ConvertDateToDaySequence(date);
-            var weekNr = GetScheduleWeekNr(dayNr);
+            var dayNr = _dateHandler.ConvertDateToDaySequence(date);
+            var weekNr = _dateHandler.GetScheduleWeekNr(dayNr);
             var weekDays = GetWeekDays(weekNr);
 
             foreach (var booking in updateBookings)
@@ -112,7 +113,7 @@ namespace Service.AdminRoomBookingService
             {
                 var regularBookings = context.Bookings.ToList();
                 var date = DateTime.Parse(postGroupToRoomDTO.Date);
-                var dayNr = _dateConverter.ConvertDateToDaySequence(postGroupToRoomDTO.Date);
+                var dayNr = _dateHandler.ConvertDateToDaySequence(postGroupToRoomDTO.Date);
 
                 var booking = context.SingleRoomBookings
                     .Where(b => b.RoomID == postGroupToRoomDTO.RoomId && b.Date == date)
@@ -220,7 +221,7 @@ namespace Service.AdminRoomBookingService
             {
                 var regularBookings = context.Bookings.ToList();
                 var date = DateTime.Parse(groupToRoomBooking.Date);
-                var dayNr = _dateConverter.ConvertDateToDaySequence(groupToRoomBooking.Date);
+                var dayNr = _dateHandler.ConvertDateToDaySequence(groupToRoomBooking.Date);
 
                 var booking = context.SingleRoomBookings.
                     Where(b => b.Id == bookingId).
@@ -324,24 +325,6 @@ namespace Service.AdminRoomBookingService
                 {
                     Console.WriteLine("Users: " + user.UserName);
                 }
-            }
-        }
-
-        public int GetScheduleWeekNr(int dayNr)
-        {
-            if (dayNr == 0) { throw new Exception("Incorrect day number"); }
-
-            if (dayNr >= 1 && dayNr < 8)
-            {
-                return 1;
-            }
-            else if (dayNr >= 8 && dayNr < 15)
-            {
-                return 2;
-            }
-            else
-            {
-                return 3;
             }
         }
 

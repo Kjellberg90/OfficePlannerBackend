@@ -1,5 +1,6 @@
 ﻿using DAL;
 using DAL.SQLModels;
+using Service.DateHandler;
 using Service.DTO;
 using System;
 using System.Collections.Generic;
@@ -12,18 +13,18 @@ namespace Service.AdminRomService
     public class AdminRoomService : IAdminRoomService
     {
 
-        private readonly IDateConverter _dateConverter;
+        private readonly IDateHandler _dateHandler;
 
-        public AdminRoomService(IDateConverter dateConverter)
+        public AdminRoomService(IDateHandler datehandler)
         {
-            _dateConverter = dateConverter;
+            _dateHandler = datehandler;
         }
 
         public IEnumerable<AdminRoomOverviewDTO> AdminRoomsOverview(string date)
         {
-            var formattedDate = _dateConverter.ConvertDateToDaySequence(date);
-            var scheduleWeek = GetScheduleWeekNr(formattedDate);
-            var weekDays = GetWeekDays(scheduleWeek, formattedDate);
+            var formattedDate = _dateHandler.ConvertDateToDaySequence(date);
+            var scheduleWeek = _dateHandler.GetScheduleWeekNr(formattedDate);
+            var weekDays = _dateHandler.GetWeekDays(scheduleWeek);
 
             using (var context = new SkyDbContext())
             {
@@ -127,35 +128,6 @@ namespace Service.AdminRomService
             }
         }
 
-        public int GetScheduleWeekNr(int dayNr)
-        {
-            if (dayNr == 0) { throw new Exception("Incorrect day number"); }
 
-            if (dayNr >= 1 && dayNr < 8)
-            {
-                return 1;
-            }
-            else if (dayNr >= 8 && dayNr < 15)
-            {
-                return 2;
-            }
-            else
-            {
-                return 3;
-            }
-        }
-
-        public List<int> GetWeekDays(int week, int dayNr)
-        {
-            var list = new List<int>();
-            var firstWeekDay = 7 * (week - 1) + 1;
-
-            for (int i = firstWeekDay; i < firstWeekDay + 5; i++)
-            {
-                list.Add(i);
-            }
-
-            return list;
-        }
     }
 }

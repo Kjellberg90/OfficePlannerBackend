@@ -10,7 +10,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.UserService
+namespace Service
 
 {
     public class UserService : IUserService

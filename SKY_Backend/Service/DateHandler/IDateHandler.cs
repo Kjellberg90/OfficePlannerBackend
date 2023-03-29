@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service
+namespace Service.DateHandler
 {
-    public interface IDateConverter
+    public interface IDateHandler
     {
         public int ConvertDateToDaySequence(string date);
+        public int GetScheduleWeekNr(int dayNr);
+        public List<int> GetWeekDays(int week);
     }
 }

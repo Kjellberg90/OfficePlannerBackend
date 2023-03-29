@@ -9,22 +9,23 @@ using Service.DTO;
 using System.Globalization;
 using System.Security.Cryptography.X509Certificates;
 using DAL.SQLModels;
+using Service.DateHandler;
 
 namespace Service.GroupService
 {
     public class GroupService : IGroupService
     {
-        private readonly IDateConverter _dateConverter;
+        private readonly IDateHandler _dateHandler;
         private readonly IBookingAccess _bookingAccess;
-        public GroupService(IDateConverter dateConverter, IBookingAccess bookingAccess)
+        public GroupService(IDateHandler dateHandler, IBookingAccess bookingAccess)
         {
-            _dateConverter = dateConverter;
+            _dateHandler = dateHandler;
             _bookingAccess = bookingAccess;
         }
 
         public GroupInfoDTO GetGroupInfo(string date, int groupId)
         {
-            var dayNr = _dateConverter.ConvertDateToDaySequence(date);
+            var dayNr = _dateHandler.ConvertDateToDaySequence(date);
 
             using (var context = new SkyDbContext())
             {
@@ -86,9 +87,9 @@ namespace Service.GroupService
 
             List<string> weeksDates = new List<string>();
 
-            var dayNumber = _dateConverter.ConvertDateToDaySequence(date);
-            var scheduleWeek = GetScheduleWeekNr(dayNumber);
-            var weekDays = GetWeekDays(scheduleWeek, dayNumber);
+            var dayNumber = _dateHandler.ConvertDateToDaySequence(date);
+            var scheduleWeek = _dateHandler.GetScheduleWeekNr(dayNumber);
+            var weekDays = _dateHandler.GetWeekDays(scheduleWeek);
             var dates = new List<DateTime>();
 
             for (int i = 0; i < 7; i++)
@@ -166,37 +167,6 @@ namespace Service.GroupService
             };
 
             return currentWeek;
-        }
-
-        public int GetScheduleWeekNr(int dayNr)
-        {
-            if (dayNr == 0) { throw new Exception("Incorrect day number"); }
-
-            if (dayNr >= 1 && dayNr < 8)
-            {
-                return 1;
-            }
-            else if (dayNr >= 8 && dayNr < 15)
-            {
-                return 2;
-            }
-            else
-            {
-                return 3;
-            }
-        }
-
-        public List<int> GetWeekDays(int week, int dayNr)
-        {
-            var list = new List<int>();
-            var firstWeekDay = 7 * (week - 1) + 1;
-
-            for (int i = firstWeekDay; i < firstWeekDay + 7; i++)
-            {
-                list.Add(i);
-            }
-
-            return list;
         }
     }
 

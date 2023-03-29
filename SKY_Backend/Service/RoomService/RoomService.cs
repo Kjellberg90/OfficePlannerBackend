@@ -1,6 +1,7 @@
 ﻿using DAL;
 using DAL.Models;
 using DAL.SQLModels;
+using Service.DateHandler;
 using Service.DTO;
 using System;
 using System.Collections.Generic;
@@ -15,16 +16,16 @@ namespace Service.RoomService
 {
     public class RoomService : IRoomService
     {
-        private readonly IDateConverter _dateConverter;
+        private readonly IDateHandler _dateHandler;
 
-        public RoomService(IDateConverter dateConverter)
+        public RoomService(IDateHandler dateHandler)
         {
-            _dateConverter = dateConverter;
+            _dateHandler = dateHandler;
         }
 
         public IEnumerable<RoomInfoDTO> GetRoomsInfo(string date)
         {
-            var dayNr = _dateConverter.ConvertDateToDaySequence(date);
+            var dayNr = _dateHandler.ConvertDateToDaySequence(date);
             var roomInfoList = new List<RoomInfoDTO>();
             var currentDate = DateTime.Parse(date);
 
@@ -90,37 +91,6 @@ namespace Service.RoomService
                 var availableSeats = room.Seats - singleBookings.Count() - groupSize;
                 return availableSeats;
             }
-        }
-
-        public int GetScheduleWeekNr(int dayNr)
-        {
-            if (dayNr == 0) { throw new Exception("Incorrect day number"); }
-
-            if (dayNr >= 1 && dayNr < 8)
-            {
-                return 1;
-            }
-            else if (dayNr >= 8 && dayNr < 15)
-            {
-                return 2;
-            }
-            else
-            {
-                return 3;
-            }
-        }
-
-        public List<int> GetWeekDays(int week, int dayNr)
-        {
-            var list = new List<int>();
-            var firstWeekDay = 7 * (week - 1) + 1;
-
-            for (int i = firstWeekDay; i < firstWeekDay + 5; i++)
-            {
-                list.Add(i);
-            }
-
-            return list;
         }
     }
 }
