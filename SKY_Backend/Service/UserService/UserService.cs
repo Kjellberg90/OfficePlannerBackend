@@ -3,6 +3,7 @@ using DAL.Models;
 using DAL.SQLModels;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Service.DTO;
+using Service.UserService.UserService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service
 
-{
     public class UserService : IUserService
     {
         private readonly IUserAcess _userAcess;
@@ -177,4 +176,3 @@ namespace Service
             return dbPasswordHash == hashedPassword + "@" + salt;
         }
     }
-}

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Service;
 using Service.DTO;
+using Service.UserService.UserService;
 using System.Security.Claims;
 using System.Text;
 
