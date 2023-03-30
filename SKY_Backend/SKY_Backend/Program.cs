@@ -1,8 +1,11 @@
- using DAL;
+using DAL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Service;
+using Service.AdminGroupService;
+using Service.GroupService;
+using Service.UserService;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 
@@ -39,6 +42,7 @@ builder.Services.AddCors(options =>
 // Dependencies 
 
 builder.Services.AddTransient<IGroupService, GroupService>();
+builder.Services.AddTransient<IAdminGroupService, AdminGroupService>();
 builder.Services.AddTransient<IRoomService, RoomService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IUserAcess, UserAccess>();
