@@ -3,7 +3,6 @@ using DAL.Models;
 using DAL.SQLModels;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Service.DTO;
-using Service.UserService.UserService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +10,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
+namespace Service
 
+{
     public class UserService : IUserService
     {
         private readonly IUserAcess _userAcess;
@@ -22,7 +23,7 @@ using System.Threading.Tasks;
 
         public SuccessLoginDTO UserLogin(UserLoginDTO login)
         {
-            using (var context = new SkyDbContext())
+            using(var context = new SkyDbContext())
             {
                 try
                 {
@@ -50,7 +51,7 @@ using System.Threading.Tasks;
                     throw new Exception(ex.Message);
                 }
             }
-
+            
         }
 
         public void UserRegister(UserRegisterDTO register)
@@ -117,28 +118,28 @@ using System.Threading.Tasks;
 
             var user = users.Any(x => x.UserName == userName);
 
-            if (user)
-            {
-                return true;
-            }
-
-            return false;
+                if (user)
+                {
+                    return true;
+                } 
+            
+                return false;
         }
 
         public int GetUserId()
         {
             var users = _userAcess.ReadUsersData();
-
+            
             if (users.Count == 0)
             {
                 return 1;
             }
-
+            
             var lastId = users
                 .OrderBy(x => x.Id)
                 .LastOrDefault()
                 .Id;
-
+            
             return lastId + 1;
         }
 
@@ -173,6 +174,7 @@ using System.Threading.Tasks;
                 iterationCount: 10000,
                 numBytesRequested: 256 / 8));
 
-            return dbPasswordHash == hashedPassword + "@" + salt;
+            return dbPasswordHash == (hashedPassword + "@" + salt);
         }
     }
+}
