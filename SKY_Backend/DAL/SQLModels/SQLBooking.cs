@@ -23,8 +23,5 @@ namespace DAL.SQLModels
 
         [ForeignKey(typeof(SQLSchedule))]
         public int ScheduleID { get; set; }
-
-        public SQLGroup Group { get; set; }
-        public SQLRoom Room { get; set; }
     }
 }
