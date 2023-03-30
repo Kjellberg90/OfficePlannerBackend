@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Service;
+using Service.ScheduleService.ScheduleService;
 
 namespace SKY_Backend.Controllers
 {
@@ -21,20 +21,6 @@ namespace SKY_Backend.Controllers
             try
             {
                 var result = _scheduleService.GetWeeksTotal(scheduleId);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        [HttpGet("GetSchedules")]
-        public IActionResult GetSchedules()
-        {
-            try
-            {
-                var result = _scheduleService.GetSchedules();
                 return Ok(result);
             }
             catch (Exception ex)

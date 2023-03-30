@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service
+namespace Service.DateHandlerService
 {
-    public interface IDateConverter
+    public interface IDatehandler
     {
         public int ConvertDateToDaySequence(string date, int weeksTotal);
         public int GetScheduleWeekNr(int dayNr);
