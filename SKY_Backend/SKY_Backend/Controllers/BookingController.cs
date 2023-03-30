@@ -86,12 +86,12 @@ namespace SKY_Backend.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPut("UpdateBookings/{date}")]
-        public IActionResult UpdateBookings([FromBody] UpdateBookingsDTO[] updateBookingsDTO, string date)
+        [HttpPut("UpdateBookings/{weekNr}")]
+        public IActionResult UpdateBookings([FromBody] UpdateBookingsDTO[] updateBookingsDTO, int weekNr)
         {
             try
             {
-                _bookingService.UpdateBookings(updateBookingsDTO, date);
+                _bookingService.UpdateBookings(updateBookingsDTO, weekNr);
                 return Ok();
             }
             catch (Exception ex)
