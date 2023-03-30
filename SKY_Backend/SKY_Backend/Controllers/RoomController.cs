@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Service;
 using Service.DTO;
+using Service.RoomService;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SKY_Backend.Controllers
@@ -35,108 +35,6 @@ namespace SKY_Backend.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-            }
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpGet("adminOverviewFromWeek")]
-        public IActionResult AdminOverview([FromQuery]int weekNr, [FromQuery] int scheduleId)
-        {
-            try
-            {
-                var result = _roomService.AdminRoomsOverview(weekNr, scheduleId);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpGet("adminOverviewFromDate")]
-        public IActionResult AdminOverview([FromQuery]string date, [FromQuery]int scheduleId)
-        {
-            try
-            {
-                var result = _roomService.AdminRoomsOverview(date, scheduleId);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpGet("adminGetRooms")]
-        public IActionResult AdminGetRooms()
-        {
-            try
-            {
-                var result = _roomService.AdminGetRooms();
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpDelete("adminDeleteRooms")]
-        public IActionResult AdminDeleteRoom([FromBody] AdminDeleteRoomDTO adminDeleteRoom)
-        {
-            try
-            {
-                _roomService.AdminDeleteRoom(adminDeleteRoom);
-                return Ok(adminDeleteRoom);
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception(ex.StackTrace);
-            }
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpPost("adminAddRooms")]
-        public IActionResult AdminPostRoom([FromBody] AdminPostRoomDTO adminAddRoom)
-        {
-            try
-            {
-                _roomService.AdminPostRoom(adminAddRoom);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception(ex.StackTrace);
-            }
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpPut("adminroomEditRoom")]
-        public IActionResult AdminEditRoom(int roomId, [FromBody] AdminEditRoomDTO adminEditRoom)
-        {
-            try
-            {
-                _roomService.UpdateRoom(roomId, adminEditRoom);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception(ex.Message);
             }
         }
     }
