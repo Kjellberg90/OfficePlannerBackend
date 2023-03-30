@@ -9,21 +9,14 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Service
+namespace Service.SingleBookingService
 {
-    public interface IBookingService
+    public interface ISingleBookingService
     {
         public IEnumerable<SQLBooking> GetBookings();
         public void PostBookings();
         public void PostSingleBooking(SingleBookingDTO singleBookingDTO);
         public IEnumerable<UserDTO> GetSingleBookingsForDate(string date, int bookedRoomId);
         public void DeleteSingleBooking(DeleteSingleBookingDTO deleteSingleBooking);
-        public void UpdateBookings(UpdateBookingsDTO[] updateBookings, int weekNr);
-        public void RefreshBookings();
-        public void PostGroupToRoomBooking(GroupToRoomBookingDTO postGroupToRoomDTO);
-        public List<GroupBookedToRoom> GetBookingsForRoom();
-        public void DeleteGroupToRoomBooking(int bookingId);
-        public void DeleteOldSingleRoomBookings();
-        public void EditGroupToRoomBooking(int bookingId, GroupToRoomBookingDTO groupToRoomBooking);
     }
 }
