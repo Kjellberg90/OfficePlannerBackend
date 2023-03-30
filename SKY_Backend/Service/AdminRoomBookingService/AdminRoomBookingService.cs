@@ -1,5 +1,6 @@
 ﻿using DAL;
 using DAL.SQLModels;
+using Service.DateHandlerService;
 using Service.DTO;
 using System;
 using System.Collections.Generic;
@@ -13,9 +14,9 @@ namespace Service.AdminRoomBookingService
     public class AdminRoomBookingService : IAdminRoomBookingService
     {
         private readonly IBookingAccess _bookingAccess;
-        private readonly IDateConverter _dateConverter;
+        private readonly IDatehandler _dateConverter;
 
-        public AdminRoomBookingService(IBookingAccess bookingAcess, IDateConverter dateConverter)
+        public AdminRoomBookingService(IBookingAccess bookingAcess, IDatehandler dateConverter)
         {
             _bookingAccess = bookingAcess;
             _dateConverter = dateConverter;

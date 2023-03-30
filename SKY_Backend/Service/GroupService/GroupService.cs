@@ -9,14 +9,15 @@ using Service.DTO;
 using System.Globalization;
 using System.Security.Cryptography.X509Certificates;
 using DAL.SQLModels;
+using Service.DateHandlerService;
 
 namespace Service.GroupService
 {
     public class GroupService : IGroupService
     {
-        private readonly IDateConverter _dateConverter;
+        private readonly IDatehandler _dateConverter;
         private readonly IBookingAccess _bookingAccess;
-        public GroupService(IDateConverter dateConverter, IBookingAccess bookingAccess)
+        public GroupService(IDatehandler dateConverter, IBookingAccess bookingAccess)
         {
             _dateConverter = dateConverter;
             _bookingAccess = bookingAccess;

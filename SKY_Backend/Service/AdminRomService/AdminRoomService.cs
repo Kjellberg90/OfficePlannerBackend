@@ -1,5 +1,6 @@
 ﻿using DAL;
 using DAL.SQLModels;
+using Service.DateHandlerService;
 using Service.DTO;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,9 @@ namespace Service.AdminRomService
 {
     public class AdminRoomService : IAdminRoomService
     {
-        private readonly IDateConverter _dateConverter;
+        private readonly IDatehandler _dateConverter;
 
-        public AdminRoomService(IDateConverter dateConverter)
+        public AdminRoomService(IDatehandler dateConverter)
         {
             _dateConverter = dateConverter;
         }

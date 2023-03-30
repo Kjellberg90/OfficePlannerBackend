@@ -2,6 +2,7 @@
 using DAL.Models;
 using DAL.SQLModels;
 using Microsoft.EntityFrameworkCore;
+using Service.DateHandlerService;
 using Service.DTO;
 using System;
 using System.Collections.Generic;
@@ -17,9 +18,9 @@ namespace Service.SingleBookingService
     public class SingleBookingService : ISingleBookingService
     {
         private readonly IBookingAccess _bookingAccess;
-        private readonly IDateConverter _dateConverter;
+        private readonly IDatehandler _dateConverter;
 
-        public SingleBookingService(IBookingAccess bookingAcess, IDateConverter dateConverter)
+        public SingleBookingService(IBookingAccess bookingAcess, IDatehandler dateConverter)
         {
             _bookingAccess = bookingAcess;
             _dateConverter = dateConverter;

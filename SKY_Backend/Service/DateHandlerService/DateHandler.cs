@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service
+namespace Service.DateHandlerService
 {
-    public class DateConverter : IDateConverter
+    public class DateHandler : IDatehandler
     {
         public int ConvertDateToDaySequence(string date, int weeksTotal)
         {
@@ -18,13 +18,13 @@ namespace Service
 
             var totalDaysInSchedule = weeksTotal * 7;
 
-            
-            while(daysDiff > totalDaysInSchedule)
+
+            while (daysDiff > totalDaysInSchedule)
             {
                 daysDiff = daysDiff - totalDaysInSchedule;
             }
 
-            return  ((int)daysDiff);
+            return (int)daysDiff;
         }
         public int GetScheduleWeekNr(int dayNr)
         {
@@ -39,9 +39,9 @@ namespace Service
         public List<int> GetWeekDays(int week)
         {
             var list = new List<int>();
-            var firstWeekDay = (7 * (week - 1) + 1);
+            var firstWeekDay = 7 * (week - 1) + 1;
 
-            for (int i = firstWeekDay; i < (firstWeekDay + 5); i++)
+            for (int i = firstWeekDay; i < firstWeekDay + 5; i++)
             {
                 list.Add(i);
             }
