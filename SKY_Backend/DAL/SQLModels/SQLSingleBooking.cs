@@ -19,6 +19,6 @@ namespace DAL.SQLModels
 
         [SQLiteNetExtensions.Attributes.ForeignKey(typeof(SQLRoom))]
         public int RoomID { get; set; }
-        public int PinCode { get; set; }  
+        public string Password { get; set; }  
     }
 }

@@ -67,10 +67,6 @@ namespace Service
         {
             using (var context = new SkyDbContext())
             {
-                int pinInt = singleBookingDTO.PinNumbers
-                    .Select((t, i) => t * Convert.ToInt32(Math.Pow(10, singleBookingDTO.PinNumbers.Count - i - 1)))
-                    .Sum();
-
                 var bookedDate = DateTime.Parse(singleBookingDTO.Date);
                 var room = context.Rooms
                     .Where(r => r.Id == singleBookingDTO.RoomId)
@@ -83,7 +79,7 @@ namespace Service
                     Name = singleBookingDTO.Name,
                     Date = bookedDate,
                     RoomID = singleBookingDTO.RoomId,
-                    PinCode = pinInt
+                    Password = singleBookingDTO.Password
                 });
 
                 context.SaveChanges();
@@ -96,22 +92,16 @@ namespace Service
             {
                 var date = DateTime.Parse(deleteSingleBooking.date);
                 var singleBookingToDelete = context.SingleBookings
-                    .Where(x => x.Name == deleteSingleBooking.userName && x.Date == date && x.RoomID == deleteSingleBooking.roomId)
+                    .Where(x => x.Name == deleteSingleBooking.name && x.Date == date && x.RoomID == deleteSingleBooking.roomId)
                     .FirstOrDefault();
 
                 if (singleBookingToDelete == null) throw new Exception("SingleBooking not found");
-                var loggedPin = singleBookingToDelete.PinCode;
-                var pinArray = loggedPin.ToString().Select(o => Convert.ToInt32(o) - 48).ToList();
+                var loggedPassword = singleBookingToDelete.Password;
 
-                for (int i = 0; i < pinArray.Count; i++)
+                if (loggedPassword != deleteSingleBooking.password)
                 {
-                    if (pinArray[i] != deleteSingleBooking.pinNumbers[i])
-                    {
-                        throw new ArgumentException("Incorrect PIN");
-                    }
+                    throw new Exception("Incorrect password");
                 }
-
-
 
                 context.SingleBookings.Remove(singleBookingToDelete);
                 context.SaveChanges();
@@ -328,12 +318,32 @@ namespace Service
             }
         }
 
+        public void DeleteOldSingleRoomBookings()
+        {
+            using (var context = new SkyDbContext())
+            {
+                var singleRoomBookings = context.SingleRoomBookings.ToList();
+
+                var oldSingleRoomBookings = singleRoomBookings
+                    .Where(d => d.Date < DateTime.Now.AddDays(-1))
+                    .ToList();
+
+                if (oldSingleRoomBookings == null) throw new Exception("No old bookings where found");
+
+                foreach(var booking in oldSingleRoomBookings)
+                {
+                    context.SingleRoomBookings.Remove(booking);
+                }
+                context.SaveChanges();
+            }
+        }
+
 
         public List<GroupBookedToRoom> GetBookingsForRoom()
         {
             using (var context = new SkyDbContext())
             {
-                var GroupsBookedToRooms = context.SingleRoomBookings.ToList();
+                var GroupsBookedToRooms = context.SingleRoomBookings.OrderByDescending(b => b.Date).ToList();
                 var rooms = context.Rooms.ToList();
                 var groups = context.Groups.ToList();
 

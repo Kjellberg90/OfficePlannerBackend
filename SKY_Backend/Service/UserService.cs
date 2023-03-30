@@ -41,6 +41,7 @@ namespace Service
                         {
                             Id = user.Id,
                             Name = login.UserName,
+                            role = user.role.ToString(),
                         };
                     }
                     return null;
@@ -61,15 +62,53 @@ namespace Service
                 {
                     throw new Exception("UserName taken");
                 }
-                
+
                 var newUser = new SQLUser
                 {
                     UserName = register.userName,
-                    Password = PasswordEncryption(register.password)
+                    Password = PasswordEncryption(register.password),
+                    role = Role.User
                 };
 
                 context.Users.Add(newUser);
                 context.SaveChanges();
+            }
+        }
+
+        public void AdminRegister(UserRegisterDTO register)
+        {
+            using (var context = new SkyDbContext())
+            {
+                if (context.Users.Any(u => u.UserName == register.userName))
+                {
+                    throw new Exception("UserName taken");
+                }
+
+                var newUser = new SQLUser
+                {
+                    UserName = register.userName,
+                    Password = PasswordEncryption(register.password),
+                    role = Role.Admin
+                };
+
+                context.Users.Add(newUser);
+                context.SaveChanges();
+            }
+        }
+
+        public string GetUserRole(SuccessLoginDTO userloginin)
+        {
+            using (var context = new SkyDbContext())
+            {
+                var users = context.Users.ToList();
+
+                var user = users
+                    .Where(u => u.Id == userloginin.Id)
+                    .FirstOrDefault();
+
+                var role = user.role.ToString();
+
+                return role;
             }
         }
 

@@ -30,7 +30,7 @@ namespace Service
 
             using (var context = new SkyDbContext())
             {
-                var rooms = context.Rooms.ToList();
+                var rooms = GetRoomsList(dayNr, currentDate);
                 var bookings = context.Bookings
                     .Where(b => b.DayNr == dayNr)
                     .ToList();
@@ -45,12 +45,12 @@ namespace Service
                     var singleRoomBooking = singleRoomBookings.Find(b => b.RoomID == room.Id);
 
                     SQLGroup? group = null;
-                    
+
                     if (booking != null)
                     {
                         group = context.Groups.FirstOrDefault(g => g.Id == booking.GroupID);
                     }
-                    else if(singleRoomBooking != null)
+                    else if (singleRoomBooking != null)
                     {
                         group = context.Groups.FirstOrDefault(g => g.Id == singleRoomBooking.GroupID);
                     }
@@ -78,6 +78,57 @@ namespace Service
 
                 return roomInfoList;
             }
+        }
+
+        public List<SQLRoom> GetRoomsList(int dayNr, DateTime date)
+        {
+            using (var context = new SkyDbContext())
+            {
+                var rooms = context.Rooms.ToList();
+                var inspiredId = rooms.FirstOrDefault(r => r.Name == "Inspired").Id;
+                var inspiredDivIds = rooms
+                        .Where(r => r.Name == "Inspired A" || r.Name == "Inspired B")
+                        .Select(r => r.Id)
+                        .ToList();
+
+                var inspiredBooked = CheckBookings(dayNr, new List<int> { inspiredId }, date);
+                var inspiredDivBooked = CheckBookings(dayNr, inspiredDivIds, date);
+
+                if (inspiredBooked)
+                {
+                    rooms = rooms.Where(r => !inspiredDivIds.Any(id => r.Id == id)).ToList();
+                }
+                else if (inspiredDivBooked)
+                {
+                    var inspired = rooms.Where(r => r.Id == inspiredId).First();
+                    rooms.Remove(inspired);
+                }  
+                
+                return rooms;
+            }
+        }
+
+        public bool CheckBookings(int dayNr, List<int> roomIds, DateTime date)
+        {
+            using (var context = new SkyDbContext())
+            {
+                foreach (var roomId in roomIds)
+                {
+                    var booking = context.Bookings
+                        .Where(b => b.DayNr == dayNr && b.RoomID == roomId)
+                        .FirstOrDefault();
+
+                    var singleBookings = context.SingleBookings
+                        .Where(b => b.Date == date && b.RoomID == roomId)
+                        .FirstOrDefault();
+
+                    if (booking != null || singleBookings != null)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }            
         }
 
         public IEnumerable<AdminRoomOverviewDTO> AdminRoomsOverview(string date)

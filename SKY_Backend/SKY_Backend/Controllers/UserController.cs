@@ -56,12 +56,28 @@ namespace SKY_Backend.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("Register")]
+        [HttpPost("UserRegister")]
         public IActionResult UserRegister([FromBody] UserRegisterDTO register)
         {
             try
             {
                 _userService.UserRegister(register);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("AdminRegister")]
+        public IActionResult AdminRegister([FromBody] UserRegisterDTO register)
+        {
+            try
+            {
+                _userService.AdminRegister(register);
                 return Ok();
             }
             catch (Exception ex)

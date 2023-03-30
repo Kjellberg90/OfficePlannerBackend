@@ -23,6 +23,7 @@ namespace Service
         public void PostGroupToRoomBooking(GroupToRoomBookingDTO postGroupToRoomDTO);
         public List<GroupBookedToRoom> GetBookingsForRoom();
         public void DeleteGroupToRoomBooking(int bookingId);
+        public void DeleteOldSingleRoomBookings();
         public void EditGroupToRoomBooking(int bookingId, GroupToRoomBookingDTO groupToRoomBooking);
     }
 }

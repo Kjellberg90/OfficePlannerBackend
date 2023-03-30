@@ -13,20 +13,26 @@ namespace Service
     public class TokenService : ITokenService
     {
         public IConfiguration _configuration;
+        private readonly IUserService _userService;
 
-        public TokenService(IConfiguration configuration)
+        public TokenService(IConfiguration configuration, IUserService userService)
         {
             _configuration = configuration;
+            _userService = userService;
         }
 
-            public string CreateJWTToken(SuccessLoginDTO result)
+        public string CreateJWTToken(SuccessLoginDTO result)
         {
+
+            var userRole = _userService.GetUserRole(result);
+
             var claims = new[] {
                         new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                         new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
                         new Claim("UserId", result.Id.ToString()),
                         new Claim("UserName", result.Name.ToString()),
+                        new Claim("roles", userRole)
                     };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));

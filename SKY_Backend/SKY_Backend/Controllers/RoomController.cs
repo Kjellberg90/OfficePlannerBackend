@@ -19,7 +19,7 @@ namespace SKY_Backend.Controllers
             _roomService = roomService;
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin, User")]
         [HttpGet("get-rooms-info")]
         public IActionResult GetRoomsInfo(string date)
         {
@@ -38,7 +38,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet("adminOverview/{date}")]
         public IActionResult AdminOverview(string date)
         {
@@ -56,7 +56,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet("adminGetRooms")]
         public IActionResult AdminGetRooms()
         {
@@ -74,7 +74,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("adminDeleteRooms")]
         public IActionResult AdminDeleteRoom([FromBody] AdminDeleteRoomDTO adminDeleteRoom)
         {
@@ -90,7 +90,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost("adminAddRooms")]
         public IActionResult AdminPostRoom([FromBody] AdminPostRoomDTO adminAddRoom)
         {
@@ -106,7 +106,7 @@ namespace SKY_Backend.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPut("adminroomEditRoom")]
         public IActionResult AdminEditRoom(int roomId, [FromBody] AdminEditRoomDTO adminEditRoom)
         {

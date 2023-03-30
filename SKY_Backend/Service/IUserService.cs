@@ -11,5 +11,7 @@ namespace Service
     {
         public SuccessLoginDTO UserLogin(UserLoginDTO login);
         public void UserRegister(UserRegisterDTO register);
+        public void AdminRegister(UserRegisterDTO register);
+        public string GetUserRole(SuccessLoginDTO user);
     }
 }
