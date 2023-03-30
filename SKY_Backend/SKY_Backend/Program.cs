@@ -1,8 +1,17 @@
- using DAL;
+using DAL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Service;
+using Service.AdminGroupService;
+using Service.AdminRomService;
+using Service.AdminRoomBookingService;
+using Service.BookingService;
+using Service.DateHandler;
+using Service.GroupService;
+using Service.RoomService;
+using Service.UserService;
+using Service.UserService.UserService;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 
@@ -39,12 +48,15 @@ builder.Services.AddCors(options =>
 // Dependencies 
 
 builder.Services.AddTransient<IGroupService, GroupService>();
+builder.Services.AddTransient<IAdminGroupService, AdminGroupService>();
 builder.Services.AddTransient<IRoomService, RoomService>();
+builder.Services.AddTransient<IAdminRoomService, AdminRoomService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IUserAcess, UserAccess>();
 builder.Services.AddTransient<IBookingAccess, BookingAccess>();
-builder.Services.AddTransient<IBookingService, BookingService>();
-builder.Services.AddTransient<IDateConverter, DateConverter>();
+builder.Services.AddTransient<IAdminRoomBookingService, AdminRoomBookingService>();
+builder.Services.AddTransient<ISingleBookingService, SingleBookingService>();
+builder.Services.AddTransient<IDateHandler, DateHandler>();
 builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<IScheduleService, ScheduleService>();
 
