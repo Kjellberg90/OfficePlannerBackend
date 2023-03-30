@@ -61,7 +61,8 @@ namespace DAL
                 );
 
             modelBuilder.Entity<SQLSchedule>().HasData(
-                new SQLSchedule { Id = 1, Name = "Default", WeekInterval = 3 }
+                new SQLSchedule { Id = 1, Name = "Default", WeekInterval = 3 },
+                new SQLSchedule { Id = 2, Name = "Sommarschema", WeekInterval = 2 }
                 );
         }
     }

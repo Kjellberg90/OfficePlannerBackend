@@ -39,7 +39,25 @@ namespace SKY_Backend.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpGet("adminOverview/{date}")]
+        [HttpGet("adminOverviewFromWeek/{weekNr}")]
+        public IActionResult AdminOverview(int weekNr)
+        {
+            try
+            {
+                var result = _roomService.AdminRoomsOverview(weekNr);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("adminOverviewFromDate/{date}")]
         public IActionResult AdminOverview(string date)
         {
             try

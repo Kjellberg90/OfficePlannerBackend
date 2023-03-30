@@ -24,12 +24,15 @@ namespace Service
 
         public IEnumerable<RoomInfoDTO> GetRoomsInfo(string date)
         {
-            var dayNr = _dateConverter.ConvertDateToDaySequence(date);
-            var roomInfoList = new List<RoomInfoDTO>();
-            var currentDate = DateTime.Parse(date);
-
             using (var context = new SkyDbContext())
             {
+                var weeks = context.Schedules
+                    .Where(s => s.Id == 1)
+                    .First().WeekInterval;
+                var dayNr = _dateConverter.ConvertDateToDaySequence(date, weeks);
+                var roomInfoList = new List<RoomInfoDTO>();
+                var currentDate = DateTime.Parse(date);
+
                 var rooms = GetRoomsList(dayNr, currentDate);
                 var bookings = context.Bookings
                     .Where(b => b.DayNr == dayNr)
@@ -131,15 +134,40 @@ namespace Service
             }            
         }
 
-        public IEnumerable<AdminRoomOverviewDTO> AdminRoomsOverview(string date)
+        public IEnumerable<AdminRoomOverviewDTO> AdminRoomsOverview(int weekNr)
         {
-            var formattedDate = _dateConverter.ConvertDateToDaySequence(date);
-            var scheduleWeek = GetScheduleWeekNr(formattedDate);
-            var weekDays = GetWeekDays(scheduleWeek, formattedDate);
-
             using (var context = new SkyDbContext())
             {
+                var weeks = context.Schedules
+                    .Where(s => s.Id == 1)
+                    .First().WeekInterval;
+                var weekDays = _dateConverter.GetWeekDays(weekNr);
                 var overviewList = new List<AdminRoomOverviewDTO>();
+
+                var rooms = context.Rooms.ToList();
+
+                foreach (var room in rooms)
+                {
+                    var overview = GetOverview(room, weekDays);
+                    overviewList.Add(overview);
+                }
+
+                return overviewList;
+            }
+        }
+
+        public IEnumerable<AdminRoomOverviewDTO> AdminRoomsOverview(string date)
+        {
+            using (var context = new SkyDbContext())
+            {
+                var dayNr = _dateConverter.ConvertDateToDaySequence(date, 3);
+                var weekNr = _dateConverter.GetScheduleWeekNr(dayNr);
+                var weeks = context.Schedules
+                    .Where(s => s.Id == 1)
+                    .First().WeekInterval;
+                var weekDays = _dateConverter.GetWeekDays(weekNr);
+                var overviewList = new List<AdminRoomOverviewDTO>();
+
                 var rooms = context.Rooms.ToList();
 
                 foreach (var room in rooms)
@@ -248,37 +276,6 @@ namespace Service
                 var availableSeats = room.Seats - singleBookings.Count() - groupSize;
                 return availableSeats;
             }
-        }
-
-        public int GetScheduleWeekNr(int dayNr)
-        {
-            if (dayNr == 0) { throw new Exception("Incorrect day number"); }
-
-            if (dayNr >= 1 && dayNr < 8)
-            {
-                return 1;
-            }
-            else if (dayNr >= 8 && dayNr < 15)
-            {
-                return 2;
-            }
-            else
-            {
-                return 3;
-            }
-        }
-
-        public List<int> GetWeekDays(int week, int dayNr)
-        {
-            var list = new List<int>();
-            var firstWeekDay = (7 * (week - 1) + 1);
-
-            for (int i = firstWeekDay; i < (firstWeekDay + 5); i++)
-            {
-                list.Add(i);
-            }
-
-            return list;
         }
     }
 }

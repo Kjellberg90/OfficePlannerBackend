@@ -46,6 +46,7 @@ builder.Services.AddTransient<IBookingAccess, BookingAccess>();
 builder.Services.AddTransient<IBookingService, BookingService>();
 builder.Services.AddTransient<IDateConverter, DateConverter>();
 builder.Services.AddTransient<ITokenService, TokenService>();
+builder.Services.AddTransient<IScheduleService, ScheduleService>();
 
 //--------------------------JWT-Token stuff----------------------------------------------------------------------
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>

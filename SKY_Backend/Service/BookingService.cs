@@ -108,16 +108,17 @@ namespace Service
             }
         }
 
-        public void UpdateBookings(UpdateBookingsDTO[] updateBookings, string date)
+        public void UpdateBookings(UpdateBookingsDTO[] updateBookings, int weekNr)
         {
-            var dayNr = _dateConverter.ConvertDateToDaySequence(date);
-            var weekNr = GetScheduleWeekNr(dayNr);
-            var weekDays = GetWeekDays(weekNr);
-
-            foreach (var booking in updateBookings)
+            using (var context = new SkyDbContext())
             {
-                PostUpdates(booking, weekDays);
-            }
+                var weekDays = _dateConverter.GetWeekDays(weekNr);
+
+                foreach (var booking in updateBookings)
+                {
+                    PostUpdates(booking, weekDays);
+                }
+            }            
         }
 
         public void PostUpdates(UpdateBookingsDTO updateInfo, List<int> days)
@@ -168,7 +169,10 @@ namespace Service
             {
                 var regularBookings = context.Bookings.ToList();
                 var date = DateTime.Parse(groupToRoomBooking.Date);
-                var dayNr = _dateConverter.ConvertDateToDaySequence(groupToRoomBooking.Date);
+                var weeks = context.Schedules
+                    .Where(s => s.Id == 1)
+                    .First().WeekInterval;
+                var dayNr = _dateConverter.ConvertDateToDaySequence(groupToRoomBooking.Date, weeks);
 
                 var booking = context.SingleRoomBookings.
                     Where(b => b.Id == bookingId).
@@ -236,7 +240,10 @@ namespace Service
             {
                 var regularBookings = context.Bookings.ToList();
                 var date = DateTime.Parse(postGroupToRoomDTO.Date);
-                var dayNr = _dateConverter.ConvertDateToDaySequence(postGroupToRoomDTO.Date);
+                var weeks = context.Schedules
+                    .Where(s => s.Id == 1)
+                    .First().WeekInterval;
+                var dayNr = _dateConverter.ConvertDateToDaySequence(postGroupToRoomDTO.Date, weeks);
 
                 var booking = context.SingleRoomBookings
                     .Where(b => b.RoomID == postGroupToRoomDTO.RoomId && b.Date == date)
@@ -432,37 +439,6 @@ namespace Service
 
                 //}
             }
-        }
-
-        public int GetScheduleWeekNr(int dayNr)
-        {
-            if (dayNr == 0) { throw new Exception("Incorrect day number"); }
-
-            if (dayNr >= 1 && dayNr < 8)
-            {
-                return 1;
-            }
-            else if (dayNr >= 8 && dayNr < 15)
-            {
-                return 2;
-            }
-            else
-            {
-                return 3;
-            }
-        }
-
-        public List<int> GetWeekDays(int week)
-        {
-            var list = new List<int>();
-            var firstWeekDay = (7 * (week - 1) + 1);
-
-            for (int i = firstWeekDay; i < (firstWeekDay + 5); i++)
-            {
-                list.Add(i);
-            }
-
-            return list;
         }
     }
 }

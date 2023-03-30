@@ -24,10 +24,13 @@ namespace Service
 
         public GroupInfoDTO GetGroupInfo(string date, int groupId)
         {
-            var dayNr = _dateConverter.ConvertDateToDaySequence(date);
 
             using (var context = new SkyDbContext())
             {
+                var weeks = context.Schedules
+                    .Where(s => s.Id == 1)
+                    .First().WeekInterval;
+                var dayNr = _dateConverter.ConvertDateToDaySequence(date, weeks);
                 var group = context.Groups.FirstOrDefault(g => g.Id == groupId);
 
                 var booking = context.Bookings
@@ -131,23 +134,26 @@ namespace Service
 
             List<string> weeksDates = new List<string>();
 
-            var dayNumber = _dateConverter.ConvertDateToDaySequence(date);
-            var scheduleWeek = GetScheduleWeekNr(dayNumber);
-            var weekDays = GetWeekDays(scheduleWeek, dayNumber);
-            var dates = new List<DateTime>();
-
-            for (int i = 0; i < 7; i++)
-            {
-                var individualDate = monday.AddDays(i);
-                var dateToFormattedString = individualDate.ToString("dddd", new CultureInfo("en-GB"));
-                dates.Add(individualDate);
-                weeksDates.Add(dateToFormattedString);
-            }
-
-            List<WeeklyGroupScheduleDTO> weeklyRoomSchedule = new List<WeeklyGroupScheduleDTO>();
-
             using (var context = new SkyDbContext())
             {
+                var weeks = context.Schedules
+                    .Where(s => s.Id == 1)
+                    .First().WeekInterval;
+                var dayNumber = _dateConverter.ConvertDateToDaySequence(date, weeks);
+                var scheduleWeek = _dateConverter.GetScheduleWeekNr(dayNumber);
+                var weekDays = _dateConverter.GetWeekDays(scheduleWeek);
+                var dates = new List<DateTime>();
+
+                for (int i = 0; i < 7; i++)
+                {
+                    var individualDate = monday.AddDays(i);
+                    var dateToFormattedString = individualDate.ToString("dddd", new CultureInfo("en-GB"));
+                    dates.Add(individualDate);
+                    weeksDates.Add(dateToFormattedString);
+                }
+
+                List<WeeklyGroupScheduleDTO> weeklyRoomSchedule = new List<WeeklyGroupScheduleDTO>();
+
                 var dayCounter = 0;
                 for (int i = weekDays.Min(); i < (weekDays.Min() + weekDays.Count); i++)
                 {
@@ -212,37 +218,5 @@ namespace Service
 
             return currentWeek;
         }
-
-        public int GetScheduleWeekNr(int dayNr)
-        {
-            if (dayNr == 0) { throw new Exception("Incorrect day number"); }
-
-            if (dayNr >= 1 && dayNr < 8)
-            {
-                return 1;
-            }
-            else if (dayNr >= 8 && dayNr < 15)
-            {
-                return 2;
-            }
-            else
-            {
-                return 3;
-            }
-        }
-
-        public List<int> GetWeekDays(int week, int dayNr)
-        {
-            var list = new List<int>();
-            var firstWeekDay = (7 * (week - 1) + 1);
-
-            for (int i = firstWeekDay; i < (firstWeekDay + 7); i++)
-            {
-                list.Add(i);
-            }
-
-            return list;
-        }
     }
-
 }
