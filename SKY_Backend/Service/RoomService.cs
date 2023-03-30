@@ -134,12 +134,12 @@ namespace Service
             }            
         }
 
-        public IEnumerable<AdminRoomOverviewDTO> AdminRoomsOverview(int weekNr)
+        public IEnumerable<AdminRoomOverviewDTO> AdminRoomsOverview(int weekNr, int scheduleId)
         {
             using (var context = new SkyDbContext())
             {
                 var weeks = context.Schedules
-                    .Where(s => s.Id == 1)
+                    .Where(s => s.Id == scheduleId)
                     .First().WeekInterval;
                 var weekDays = _dateConverter.GetWeekDays(weekNr);
                 var overviewList = new List<AdminRoomOverviewDTO>();
@@ -148,7 +148,7 @@ namespace Service
 
                 foreach (var room in rooms)
                 {
-                    var overview = GetOverview(room, weekDays);
+                    var overview = GetOverview(room, weekDays, scheduleId);
                     overviewList.Add(overview);
                 }
 
@@ -156,14 +156,14 @@ namespace Service
             }
         }
 
-        public IEnumerable<AdminRoomOverviewDTO> AdminRoomsOverview(string date)
+        public IEnumerable<AdminRoomOverviewDTO> AdminRoomsOverview(string date, int scheduleId)
         {
             using (var context = new SkyDbContext())
             {
                 var dayNr = _dateConverter.ConvertDateToDaySequence(date, 3);
                 var weekNr = _dateConverter.GetScheduleWeekNr(dayNr);
                 var weeks = context.Schedules
-                    .Where(s => s.Id == 1)
+                    .Where(s => s.Id == scheduleId)
                     .First().WeekInterval;
                 var weekDays = _dateConverter.GetWeekDays(weekNr);
                 var overviewList = new List<AdminRoomOverviewDTO>();
@@ -172,7 +172,7 @@ namespace Service
 
                 foreach (var room in rooms)
                 {
-                    var overview = GetOverview(room, weekDays);
+                    var overview = GetOverview(room, weekDays, scheduleId);
                     overviewList.Add(overview);
                 }
 
@@ -180,7 +180,7 @@ namespace Service
             }
         }
 
-        public AdminRoomOverviewDTO GetOverview(SQLRoom room, List<int> days)
+        public AdminRoomOverviewDTO GetOverview(SQLRoom room, List<int> days, int scheduleId)
         {
             using (var context = new SkyDbContext())
             {
@@ -189,7 +189,7 @@ namespace Service
                 foreach (var day in days)
                 {
                     var booking = context.Bookings
-                        .Where(b => b.DayNr == day && b.RoomID == room.Id)
+                        .Where(b => b.DayNr == day && b.RoomID == room.Id && b.ScheduleID == scheduleId)
                         .FirstOrDefault();
 
                     if (booking != null)

@@ -6,8 +6,8 @@ namespace Service
     public interface IRoomService
     {
         public IEnumerable<RoomInfoDTO> GetRoomsInfo(string date);
-        public IEnumerable<AdminRoomOverviewDTO> AdminRoomsOverview(int weekNr);
-        public IEnumerable<AdminRoomOverviewDTO> AdminRoomsOverview(string date);
+        public IEnumerable<AdminRoomOverviewDTO> AdminRoomsOverview(int weekNr, int scheduleId);
+        public IEnumerable<AdminRoomOverviewDTO> AdminRoomsOverview(string date, int scheduleId);
         public IEnumerable<AdminRoomDTO> AdminGetRooms();
         public void AdminDeleteRoom(AdminDeleteRoomDTO adminDeleteRoom);
         public void AdminPostRoom(AdminPostRoomDTO adminAddRoom);
