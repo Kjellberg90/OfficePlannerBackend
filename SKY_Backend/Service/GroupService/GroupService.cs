@@ -10,7 +10,7 @@ using System.Globalization;
 using System.Security.Cryptography.X509Certificates;
 using DAL.SQLModels;
 
-namespace Service
+namespace Service.GroupService
 {
     public class GroupService : IGroupService
     {
@@ -18,8 +18,8 @@ namespace Service
         private readonly IBookingAccess _bookingAccess;
         public GroupService(IDateConverter dateConverter, IBookingAccess bookingAccess)
         {
-            this._dateConverter = dateConverter;
-            this._bookingAccess = bookingAccess;
+            _dateConverter = dateConverter;
+            _bookingAccess = bookingAccess;
         }
 
         public GroupInfoDTO GetGroupInfo(string date, int groupId)
@@ -47,8 +47,8 @@ namespace Service
                 if (booking == null && singleRoomBookings == null)
                 {
                     groupInfo = new GroupInfoDTO { Name = group.Name, GroupSize = group.GroupSize };
-                } 
-                else if(booking != null)
+                }
+                else if (booking != null)
                 {
                     var room = context.Rooms.FirstOrDefault(r => r.Id == booking.RoomID);
                     groupInfo = new GroupInfoDTO { Name = group.Name, GroupSize = group.GroupSize, BookedRoom = room };
@@ -69,51 +69,6 @@ namespace Service
             {
                 var groupList = context.Groups.ToList();
                 return groupList;
-            }
-        }
-
-        public void UpdateGroup(int groupId, NewGroupInfoDTO newGroup)
-        {
-            using (var context = new SkyDbContext())
-            {
-                var group = context.Groups
-                    .Where(g => g.Id == groupId)
-                    .FirstOrDefault();
-
-                if (group == null) throw new Exception("Group not found");
-
-                group.Name = newGroup.Name;
-                group.GroupSize = newGroup.GroupSize;
-                if (newGroup.Division != null) group.Department = newGroup.Division;
-
-                context.SaveChanges();
-            }
-        }
-
-        public void DeleteGroup(int groupId)
-        {
-            using (var context = new SkyDbContext())
-            {
-                var group = context.Groups.FirstOrDefault(r => r.Id == groupId);
-                if (group == null) throw new ArgumentNullException(nameof(group));
-
-                context.Groups.Remove(group);
-                context.SaveChanges();
-            }
-        }
-
-        public void AddGroup(AddGroupDTO addGroupDTO)
-        {
-            using (var context = new SkyDbContext())
-            {
-                context.Groups.Add(new SQLGroup
-                {
-                    Name = addGroupDTO.Name,
-                    GroupSize = addGroupDTO.GroupSize,
-                    Department = addGroupDTO.Division
-                });
-
-                context.SaveChanges();
             }
         }
 
@@ -155,9 +110,9 @@ namespace Service
                 List<WeeklyGroupScheduleDTO> weeklyRoomSchedule = new List<WeeklyGroupScheduleDTO>();
 
                 var dayCounter = 0;
-                for (int i = weekDays.Min(); i < (weekDays.Min() + weekDays.Count); i++)
+                for (int i = weekDays.Min(); i < weekDays.Min() + weekDays.Count; i++)
                 {
-                    
+
                     var bookings = context.Bookings
                         .Where(b => b.GroupID == groupId && b.DayNr == i)
                         .FirstOrDefault();
@@ -171,7 +126,7 @@ namespace Service
                     if (bookings != null)
                     {
                         roomName = context.Rooms.FirstOrDefault(r => r.Id == bookings.RoomID).Name;
-                    }    
+                    }
                     else if (singleRoomBookings != null)
                     {
                         roomName = context.Rooms.FirstOrDefault(r => r.Id == singleRoomBookings.RoomID).Name;

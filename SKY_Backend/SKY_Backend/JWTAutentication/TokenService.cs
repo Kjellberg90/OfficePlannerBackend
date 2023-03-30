@@ -1,5 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using Service.DTO;
+using Service.UserService;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
