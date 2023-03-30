@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DAL.SQLModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,5 +10,6 @@ namespace Service
     public interface IScheduleService
     {
         public int GetWeeksTotal(int scheduleId);
+        public IEnumerable<SQLSchedule> GetSchedules(); 
     }
 }

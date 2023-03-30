@@ -28,5 +28,19 @@ namespace SKY_Backend.Controllers
                 throw new Exception(ex.Message);
             }
         }
+
+        [HttpGet("GetSchedules")]
+        public IActionResult GetSchedules()
+        {
+            try
+            {
+                var result = _scheduleService.GetSchedules();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
