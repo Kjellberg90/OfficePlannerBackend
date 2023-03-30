@@ -39,12 +39,12 @@ namespace SKY_Backend.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpGet("adminOverviewFromWeek/{weekNr}")]
-        public IActionResult AdminOverview(int weekNr)
+        [HttpGet("adminOverviewFromWeek")]
+        public IActionResult AdminOverview([FromQuery]int weekNr, [FromQuery] int scheduleId)
         {
             try
             {
-                var result = _roomService.AdminRoomsOverview(weekNr);
+                var result = _roomService.AdminRoomsOverview(weekNr, scheduleId);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -57,12 +57,12 @@ namespace SKY_Backend.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpGet("adminOverviewFromDate/{date}")]
-        public IActionResult AdminOverview(string date)
+        [HttpGet("adminOverviewFromDate")]
+        public IActionResult AdminOverview([FromQuery]string date, [FromQuery]int scheduleId)
         {
             try
             {
-                var result = _roomService.AdminRoomsOverview(date);
+                var result = _roomService.AdminRoomsOverview(date, scheduleId);
                 return Ok(result);
             }
             catch (Exception ex)
