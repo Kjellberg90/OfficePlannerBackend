@@ -64,6 +64,17 @@ namespace DAL
                 new SQLSchedule { Id = 1, Name = "Default", WeekInterval = 3 },
                 new SQLSchedule { Id = 2, Name = "Sommarschema", WeekInterval = 2 }
                 );
+
+            modelBuilder.Entity<SQLRoom>()
+                .HasMany(r => r.Bookings)
+                .WithOne(b => b.Room)
+            .   OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<SQLGroup>()
+                .HasMany(g => g.Booking)
+                .WithOne(b => b.Group)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }
