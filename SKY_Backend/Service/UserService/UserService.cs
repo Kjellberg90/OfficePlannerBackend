@@ -27,8 +27,10 @@ namespace Service.UserService
             {
                 try
                 {
+                    var lowerCaseUserName = login.UserName.ToLower();
+
                     var user = context.Users
-                        .Where(x => x.UserName == login.UserName)
+                        .Where(x => x.UserName == lowerCaseUserName)
                         .FirstOrDefault();
 
                     if (user == null) throw new Exception("User not found");
