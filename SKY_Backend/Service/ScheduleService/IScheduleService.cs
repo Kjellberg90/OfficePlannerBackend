@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.ScheduleService.ScheduleService
+namespace Service.ScheduleService
 {
     public interface IScheduleService
     {

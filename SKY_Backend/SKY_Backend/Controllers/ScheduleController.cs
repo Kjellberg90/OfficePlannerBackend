@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.DTO;
-using Service.ScheduleService.ScheduleService;
+using Service.ScheduleService;
 
 namespace SKY_Backend.Controllers
 {
