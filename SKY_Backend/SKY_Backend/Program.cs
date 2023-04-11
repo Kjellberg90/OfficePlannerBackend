@@ -10,7 +10,6 @@ using Service.DateHandlerService;
 using Service.GroupService;
 using Service.RoomService;
 using Service.ScheduleService;
-using Service.ScheduleService.ScheduleService;
 using Service.SingleBookingService;
 using Service.UserService;
 using Swashbuckle.AspNetCore.Filters;
