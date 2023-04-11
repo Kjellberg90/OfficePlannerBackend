@@ -1,4 +1,5 @@
 ﻿using DAL.SQLModels;
+using Service.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace Service.ScheduleService.ScheduleService
     {
         public int GetWeeksTotal(int scheduleId);
         public IEnumerable<SQLSchedule> GetSchedules();
+        public void UpdateBookings(UpdateBookingsDTO[] updateBookingsDTO , int weekNr);
     }
 }

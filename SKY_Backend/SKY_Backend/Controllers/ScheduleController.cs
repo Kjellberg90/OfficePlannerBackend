@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Service.DTO;
 using Service.ScheduleService.ScheduleService;
 
 namespace SKY_Backend.Controllers
@@ -36,6 +38,21 @@ namespace SKY_Backend.Controllers
             {
                 var result = _scheduleService.GetSchedules();
                 return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("UpdateBookings/{weekNr}")]
+        public IActionResult UpdateBookings([FromBody] UpdateBookingsDTO[] updateBookingsDTO, int weekNr)
+        {
+            try
+            {
+                _scheduleService.UpdateBookings(updateBookingsDTO, weekNr);
+                return Ok();
             }
             catch (Exception ex)
             {
