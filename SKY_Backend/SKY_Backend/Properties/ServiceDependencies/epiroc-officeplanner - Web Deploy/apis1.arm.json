@@ -53,7 +53,7 @@
               "type": "Microsoft.ApiManagement/service",
               "location": "[parameters('resourceLocation')]",
               "properties": {
-                "publisherEmail": "daniel.kjellberg@epiroc.com",
+                "publisherEmail": "danielkjellberg@hotmail.com",
                 "publisherName": "Daniel Kjellberg",
                 "notificationSenderEmail": "apimgmt-noreply@mail.windowsazure.com",
                 "hostnameConfigurations": [
